@@ -1,0 +1,64 @@
+baseURL = 'https://example.org/'
+languageCode = "zh-CN"          # 设置默认语言为简体中文
+defaultContentLanguage = "zh"   # 内容默认语言标识（与多语言配置匹配）
+title = "万年水的博客"
+theme = ["PaperMod"]
+
+# 配置中文语言细节（可选但推荐）
+[languages.zh]
+languageName = "中文"
+weight = 1                      # 权重，用于多语言排序
+  
+[frontmatter]
+  slug = ":filename"
+
+[security]
+  fileGetDir = "content/**"  # 显式允许中文路径
+
+[[menu.main]]
+  identifier = "artificial-intelligence"
+  name = "人工智能"
+  url = "/posts/artificial-intelligence/"
+  weight = 10
+
+[[menu.main]]
+  identifier = "reading"
+  name = "阅读"
+  url = "/posts/reading/"
+  weight = 20
+  
+[[menu.main]]
+  identifier = "thinking-models"
+  name = "思维模型"
+  url = "/posts/thinking-models/"
+  weight = 30
+  
+[[menu.main]]
+  identifier = "thought-experiments"
+  name = "思想实验"
+  url = "/posts/thought-experiments/"
+  weight = 40
+  
+[[menu.main]]
+  identifier = "personal-growth"
+  name = "个人成长"
+  url = "/posts/personal-growth/"
+  weight = 50
+
+[[menu.main]]
+  identifier = "technology"
+  name = "技术"
+  url = "/posts/technology/"
+  weight = 60
+  
+[[menu.main]]
+  identifier = "current-affairs"
+  name = "时事"
+  url = "/posts/current-affairs/"
+  weight = 70
+  
+[[menu.main]]
+  identifier = "others"
+  name = "其它"
+  url = "/posts/others/"
+  weight = 80

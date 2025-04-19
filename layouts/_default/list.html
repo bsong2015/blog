@@ -1,0 +1,14 @@
+{{ define "main" }}
+<div class="container">
+    <h1>{{ .Title }}</h1>
+    <ul class="post-list">
+        {{ range .Pages }}
+        <li>
+            <a href="{{ .RelPermalink }}" class="post-link">
+                {{ with .File }}{{ .BaseFileName }}{{ end }} 
+            </a>
+        </li>
+        {{ end }}
+    </ul>
+</div>
+{{ end }}
