@@ -71,7 +71,8 @@
   {{- $matches := findRE `^\d+` $baseFileName }}
   {{- if $matches }}
     {{- $prefix := index $matches 0 }}
-    {{- $found_images := readDir $fileDir }}
+    {{- $fullPath := printf "content/%s" $fileDir }}
+    {{- $found_images := readDir $fullPath }}
     {{- range $found_images }}
       {{- if and (not .IsDir) (hasPrefix .Name $prefix) (findRE "\\.(jpg|jpeg|png|gif|jfif|webp)$" .Name) }}
         {{- $image_path = printf "%s/%s" $fileDir .Name }}
