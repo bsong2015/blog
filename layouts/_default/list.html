@@ -71,10 +71,9 @@
   {{- $matches := findRE `^\d+` $baseFileName }}
   {{- if $matches }}
     {{- $prefix := index $matches 0 }}
-    {{- $image_glob := printf "%s/%s*.*" $fileDir $prefix }}
     {{- $found_images := readDir $fileDir }}
     {{- range $found_images }}
-      {{- if and (not .IsDir) (findRE `\.(jpg|jpeg|png|gif|jfif|webp) .Name) (hasPrefix .Name $prefix) }}
+      {{- if and (not .IsDir) (hasPrefix .Name $prefix) (findRE "\\.(jpg|jpeg|png|gif|jfif|webp)$" .Name) }}
         {{- $image_path = printf "%s/%s" $fileDir .Name }}
         {{- break }}
       {{- end }}
