@@ -1,3 +1,8 @@
++++
+draft: true
+mermaid: true
++++
+
 ## 第16篇：企业级SSO的利器SAML 2.0协议详解
 
 在上一篇文章中，我们深入探讨了OpenID Connect (OIDC) 如何在OAuth 2.0之上构建身份认证层，成为现代互联网和移动应用SSO的主流选择。然而，在企业级应用和组织间协作的场景中，尤其是一些传统或遗留系统，你可能更常听到另一个强大的SSO协议——**SAML 2.0 (Security Assertion Markup Language)**。
