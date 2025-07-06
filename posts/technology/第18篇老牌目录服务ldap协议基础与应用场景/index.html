@@ -1,0 +1,166 @@
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>万年水的博客</title><meta name=keywords content><meta name=description content="第18篇：老牌目录服务：LDAP协议基础与应用场景
+在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对用户身份信息的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是目录服务。
+在众多目录服务技术中，LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议） 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。
+1. 什么是LDAP？
+LDAP是一种用于访问和维护分布式目录信息服务的应用层协议。简单来说，它就像一个专门存储和查询“白页”（例如，电话簿、员工花名册）的数据库，但它比传统数据库更专注于读取操作的效率，并针对层次化、树状结构的数据存储进行了优化。
+LDAP目录服务通常用于存储：
+
+用户账户信息： 用户名、密码哈希、电子邮件、电话号码、部门、职位等。
+组信息： 组名称、成员列表。
+网络资源信息： 打印机、服务器、共享文件等。
+应用程序配置信息： 集中存储应用的配置参数。
+
+2. LDAP的核心概念：构建目录的基石
+LDAP目录中的数据以树状层级结构组织，类似于文件系统的目录结构。理解以下几个核心概念，是理解LDAP的关键：
+2.1 目录项（Entry）
+
+定义： 目录项是LDAP目录中存储的每一个独立的信息单元，类似于数据库中的一行记录或文件系统中的一个文件。每个目录项都代表一个真实世界的对象（如用户、组、设备等）。
+特性： 每个目录项都有一个唯一的标识符，称为判别名（Distinguished Name, DN）。
+
+2.2 属性（Attribute）
+
+定义： 每个目录项由一系列属性组成，每个属性由一个**类型（Type）和一个或多个值（Value）**构成。属性描述了目录项的特征。
+示例：
+
+cn (Common Name)：通用名，如John Doe。
+sn (Surname)：姓，如Doe。
+givenName：名，如John。
+mail：电子邮件地址。
+uid (User ID)：用户ID。
+objectClass：必选属性，定义了目录项的类型和必须包含的属性集合。
+
+
+Schema（模式）： LDAP目录遵循一定的Schema。Schema定义了目录中可以存储哪些objectClass，每个objectClass可以包含哪些属性，以及属性的语法（例如，字符串、整数、二进制）。
+
+2.3 判别名（Distinguished Name, DN）
+
+定义： DN是LDAP目录中唯一标识一个目录项的字符串。它明确了该目录项在目录树中的完整路径。DN由一系列相对判别名（Relative Distinguished Name, RDN） 组成，从最特定的（通常是目录项本身）到最不特定的（根目录）。
+结构： RDN之间用逗号（,）分隔，顺序从左到右是从下往上（叶子到根）。
+示例：
+
+cn=John Doe,ou=users,dc=example,dc=com
+
+cn=John Doe 是该目录项的RDN（Common Name为John Doe）。
+ou=users 是其父目录的RDN（组织单元为users）。
+dc=example,dc=com 是根域的RDN。
+
+
+
+
+唯一性： DN在整个LDAP目录中必须是唯一的。
+
+2.4 相对判别名（Relative Distinguished Name, RDN）
+
+定义： RDN是DN中最左边（最具体）的部分，它唯一标识了在特定父目录项下的子目录项。
+示例： 在 cn=John Doe,ou=users,dc=example,dc=com 中，cn=John Doe 就是该目录项的RDN。
+
+graph TD
+    A[LDAP 目录树] --> B(DN: Distinguished Name);
+    B --> C(Entry: 条目);
+    C --> D(Attribute: 属性);
+
+    subgraph DN组成部分
+        E[DC: Domain Component] --> F(dc=com);
+        F(dc=com) --> G(dc=example);
+        G --> H(ou=users);
+        H --> I(cn=John Doe);
+    end
+
+    B --- E;
+3. LDAP的常用操作
+LDAP协议定义了一系列用于访问和修改目录数据的标准操作："><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第18篇：老牌目录服务：LDAP协议基础与应用场景 在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对用户身份信息的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是目录服务。
+在众多目录服务技术中，LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议） 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。
+1. 什么是LDAP？ LDAP是一种用于访问和维护分布式目录信息服务的应用层协议。简单来说，它就像一个专门存储和查询“白页”（例如，电话簿、员工花名册）的数据库，但它比传统数据库更专注于读取操作的效率，并针对层次化、树状结构的数据存储进行了优化。
+LDAP目录服务通常用于存储：
+用户账户信息： 用户名、密码哈希、电子邮件、电话号码、部门、职位等。 组信息： 组名称、成员列表。 网络资源信息： 打印机、服务器、共享文件等。 应用程序配置信息： 集中存储应用的配置参数。 2. LDAP的核心概念：构建目录的基石 LDAP目录中的数据以树状层级结构组织，类似于文件系统的目录结构。理解以下几个核心概念，是理解LDAP的关键：
+2.1 目录项（Entry） 定义： 目录项是LDAP目录中存储的每一个独立的信息单元，类似于数据库中的一行记录或文件系统中的一个文件。每个目录项都代表一个真实世界的对象（如用户、组、设备等）。 特性： 每个目录项都有一个唯一的标识符，称为判别名（Distinguished Name, DN）。 2.2 属性（Attribute） 定义： 每个目录项由一系列属性组成，每个属性由一个**类型（Type）和一个或多个值（Value）**构成。属性描述了目录项的特征。 示例： cn (Common Name)：通用名，如John Doe。 sn (Surname)：姓，如Doe。 givenName：名，如John。 mail：电子邮件地址。 uid (User ID)：用户ID。 objectClass：必选属性，定义了目录项的类型和必须包含的属性集合。 Schema（模式）： LDAP目录遵循一定的Schema。Schema定义了目录中可以存储哪些objectClass，每个objectClass可以包含哪些属性，以及属性的语法（例如，字符串、整数、二进制）。 2.3 判别名（Distinguished Name, DN） 定义： DN是LDAP目录中唯一标识一个目录项的字符串。它明确了该目录项在目录树中的完整路径。DN由一系列相对判别名（Relative Distinguished Name, RDN） 组成，从最特定的（通常是目录项本身）到最不特定的（根目录）。 结构： RDN之间用逗号（,）分隔，顺序从左到右是从下往上（叶子到根）。 示例： cn=John Doe,ou=users,dc=example,dc=com cn=John Doe 是该目录项的RDN（Common Name为John Doe）。 ou=users 是其父目录的RDN（组织单元为users）。 dc=example,dc=com 是根域的RDN。 唯一性： DN在整个LDAP目录中必须是唯一的。 2.4 相对判别名（Relative Distinguished Name, RDN） 定义： RDN是DN中最左边（最具体）的部分，它唯一标识了在特定父目录项下的子目录项。 示例： 在 cn=John Doe,ou=users,dc=example,dc=com 中，cn=John Doe 就是该目录项的RDN。 graph TD A[LDAP 目录树] --> B(DN: Distinguished Name); B --> C(Entry: 条目); C --> D(Attribute: 属性); subgraph DN组成部分 E[DC: Domain Component] --> F(dc=com); F(dc=com) --> G(dc=example); G --> H(ou=users); H --> I(cn=John Doe); end B --- E; 3. LDAP的常用操作 LDAP协议定义了一系列用于访问和修改目录数据的标准操作："><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="第18篇：老牌目录服务：LDAP协议基础与应用场景
+在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对用户身份信息的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是目录服务。
+在众多目录服务技术中，LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议） 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。
+1. 什么是LDAP？
+LDAP是一种用于访问和维护分布式目录信息服务的应用层协议。简单来说，它就像一个专门存储和查询“白页”（例如，电话簿、员工花名册）的数据库，但它比传统数据库更专注于读取操作的效率，并针对层次化、树状结构的数据存储进行了优化。
+LDAP目录服务通常用于存储：
+
+用户账户信息： 用户名、密码哈希、电子邮件、电话号码、部门、职位等。
+组信息： 组名称、成员列表。
+网络资源信息： 打印机、服务器、共享文件等。
+应用程序配置信息： 集中存储应用的配置参数。
+
+2. LDAP的核心概念：构建目录的基石
+LDAP目录中的数据以树状层级结构组织，类似于文件系统的目录结构。理解以下几个核心概念，是理解LDAP的关键：
+2.1 目录项（Entry）
+
+定义： 目录项是LDAP目录中存储的每一个独立的信息单元，类似于数据库中的一行记录或文件系统中的一个文件。每个目录项都代表一个真实世界的对象（如用户、组、设备等）。
+特性： 每个目录项都有一个唯一的标识符，称为判别名（Distinguished Name, DN）。
+
+2.2 属性（Attribute）
+
+定义： 每个目录项由一系列属性组成，每个属性由一个**类型（Type）和一个或多个值（Value）**构成。属性描述了目录项的特征。
+示例：
+
+cn (Common Name)：通用名，如John Doe。
+sn (Surname)：姓，如Doe。
+givenName：名，如John。
+mail：电子邮件地址。
+uid (User ID)：用户ID。
+objectClass：必选属性，定义了目录项的类型和必须包含的属性集合。
+
+
+Schema（模式）： LDAP目录遵循一定的Schema。Schema定义了目录中可以存储哪些objectClass，每个objectClass可以包含哪些属性，以及属性的语法（例如，字符串、整数、二进制）。
+
+2.3 判别名（Distinguished Name, DN）
+
+定义： DN是LDAP目录中唯一标识一个目录项的字符串。它明确了该目录项在目录树中的完整路径。DN由一系列相对判别名（Relative Distinguished Name, RDN） 组成，从最特定的（通常是目录项本身）到最不特定的（根目录）。
+结构： RDN之间用逗号（,）分隔，顺序从左到右是从下往上（叶子到根）。
+示例：
+
+cn=John Doe,ou=users,dc=example,dc=com
+
+cn=John Doe 是该目录项的RDN（Common Name为John Doe）。
+ou=users 是其父目录的RDN（组织单元为users）。
+dc=example,dc=com 是根域的RDN。
+
+
+
+
+唯一性： DN在整个LDAP目录中必须是唯一的。
+
+2.4 相对判别名（Relative Distinguished Name, RDN）
+
+定义： RDN是DN中最左边（最具体）的部分，它唯一标识了在特定父目录项下的子目录项。
+示例： 在 cn=John Doe,ou=users,dc=example,dc=com 中，cn=John Doe 就是该目录项的RDN。
+
+graph TD
+    A[LDAP 目录树] --> B(DN: Distinguished Name);
+    B --> C(Entry: 条目);
+    C --> D(Attribute: 属性);
+
+    subgraph DN组成部分
+        E[DC: Domain Component] --> F(dc=com);
+        F(dc=com) --> G(dc=example);
+        G --> H(ou=users);
+        H --> I(cn=John Doe);
+    end
+
+    B --- E;
+3. LDAP的常用操作
+LDAP协议定义了一系列用于访问和修改目录数据的标准操作："><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://bsong2015.github.io/blog/posts/"},{"@type":"ListItem","position":2,"name":"技术实践","item":"https://bsong2015.github.io/blog/posts/technology/"},{"@type":"ListItem","position":3,"name":"","item":"https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"","name":"","description":"第18篇：老牌目录服务：LDAP协议基础与应用场景 在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对用户身份信息的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是目录服务。\n在众多目录服务技术中，LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议） 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。\n1. 什么是LDAP？ LDAP是一种用于访问和维护分布式目录信息服务的应用层协议。简单来说，它就像一个专门存储和查询“白页”（例如，电话簿、员工花名册）的数据库，但它比传统数据库更专注于读取操作的效率，并针对层次化、树状结构的数据存储进行了优化。\nLDAP目录服务通常用于存储：\n用户账户信息： 用户名、密码哈希、电子邮件、电话号码、部门、职位等。 组信息： 组名称、成员列表。 网络资源信息： 打印机、服务器、共享文件等。 应用程序配置信息： 集中存储应用的配置参数。 2. LDAP的核心概念：构建目录的基石 LDAP目录中的数据以树状层级结构组织，类似于文件系统的目录结构。理解以下几个核心概念，是理解LDAP的关键：\n2.1 目录项（Entry） 定义： 目录项是LDAP目录中存储的每一个独立的信息单元，类似于数据库中的一行记录或文件系统中的一个文件。每个目录项都代表一个真实世界的对象（如用户、组、设备等）。 特性： 每个目录项都有一个唯一的标识符，称为判别名（Distinguished Name, DN）。 2.2 属性（Attribute） 定义： 每个目录项由一系列属性组成，每个属性由一个**类型（Type）和一个或多个值（Value）**构成。属性描述了目录项的特征。 示例： cn (Common Name)：通用名，如John Doe。 sn (Surname)：姓，如Doe。 givenName：名，如John。 mail：电子邮件地址。 uid (User ID)：用户ID。 objectClass：必选属性，定义了目录项的类型和必须包含的属性集合。 Schema（模式）： LDAP目录遵循一定的Schema。Schema定义了目录中可以存储哪些objectClass，每个objectClass可以包含哪些属性，以及属性的语法（例如，字符串、整数、二进制）。 2.3 判别名（Distinguished Name, DN） 定义： DN是LDAP目录中唯一标识一个目录项的字符串。它明确了该目录项在目录树中的完整路径。DN由一系列相对判别名（Relative Distinguished Name, RDN） 组成，从最特定的（通常是目录项本身）到最不特定的（根目录）。 结构： RDN之间用逗号（,）分隔，顺序从左到右是从下往上（叶子到根）。 示例： cn=John Doe,ou=users,dc=example,dc=com cn=John Doe 是该目录项的RDN（Common Name为John Doe）。 ou=users 是其父目录的RDN（组织单元为users）。 dc=example,dc=com 是根域的RDN。 唯一性： DN在整个LDAP目录中必须是唯一的。 2.4 相对判别名（Relative Distinguished Name, RDN） 定义： RDN是DN中最左边（最具体）的部分，它唯一标识了在特定父目录项下的子目录项。 示例： 在 cn=John Doe,ou=users,dc=example,dc=com 中，cn=John Doe 就是该目录项的RDN。 graph TD A[LDAP 目录树] --\u0026gt; B(DN: Distinguished Name); B --\u0026gt; C(Entry: 条目); C --\u0026gt; D(Attribute: 属性); subgraph DN组成部分 E[DC: Domain Component] --\u0026gt; F(dc=com); F(dc=com) --\u0026gt; G(dc=example); G --\u0026gt; H(ou=users); H --\u0026gt; I(cn=John Doe); end B --- E; 3. LDAP的常用操作 LDAP协议定义了一系列用于访问和修改目录数据的标准操作：\n","keywords":[],"articleBody":"第18篇：老牌目录服务：LDAP协议基础与应用场景 在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对用户身份信息的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是目录服务。\n在众多目录服务技术中，LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议） 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。\n1. 什么是LDAP？ LDAP是一种用于访问和维护分布式目录信息服务的应用层协议。简单来说，它就像一个专门存储和查询“白页”（例如，电话簿、员工花名册）的数据库，但它比传统数据库更专注于读取操作的效率，并针对层次化、树状结构的数据存储进行了优化。\nLDAP目录服务通常用于存储：\n用户账户信息： 用户名、密码哈希、电子邮件、电话号码、部门、职位等。 组信息： 组名称、成员列表。 网络资源信息： 打印机、服务器、共享文件等。 应用程序配置信息： 集中存储应用的配置参数。 2. LDAP的核心概念：构建目录的基石 LDAP目录中的数据以树状层级结构组织，类似于文件系统的目录结构。理解以下几个核心概念，是理解LDAP的关键：\n2.1 目录项（Entry） 定义： 目录项是LDAP目录中存储的每一个独立的信息单元，类似于数据库中的一行记录或文件系统中的一个文件。每个目录项都代表一个真实世界的对象（如用户、组、设备等）。 特性： 每个目录项都有一个唯一的标识符，称为判别名（Distinguished Name, DN）。 2.2 属性（Attribute） 定义： 每个目录项由一系列属性组成，每个属性由一个**类型（Type）和一个或多个值（Value）**构成。属性描述了目录项的特征。 示例： cn (Common Name)：通用名，如John Doe。 sn (Surname)：姓，如Doe。 givenName：名，如John。 mail：电子邮件地址。 uid (User ID)：用户ID。 objectClass：必选属性，定义了目录项的类型和必须包含的属性集合。 Schema（模式）： LDAP目录遵循一定的Schema。Schema定义了目录中可以存储哪些objectClass，每个objectClass可以包含哪些属性，以及属性的语法（例如，字符串、整数、二进制）。 2.3 判别名（Distinguished Name, DN） 定义： DN是LDAP目录中唯一标识一个目录项的字符串。它明确了该目录项在目录树中的完整路径。DN由一系列相对判别名（Relative Distinguished Name, RDN） 组成，从最特定的（通常是目录项本身）到最不特定的（根目录）。 结构： RDN之间用逗号（,）分隔，顺序从左到右是从下往上（叶子到根）。 示例： cn=John Doe,ou=users,dc=example,dc=com cn=John Doe 是该目录项的RDN（Common Name为John Doe）。 ou=users 是其父目录的RDN（组织单元为users）。 dc=example,dc=com 是根域的RDN。 唯一性： DN在整个LDAP目录中必须是唯一的。 2.4 相对判别名（Relative Distinguished Name, RDN） 定义： RDN是DN中最左边（最具体）的部分，它唯一标识了在特定父目录项下的子目录项。 示例： 在 cn=John Doe,ou=users,dc=example,dc=com 中，cn=John Doe 就是该目录项的RDN。 graph TD A[LDAP 目录树] --\u003e B(DN: Distinguished Name); B --\u003e C(Entry: 条目); C --\u003e D(Attribute: 属性); subgraph DN组成部分 E[DC: Domain Component] --\u003e F(dc=com); F(dc=com) --\u003e G(dc=example); G --\u003e H(ou=users); H --\u003e I(cn=John Doe); end B --- E; 3. LDAP的常用操作 LDAP协议定义了一系列用于访问和修改目录数据的标准操作：\n3.1 绑定（Bind）/ 认证 用途： 客户端向LDAP服务器进行认证，以建立会话并获取访问权限。 方式： 通常使用DN和密码进行认证，也可以使用匿名绑定或SASL（Simple Authentication and Security Layer）等更高级的认证机制。 安全性： LDAP协议本身默认传输是明文，强烈建议通过LDAPS（LDAP over SSL/TLS） 进行加密通信，以保护传输中的凭证和数据。 3.2 搜索（Search） 用途： 这是LDAP最常用的操作。客户端可以根据各种条件查询目录中的目录项。 参数： Base DN： 搜索的起始目录点（搜索范围的根）。 Scope： 搜索范围。 base：只搜索Base DN本身。 one：搜索Base DN下一层的所有子目录项（不包括Base DN本身）。 sub：搜索Base DN及其所有子目录项。 Filter： 定义搜索条件的过滤表达式（例如，(objectClass=user)、(\u0026(objectClass=user)(mail=*@example.com))）。 Attributes： 指定返回哪些属性。 示例： 查找ou=users,dc=example,dc=com下所有objectClass为user且cn为John Doe的目录项，并返回mail和telephoneNumber属性。 3.3 添加（Add） 用途： 在目录中添加一个新的目录项。 要求： 需要指定新目录项的DN和所有必需的属性。 3.4 修改（Modify） 用途： 修改现有目录项的一个或多个属性值。 方式： 可以增加、删除或替换属性值。 3.5 删除（Delete） 用途： 从目录中删除一个目录项。删除一个目录项会同时删除其所有子目录项。 3.6 比较（Compare） 用途： 比较目录项的某个属性值是否与指定值匹配。 3.7 重命名/移动（Modify DN） 用途： 更改目录项的DN，可以将其重命名或移动到目录树中的另一个位置。 4. LDAP在传统IAM中的地位与应用场景 LDAP协议及其目录服务在传统企业IAM架构中扮演着核心角色，主要体现在以下方面：\n4.1 统一身份存储（Centralized Identity Store） 基石： LDAP目录作为企业内部唯一的、权威的身份源，集中存储所有员工、部门、组的身份信息。这避免了多系统多套身份数据带来的不一致和管理混乱。 数据共享： 其他应用系统可以通过LDAP协议方便地查询和集成这些身份数据。 4.2 认证服务（Authentication Service） 集中认证： 许多企业应用（如Web应用、VPN、网络设备）都配置为通过LDAP协议向中央LDAP服务器进行用户认证。用户只需在LDAP中拥有一个账户，就可以登录所有关联系统。 SSO基础： 虽然LDAP本身不直接提供SSO功能，但它是许多传统SSO解决方案（如Kerberos、以及一些基于代理的SSO）的底层认证数据源。用户在成功通过LDAP认证后，可以在其他应用中获得免密访问。 4.3 授权管理的基础（Authorization Basis） 角色/组存储： LDAP目录可以用来存储用户的组信息（例如，用户属于“销售部”、“管理员”等组）。这些组信息可以作为应用进行RBAC（基于角色的访问控制）决策的依据。应用查询用户的组属性，然后根据这些组来赋予相应的权限。 4.4 应用程序目录 除了用户和组，LDAP还可以存储应用程序自身的配置数据，实现配置的集中管理。 4.5 与AD的紧密联系 Active Directory（活动目录） 是微软推出的一种目录服务，它在底层基于LDAP协议。因此，掌握LDAP对于理解和管理Active Directory至关重要。许多针对AD的身份认证和查询操作，实际上就是通过LDAP协议实现的。 挑战： 尽管LDAP非常强大和稳定，但它在处理大规模动态变化的数据、支持现代Web/移动应用以及与云服务集成方面，相比RESTful API和JSON数据模型可能显得不那么灵活和现代化。这也是SCIM等协议兴起的原因之一。\n总结 LDAP协议是目录服务领域的“老牌劲旅”，以其高效的读取性能和层次化的数据组织方式，在企业级IAM中扮演着不可或缺的角色。它作为统一的身份存储、认证和授权基础，支撑着大量传统企业的IT基础设施。理解LDAP的目录项、属性、DN等核心概念，以及其搜索、绑定等操作，是深入理解企业IAM底层架构的关键。\n虽然新兴协议如SCIM和OAuth/OIDC在某些现代场景下更具优势，但LDAP在企业内部和传统系统中的地位依然不可动摇，并且与Active Directory等主流目录服务紧密相连。\n欢迎关注+点赞+推荐+转发\n","wordCount":"234","inLanguage":"zh","datePublished":"0001-01-01T00:00:00Z","dateModified":"0001-01-01T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/"},"publisher":{"@type":"Organization","name":"万年水的博客","logo":{"@type":"ImageObject","url":"https://bsong2015.github.io/blog/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://bsong2015.github.io/blog/ accesskey=h title="万年水的博客 (Alt + H)">万年水的博客</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://bsong2015.github.io/blog/posts/artificial-intelligence/ title=人工智能><span>人工智能</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/reading/ title=阅读><span>阅读</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/thinking-models/ title=思维模型><span>思维模型</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/thought-experiments/ title=思想实验><span>思想实验</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/personal-growth/ title=个人成长><span>个人成长</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/technology/ title=技术><span>技术</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/current-affairs/ title=时事><span>时事</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/others/ title=其它><span>其它</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent"></h1><div class=post-meta></div></header><div class=post-content><h2 id=第18篇老牌目录服务ldap协议基础与应用场景>第18篇：老牌目录服务：LDAP协议基础与应用场景<a hidden class=anchor aria-hidden=true href=#第18篇老牌目录服务ldap协议基础与应用场景>#</a></h2><p>在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对<strong>用户身份信息</strong>的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是<strong>目录服务</strong>。</p><p>在众多目录服务技术中，<strong>LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议）</strong> 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。</p><h3 id=1-什么是ldap>1. 什么是LDAP？<a hidden class=anchor aria-hidden=true href=#1-什么是ldap>#</a></h3><p>LDAP是一种用于访问和维护分布式目录信息服务的应用层协议。简单来说，它就像一个专门存储和查询“白页”（例如，电话簿、员工花名册）的数据库，但它比传统数据库更专注于读取操作的效率，并针对层次化、树状结构的数据存储进行了优化。</p><p>LDAP目录服务通常用于存储：</p><ul><li><strong>用户账户信息：</strong> 用户名、密码哈希、电子邮件、电话号码、部门、职位等。</li><li><strong>组信息：</strong> 组名称、成员列表。</li><li><strong>网络资源信息：</strong> 打印机、服务器、共享文件等。</li><li><strong>应用程序配置信息：</strong> 集中存储应用的配置参数。</li></ul><h3 id=2-ldap的核心概念构建目录的基石>2. LDAP的核心概念：构建目录的基石<a hidden class=anchor aria-hidden=true href=#2-ldap的核心概念构建目录的基石>#</a></h3><p>LDAP目录中的数据以<strong>树状层级结构</strong>组织，类似于文件系统的目录结构。理解以下几个核心概念，是理解LDAP的关键：</p><h4 id=21-目录项entry>2.1 目录项（Entry）<a hidden class=anchor aria-hidden=true href=#21-目录项entry>#</a></h4><ul><li><strong>定义：</strong> 目录项是LDAP目录中存储的每一个独立的信息单元，类似于数据库中的一行记录或文件系统中的一个文件。每个目录项都代表一个真实世界的对象（如用户、组、设备等）。</li><li><strong>特性：</strong> 每个目录项都有一个唯一的标识符，称为<strong>判别名（Distinguished Name, DN）</strong>。</li></ul><h4 id=22-属性attribute>2.2 属性（Attribute）<a hidden class=anchor aria-hidden=true href=#22-属性attribute>#</a></h4><ul><li><strong>定义：</strong> 每个目录项由一系列<strong>属性</strong>组成，每个属性由一个**类型（Type）<strong>和一个或多个</strong>值（Value）**构成。属性描述了目录项的特征。</li><li><strong>示例：</strong><ul><li><code>cn</code> (Common Name)：通用名，如<code>John Doe</code>。</li><li><code>sn</code> (Surname)：姓，如<code>Doe</code>。</li><li><code>givenName</code>：名，如<code>John</code>。</li><li><code>mail</code>：电子邮件地址。</li><li><code>uid</code> (User ID)：用户ID。</li><li><code>objectClass</code>：必选属性，定义了目录项的类型和必须包含的属性集合。</li></ul></li><li><strong>Schema（模式）：</strong> LDAP目录遵循一定的<strong>Schema</strong>。Schema定义了目录中可以存储哪些<code>objectClass</code>，每个<code>objectClass</code>可以包含哪些属性，以及属性的语法（例如，字符串、整数、二进制）。</li></ul><h4 id=23-判别名distinguished-name-dn>2.3 判别名（Distinguished Name, DN）<a hidden class=anchor aria-hidden=true href=#23-判别名distinguished-name-dn>#</a></h4><ul><li><strong>定义：</strong> DN是LDAP目录中<strong>唯一标识一个目录项的字符串</strong>。它明确了该目录项在目录树中的完整路径。DN由一系列<strong>相对判别名（Relative Distinguished Name, RDN）</strong> 组成，从最特定的（通常是目录项本身）到最不特定的（根目录）。</li><li><strong>结构：</strong> RDN之间用逗号（<code>,</code>）分隔，顺序从左到右是从下往上（叶子到根）。</li><li><strong>示例：</strong><ul><li><code>cn=John Doe,ou=users,dc=example,dc=com</code><ul><li><code>cn=John Doe</code> 是该目录项的RDN（Common Name为John Doe）。</li><li><code>ou=users</code> 是其父目录的RDN（组织单元为users）。</li><li><code>dc=example,dc=com</code> 是根域的RDN。</li></ul></li></ul></li><li><strong>唯一性：</strong> DN在整个LDAP目录中必须是唯一的。</li></ul><h4 id=24-相对判别名relative-distinguished-name-rdn>2.4 相对判别名（Relative Distinguished Name, RDN）<a hidden class=anchor aria-hidden=true href=#24-相对判别名relative-distinguished-name-rdn>#</a></h4><ul><li><strong>定义：</strong> RDN是DN中最左边（最具体）的部分，它唯一标识了在特定父目录项下的子目录项。</li><li><strong>示例：</strong> 在 <code>cn=John Doe,ou=users,dc=example,dc=com</code> 中，<code>cn=John Doe</code> 就是该目录项的RDN。</li></ul><pre tabindex=0><code class=language-mermaid data-lang=mermaid>graph TD
+    A[LDAP 目录树] --&gt; B(DN: Distinguished Name);
+    B --&gt; C(Entry: 条目);
+    C --&gt; D(Attribute: 属性);
+
+    subgraph DN组成部分
+        E[DC: Domain Component] --&gt; F(dc=com);
+        F(dc=com) --&gt; G(dc=example);
+        G --&gt; H(ou=users);
+        H --&gt; I(cn=John Doe);
+    end
+
+    B --- E;
+</code></pre><h3 id=3-ldap的常用操作>3. LDAP的常用操作<a hidden class=anchor aria-hidden=true href=#3-ldap的常用操作>#</a></h3><p>LDAP协议定义了一系列用于访问和修改目录数据的标准操作：</p><h4 id=31-绑定bind-认证>3.1 绑定（Bind）/ 认证<a hidden class=anchor aria-hidden=true href=#31-绑定bind-认证>#</a></h4><ul><li><strong>用途：</strong> 客户端向LDAP服务器进行认证，以建立会话并获取访问权限。</li><li><strong>方式：</strong> 通常使用DN和密码进行认证，也可以使用匿名绑定或SASL（Simple Authentication and Security Layer）等更高级的认证机制。</li><li><strong>安全性：</strong> LDAP协议本身默认传输是明文，强烈建议通过<strong>LDAPS（LDAP over SSL/TLS）</strong> 进行加密通信，以保护传输中的凭证和数据。</li></ul><h4 id=32-搜索search>3.2 搜索（Search）<a hidden class=anchor aria-hidden=true href=#32-搜索search>#</a></h4><ul><li><strong>用途：</strong> 这是LDAP最常用的操作。客户端可以根据各种条件查询目录中的目录项。</li><li><strong>参数：</strong><ul><li><strong>Base DN：</strong> 搜索的起始目录点（搜索范围的根）。</li><li><strong>Scope：</strong> 搜索范围。<ul><li><code>base</code>：只搜索Base DN本身。</li><li><code>one</code>：搜索Base DN下一层的所有子目录项（不包括Base DN本身）。</li><li><code>sub</code>：搜索Base DN及其所有子目录项。</li></ul></li><li><strong>Filter：</strong> 定义搜索条件的过滤表达式（例如，<code>(objectClass=user)</code>、<code>(&(objectClass=user)(mail=*@example.com))</code>）。</li><li><strong>Attributes：</strong> 指定返回哪些属性。</li></ul></li><li><strong>示例：</strong> 查找<code>ou=users,dc=example,dc=com</code>下所有<code>objectClass</code>为<code>user</code>且<code>cn</code>为<code>John Doe</code>的目录项，并返回<code>mail</code>和<code>telephoneNumber</code>属性。</li></ul><h4 id=33-添加add>3.3 添加（Add）<a hidden class=anchor aria-hidden=true href=#33-添加add>#</a></h4><ul><li><strong>用途：</strong> 在目录中添加一个新的目录项。</li><li><strong>要求：</strong> 需要指定新目录项的DN和所有必需的属性。</li></ul><h4 id=34-修改modify>3.4 修改（Modify）<a hidden class=anchor aria-hidden=true href=#34-修改modify>#</a></h4><ul><li><strong>用途：</strong> 修改现有目录项的一个或多个属性值。</li><li><strong>方式：</strong> 可以增加、删除或替换属性值。</li></ul><h4 id=35-删除delete>3.5 删除（Delete）<a hidden class=anchor aria-hidden=true href=#35-删除delete>#</a></h4><ul><li><strong>用途：</strong> 从目录中删除一个目录项。删除一个目录项会同时删除其所有子目录项。</li></ul><h4 id=36-比较compare>3.6 比较（Compare）<a hidden class=anchor aria-hidden=true href=#36-比较compare>#</a></h4><ul><li><strong>用途：</strong> 比较目录项的某个属性值是否与指定值匹配。</li></ul><h4 id=37-重命名移动modify-dn>3.7 重命名/移动（Modify DN）<a hidden class=anchor aria-hidden=true href=#37-重命名移动modify-dn>#</a></h4><ul><li><strong>用途：</strong> 更改目录项的DN，可以将其重命名或移动到目录树中的另一个位置。</li></ul><h3 id=4-ldap在传统iam中的地位与应用场景>4. LDAP在传统IAM中的地位与应用场景<a hidden class=anchor aria-hidden=true href=#4-ldap在传统iam中的地位与应用场景>#</a></h3><p>LDAP协议及其目录服务在传统企业IAM架构中扮演着核心角色，主要体现在以下方面：</p><h4 id=41-统一身份存储centralized-identity-store>4.1 统一身份存储（Centralized Identity Store）<a hidden class=anchor aria-hidden=true href=#41-统一身份存储centralized-identity-store>#</a></h4><ul><li><strong>基石：</strong> LDAP目录作为企业内部<strong>唯一的、权威的身份源</strong>，集中存储所有员工、部门、组的身份信息。这避免了多系统多套身份数据带来的不一致和管理混乱。</li><li><strong>数据共享：</strong> 其他应用系统可以通过LDAP协议方便地查询和集成这些身份数据。</li></ul><h4 id=42-认证服务authentication-service>4.2 认证服务（Authentication Service）<a hidden class=anchor aria-hidden=true href=#42-认证服务authentication-service>#</a></h4><ul><li><strong>集中认证：</strong> 许多企业应用（如Web应用、VPN、网络设备）都配置为通过LDAP协议向中央LDAP服务器进行用户认证。用户只需在LDAP中拥有一个账户，就可以登录所有关联系统。</li><li><strong>SSO基础：</strong> 虽然LDAP本身不直接提供SSO功能，但它是许多传统SSO解决方案（如Kerberos、以及一些基于代理的SSO）的底层认证数据源。用户在成功通过LDAP认证后，可以在其他应用中获得免密访问。</li></ul><h4 id=43-授权管理的基础authorization-basis>4.3 授权管理的基础（Authorization Basis）<a hidden class=anchor aria-hidden=true href=#43-授权管理的基础authorization-basis>#</a></h4><ul><li><strong>角色/组存储：</strong> LDAP目录可以用来存储用户的组信息（例如，用户属于“销售部”、“管理员”等组）。这些组信息可以作为应用进行RBAC（基于角色的访问控制）决策的依据。应用查询用户的组属性，然后根据这些组来赋予相应的权限。</li></ul><h4 id=44-应用程序目录>4.4 应用程序目录<a hidden class=anchor aria-hidden=true href=#44-应用程序目录>#</a></h4><ul><li>除了用户和组，LDAP还可以存储应用程序自身的配置数据，实现配置的集中管理。</li></ul><h4 id=45-与ad的紧密联系>4.5 与AD的紧密联系<a hidden class=anchor aria-hidden=true href=#45-与ad的紧密联系>#</a></h4><ul><li><strong>Active Directory（活动目录）</strong> 是微软推出的一种目录服务，它在底层基于LDAP协议。因此，掌握LDAP对于理解和管理Active Directory至关重要。许多针对AD的身份认证和查询操作，实际上就是通过LDAP协议实现的。</li></ul><p><strong>挑战：</strong>
+尽管LDAP非常强大和稳定，但它在处理大规模动态变化的数据、支持现代Web/移动应用以及与云服务集成方面，相比RESTful API和JSON数据模型可能显得不那么灵活和现代化。这也是SCIM等协议兴起的原因之一。</p><h3 id=总结>总结<a hidden class=anchor aria-hidden=true href=#总结>#</a></h3><p>LDAP协议是目录服务领域的“老牌劲旅”，以其高效的读取性能和层次化的数据组织方式，在企业级IAM中扮演着不可或缺的角色。它作为统一的身份存储、认证和授权基础，支撑着大量传统企业的IT基础设施。理解LDAP的目录项、属性、DN等核心概念，以及其搜索、绑定等操作，是深入理解企业IAM底层架构的关键。</p><p>虽然新兴协议如SCIM和OAuth/OIDC在某些现代场景下更具优势，但LDAP在企业内部和传统系统中的地位依然不可动摇，并且与Active Directory等主流目录服务紧密相连。</p><h3></h3><p><strong>欢迎关注+点赞+推荐+转发</strong></p></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://bsong2015.github.io/blog/>万年水的博客</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>

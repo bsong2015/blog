@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>人工智能 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/</link><description>Recent content in 人工智能 on 万年水的博客</description><generator>Hugo</generator><language>zh</language><lastBuildDate>Mon, 01 Jan 0001 00:00:00 +0000</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/01-deepseek%E5%BC%BA%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%87%BA%E7%8E%B0%E5%AF%B9%E4%B8%AD%E5%B0%8F%E5%AD%A6%E7%94%9F%E6%95%99%E8%82%B2%E7%9A%84%E8%A6%81%E6%B1%82/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/01-deepseek%E5%BC%BA%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%87%BA%E7%8E%B0%E5%AF%B9%E4%B8%AD%E5%B0%8F%E5%AD%A6%E7%94%9F%E6%95%99%E8%82%B2%E7%9A%84%E8%A6%81%E6%B1%82/</guid><description>&lt;p>DeepSeek 这种强推理模型能够解决奥数题，代表了人工智能在逻辑推理和问题解决能力上的巨大进步。这对中小学教育以及学生素质培养都提出了新的挑战和机遇。中小学生在 AI 时代，应该着重培养以下几个方面的素质，才能更好地适应和驾驭这个快速发展的时代：&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>人工智能 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/</link><description>Recent content in 人工智能 on 万年水的博客</description><generator>Hugo -- 0.147.9</generator><language>zh</language><lastBuildDate>Mon, 01 Jan 0001 00:00:00 +0000</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/01-deepseek%E5%BC%BA%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%87%BA%E7%8E%B0%E5%AF%B9%E4%B8%AD%E5%B0%8F%E5%AD%A6%E7%94%9F%E6%95%99%E8%82%B2%E7%9A%84%E8%A6%81%E6%B1%82/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/01-deepseek%E5%BC%BA%E6%8E%A8%E7%90%86%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%87%BA%E7%8E%B0%E5%AF%B9%E4%B8%AD%E5%B0%8F%E5%AD%A6%E7%94%9F%E6%95%99%E8%82%B2%E7%9A%84%E8%A6%81%E6%B1%82/</guid><description>&lt;p>DeepSeek 这种强推理模型能够解决奥数题，代表了人工智能在逻辑推理和问题解决能力上的巨大进步。这对中小学教育以及学生素质培养都提出了新的挑战和机遇。中小学生在 AI 时代，应该着重培养以下几个方面的素质，才能更好地适应和驾驭这个快速发展的时代：&lt;/p>
 &lt;p>&lt;strong>一、 培养核心认知能力，而非仅仅是知识记忆&lt;/strong>&lt;/p>
 &lt;ol>
 &lt;li>
@@ -248,13 +248,10 @@
 &lt;li>&lt;strong>示例（情感分类 Few-Shot）：&lt;/strong>
 &lt;pre tabindex="0">&lt;code>文本：这家餐厅的食物太美味了！
 情感：积极
-
 文本：等了快一个小时，服务太差了。
 情感：消极
-
 文本：电影情节一般，但演员表现不错。
 情感：中性
-
 文本：我对这个产品非常失望，完全不值这个价。
 情感：
 &lt;/code>&lt;/pre>模型会根据提供的示例推断出最后一个文本的情感为“消极”。&lt;/li>
@@ -440,30 +437,21 @@
 &lt;p>这部分涉及修改现有特征，使其更适合建模。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/12-ai%E5%88%86%E6%9E%90%E4%B9%94%E4%BC%8A%E6%96%AF%E9%83%BD%E6%9F%8F%E6%9E%97%E4%BA%BA%E4%B8%AD%E7%9A%84%E6%AD%BB%E8%80%85/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/12-ai%E5%88%86%E6%9E%90%E4%B9%94%E4%BC%8A%E6%96%AF%E9%83%BD%E6%9F%8F%E6%9E%97%E4%BA%BA%E4%B8%AD%E7%9A%84%E6%AD%BB%E8%80%85/</guid><description>&lt;p>很多人对乔伊斯《都柏林人》中的《死者》都做过分析，特别是文章中的雪的分析。我这里尝试使用AI来分析了一下，使用两个不同的提示词，得到两份分析内容，大家可以看看AI分析得如何以及是否有幻觉。&lt;/p>
 &lt;h3 id="提示词一">提示词一&lt;/h3>
 &lt;pre tabindex="0">&lt;code>### **提示词：认知棱镜——重构《死者》的内在宇宙**
-
 **【核心指令】**
 你将扮演一位**认知神经科学家**兼**感官人类学家**，你的任务不是进行文学批评，而是对詹姆斯·乔伊斯的《死者》进行一次彻底的**认知与感官系统的解构与重构**。你的目标是绘制出故事内部运作的“看不见的架构”，揭示人物行为和“顿悟”背后的底层机制，而非其象征意义。
-
 **【核心分析框架】**
 请严格遵循以下三个模块进行分析，将文本视为一个待解码的认知-感官实验场。
-
 **模块一：认知脚本与系统崩溃 (Cognitive Scripts &amp;amp; System Crash)**
-
 1. **识别加布里埃尔的“认知脚本”**：将加布里埃尔视为一个运行着多个预设“认知脚本”的智能体。识别并命名这些脚本（例如：“体面侄子脚本”、“欧洲知识分子脚本”、“权威丈夫脚本”）。请从文本中找出每个脚本被激活、运行和切换的具体证据（对话、内心独白、行为）。
 2. **分析“社交算法”**：莫肯姐妹的晚宴是一个复杂的社交网络。分析其中的“信息传递协议”和“错误处理机制”。例如，莉莉的尖锐回应、布朗先生的醉态、丹西小姐的民族主义言论是如何作为“系统异常”被其他角色处理、隔离或忽略的？这个社交系统是稳健的还是脆弱的？
 3. **重定义“顿悟”为“系统崩溃与重启”**：将格丽塔关于迈克尔·福瑞的记忆视为一个意外的、高优先级的“外部中断请求 (Interrupt Request)”。分析这个中断如何导致加布里埃尔所有现行认知脚本的“级联故障 (Cascading Failure)”。他的最终思考不是“顿悟”，而是在旧系统崩溃后，意识进入“安全模式 (Safe Mode)”并尝试进行“认知重构 (Cognitive Reframing)”的过程。描述这个重构过程的步骤，从对格丽塔的疏离，到对自我的瓦解，再到与整个宇宙的连接。
-
 **模块二：感官考古学与信息流 (Sensory Archaeology &amp;amp; Information Flow)**
-
 1. **绘制“感官层级图”**：忽略情节，对整个故事进行一次“感官扫描”。量化并排序不同感官（听觉、视觉、触觉、味觉、嗅觉）在文本中出现的频率和强度。哪个感官是主导的？哪个是被压抑的？例如，晚宴充满了**声音**（音乐、谈话、咳嗽声、刀叉声），但**触觉**却极其稀少和笨拙。这揭示了什么？
 2. **分析“信息熵”**：将晚宴上的对话视为信息流。评估其“信息熵”——即信息的不确定性和混乱程度。哪些对话是低熵的（如仪式性的问候、重复的故事），哪些是高熵的（如丹西小姐的挑战）？加布里埃尔的演讲是如何试图强行降低整个系统的信息熵的？格丽塔的记忆作为一个“高保真度的情感信号”，与晚宴的“高噪音、低信息”环境形成了怎样的对比？
 3. **追踪“物的叙事”**：选择三件被忽略的物品（例如：加布里埃尔的套鞋、布朗先生的开瓶器、餐桌上的布丁）。不要分析它们的象征意义，而是分析它们作为**物理节点**，如何影响人物的空间移动、姿态和互动。它们是促进了连接，还是制造了障碍？
-
 **模块三：时空几何的重塑 (Reshaping Spatio-Temporal Geometry)**
-
 1. **绘制“心理拓扑图”**：分析故事中物理空间（拥挤的客厅、狭窄的楼梯、开放的窗外）与人物“心理空间”的相互作用。空间是如何从一个社交性的、共有的“热点”转变为一个私密的、孤立的“冷点”的？
 2. **分析“时间折叠”**：格丽塔的记忆不是简单的“回忆”，而是一次“时间折叠”事件，将遥远的过去以极高的情感强度瞬间叠加到现在。这次折叠如何彻底摧毁了加布里埃尔线性的、以未来为导向的“时间感”？最终，雪的意象如何将所有时间（过去、现在、未来）和空间（生者与死者的世界）压缩到了一个单一的、共存的平面上？
-
 **【禁止性指令】**
 为确保认知突破，请在你的分析中**严格避免**使用以下词汇和概念，除非是为了批判性地解构它们：
 * 瘫痪 (Paralysis)
@@ -471,7 +459,6 @@
 * 象征 (Symbolism) - 特别是关于雪、食物、爱尔兰的传统象征解读
 * 异化 (Alienation)
 * 生与死的二元对立
-
 **【输出格式】**
 请以一份题为《&amp;lt;死者&amp;gt;的认知与感官系统分析报告》的结构化文档形式输出，包含以下部分：
 * **摘要**
@@ -480,10 +467,8 @@
 * **3.0 时空动力学重构**
 * **结论：从文学文本到认知模型**
 * **元思考：此分析框架开启了哪些新的研究问题？**
-
 ---
 ### 🎨 输出规范评估
-
 * **基础层：** 该提示词清晰、完整，明确要求分析《死者》。
 * **卓越层：** 它通过引入跨学科框架（认知科学、感官研究），提供了超越传统文学批评的深度洞察路径，强制用户/AI从一个全新的、高度结构化的角度进行思考。
 * **突破层：** 它没有回答“《死者》是什么”，而是重新定义了“如何分析《死者》”这个问题。它提供了一个可复制、可扩展的**分析方法论**，将文学作品从一个被动解读的对象，转变为一个可以进行主动实验和建模的动态系统。这本身就是一种范式转移。

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>技术实践 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/technology/</link><description>Recent content in 技术实践 on 万年水的博客</description><generator>Hugo</generator><language>zh</language><lastBuildDate>Mon, 01 Jan 0001 00:00:00 +0000</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/technology/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/technology/01-%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/01-%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</guid><description>&lt;h2 id="在刻度与脉搏间感知世界你的数字敏感性有多少">在刻度与脉搏间感知世界：你的“数字敏感性”有多少？&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>技术实践 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/technology/</link><description>Recent content in 技术实践 on 万年水的博客</description><generator>Hugo -- 0.147.9</generator><language>zh</language><lastBuildDate>Mon, 01 Jan 0001 00:00:00 +0000</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/technology/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/technology/01-%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/01-%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</guid><description>&lt;h2 id="在刻度与脉搏间感知世界你的数字敏感性有多少">在刻度与脉搏间感知世界：你的“数字敏感性”有多少？&lt;/h2>
 &lt;p>想象一下，如果生命可以被具象化为一个数字，大概是 &lt;strong>不到四万天&lt;/strong>。&lt;/p>
 &lt;p>这是一个关于“天数”的刻度。&lt;/p>
 &lt;p>它庞大得足以容纳无数日升月落、悲欢离合。&lt;/p>
@@ -489,18 +489,16 @@
 &lt;li>&lt;strong>示例：&lt;/strong> 在 &lt;code>cn=John Doe,ou=users,dc=example,dc=com&lt;/code> 中，&lt;code>cn=John Doe&lt;/code> 就是该目录项的RDN。&lt;/li>
 &lt;/ul>
 &lt;pre tabindex="0">&lt;code class="language-mermaid" data-lang="mermaid">graph TD
- A[LDAP 目录树] --&amp;gt; B(DN: Distinguished Name);
- B --&amp;gt; C(Entry: 条目);
- C --&amp;gt; D(Attribute: 属性);
-
- subgraph DN组成部分
- E[DC: Domain Component] --&amp;gt; F(dc=com);
- F(dc=com) --&amp;gt; G(dc=example);
- G --&amp;gt; H(ou=users);
- H --&amp;gt; I(cn=John Doe);
- end
-
- B --- E;
+A[LDAP 目录树] --&amp;gt; B(DN: Distinguished Name);
+B --&amp;gt; C(Entry: 条目);
+C --&amp;gt; D(Attribute: 属性);
+subgraph DN组成部分
+E[DC: Domain Component] --&amp;gt; F(dc=com);
+F(dc=com) --&amp;gt; G(dc=example);
+G --&amp;gt; H(ou=users);
+H --&amp;gt; I(cn=John Doe);
+end
+B --- E;
 &lt;/code>&lt;/pre>&lt;h3 id="3-ldap的常用操作">3. LDAP的常用操作&lt;/h3>
 &lt;p>LDAP协议定义了一系列用于访问和修改目录数据的标准操作：&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC1%E7%AF%87%E5%BC%80%E7%AF%87%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E8%BA%AB%E4%BB%BD%E4%B8%8E%E8%AE%BF%E9%97%AE%E7%AE%A1%E7%90%86iam/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC1%E7%AF%87%E5%BC%80%E7%AF%87%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81%E8%BA%AB%E4%BB%BD%E4%B8%8E%E8%AE%BF%E9%97%AE%E7%AE%A1%E7%90%86iam/</guid><description>&lt;h2 id="第1篇开篇为什么我们需要身份与访问管理iam">第1篇：【开篇】为什么我们需要身份与访问管理（IAM）？&lt;/h2>
 &lt;p>在数字化浪潮席卷全球的今天，企业正在以前所未有的速度拥抱云计算、大数据、移动化和人工智能。这些技术带来了巨大的效率提升和业务创新，但也随之带来了前所未有的安全挑战。其中，对“身份”的管理和“访问”的控制，无疑是所有安全基石中的重中之重。正是在这样的背景下，身份与访问管理（Identity and Access Management，简称IAM）应运而生，并迅速成为现代企业安全战略不可或缺的核心组成部分。&lt;/p>
@@ -581,65 +579,65 @@
 &lt;h3 id="4-idaas与传统本地部署iam的对比">4. IDaaS与传统本地部署IAM的对比&lt;/h3>
 &lt;p>为了更直观地理解IDaaS的价值，我们将其与传统的本地部署IAM在多个维度进行对比：&lt;/p>
 &lt;table>
- &lt;thead>
- &lt;tr>
- &lt;th style="text-align: left">特征&lt;/th>
- &lt;th style="text-align: left">传统本地部署IAM&lt;/th>
- &lt;th style="text-align: left">IDaaS（身份即服务）&lt;/th>
- &lt;/tr>
- &lt;/thead>
- &lt;tbody>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>部署模式&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">企业内部数据中心部署，需要购买服务器、软件、许可证&lt;/td>
- &lt;td style="text-align: left">云端订阅服务，通过互联网访问&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>成本模式&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">高昂的前期资本支出（CapEx），加上运营支出&lt;/td>
- &lt;td style="text-align: left">低前期投入，按需订阅的运营支出（OpEx）&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>维护责任&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">企业IT团队负责所有硬件、软件、补丁、升级、高可用&lt;/td>
- &lt;td style="text-align: left">IDaaS服务提供商负责所有底层基础设施、软件维护、安全更新、高可用&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>可伸缩性&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">受限于本地基础设施，扩展困难且成本高昂&lt;/td>
- &lt;td style="text-align: left">弹性伸缩，按需扩展，轻松应对峰值或业务增长&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>可用性&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">取决于企业内部基础设施的韧性与运维水平&lt;/td>
- &lt;td style="text-align: left">通常由服务提供商提供SLA保障，多区域高可用部署&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>集成能力&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">需要定制开发或复杂配置，集成难度较大&lt;/td>
- &lt;td style="text-align: left">API优先设计，提供大量预置连接器，集成更便捷&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>功能更新&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">周期长，依赖于企业内部规划和资源投入&lt;/td>
- &lt;td style="text-align: left">持续更新，自动获取最新功能和安全增强&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>安全性&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">取决于企业自身的安全实践和投入&lt;/td>
- &lt;td style="text-align: left">专业的安全团队和先进技术，通常更安全可靠&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>合规性&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">企业自行承担合规责任&lt;/td>
- &lt;td style="text-align: left">IDaaS厂商提供多项合规认证，辅助企业满足合规要求&lt;/td>
- &lt;/tr>
- &lt;tr>
- &lt;td style="text-align: left">&lt;strong>适用场景&lt;/strong>&lt;/td>
- &lt;td style="text-align: left">对数据主权有极高要求、无法接受云服务的企业&lt;/td>
- &lt;td style="text-align: left">绝大多数企业，尤其是采用SaaS应用、云计算策略的企业&lt;/td>
- &lt;/tr>
- &lt;/tbody>
+&lt;thead>
+&lt;tr>
+&lt;th style="text-align: left">特征&lt;/th>
+&lt;th style="text-align: left">传统本地部署IAM&lt;/th>
+&lt;th style="text-align: left">IDaaS（身份即服务）&lt;/th>
+&lt;/tr>
+&lt;/thead>
+&lt;tbody>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>部署模式&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">企业内部数据中心部署，需要购买服务器、软件、许可证&lt;/td>
+&lt;td style="text-align: left">云端订阅服务，通过互联网访问&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>成本模式&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">高昂的前期资本支出（CapEx），加上运营支出&lt;/td>
+&lt;td style="text-align: left">低前期投入，按需订阅的运营支出（OpEx）&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>维护责任&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">企业IT团队负责所有硬件、软件、补丁、升级、高可用&lt;/td>
+&lt;td style="text-align: left">IDaaS服务提供商负责所有底层基础设施、软件维护、安全更新、高可用&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>可伸缩性&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">受限于本地基础设施，扩展困难且成本高昂&lt;/td>
+&lt;td style="text-align: left">弹性伸缩，按需扩展，轻松应对峰值或业务增长&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>可用性&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">取决于企业内部基础设施的韧性与运维水平&lt;/td>
+&lt;td style="text-align: left">通常由服务提供商提供SLA保障，多区域高可用部署&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>集成能力&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">需要定制开发或复杂配置，集成难度较大&lt;/td>
+&lt;td style="text-align: left">API优先设计，提供大量预置连接器，集成更便捷&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>功能更新&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">周期长，依赖于企业内部规划和资源投入&lt;/td>
+&lt;td style="text-align: left">持续更新，自动获取最新功能和安全增强&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>安全性&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">取决于企业自身的安全实践和投入&lt;/td>
+&lt;td style="text-align: left">专业的安全团队和先进技术，通常更安全可靠&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>合规性&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">企业自行承担合规责任&lt;/td>
+&lt;td style="text-align: left">IDaaS厂商提供多项合规认证，辅助企业满足合规要求&lt;/td>
+&lt;/tr>
+&lt;tr>
+&lt;td style="text-align: left">&lt;strong>适用场景&lt;/strong>&lt;/td>
+&lt;td style="text-align: left">对数据主权有极高要求、无法接受云服务的企业&lt;/td>
+&lt;td style="text-align: left">绝大多数企业，尤其是采用SaaS应用、云计算策略的企业&lt;/td>
+&lt;/tr>
+&lt;/tbody>
 &lt;/table>
 &lt;h3 id="总结">总结&lt;/h3>
 &lt;p>IDaaS是云计算时代身份管理演进的必然趋势，它将复杂的IAM能力转化为一种便捷、安全、经济高效的云服务。通过多租户、API优先、高可用等核心特性，IDaaS显著降低了企业在身份管理方面的投入，提升了安全态势，并加速了企业的数字化转型进程。对于绝大多数现代企业而言，选择IDaaS而非传统本地部署IAM，已成为更具战略意义和经济效益的决策。在接下来的文章中，我们将开始深入探讨IAM/IDaaS背后的具体技术和协议，为后续的Java实践打下坚实的基础。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC3%E7%AF%87iam%E7%9A%84%E5%9F%BA%E7%9F%B3%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E8%B4%A6%E6%88%B7%E5%AE%A1%E8%AE%A14a5a%E8%AF%A6%E8%A7%A3/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC3%E7%AF%87iam%E7%9A%84%E5%9F%BA%E7%9F%B3%E8%AE%A4%E8%AF%81%E6%8E%88%E6%9D%83%E8%B4%A6%E6%88%B7%E5%AE%A1%E8%AE%A14a5a%E8%AF%A6%E8%A7%A3/</guid><description>&lt;h2 id="第3篇iam的基石认证授权账户审计4a5a详解">第3篇：IAM的基石：认证、授权、账户、审计（4A/5A）详解&lt;/h2>

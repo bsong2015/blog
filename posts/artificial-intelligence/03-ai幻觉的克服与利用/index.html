@@ -1,0 +1,151 @@
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>万年水的博客</title><meta name=keywords content><meta name=description content="AI幻觉的克服与利用
+什么是AI幻觉？
+AI幻觉指的是模型生成与事实不符、逻辑断裂或脱离上下文的内容，其本质是统计概率驱动的“合理猜测”。简单来说，AI幻觉就是指AI一本正经地胡说八道。AI幻觉分为两种类型：
+
+
+事实性幻觉 (Factual Hallucination): 模型生成的内容与可验证的现实世界事实不一致。例如，糖尿病患者是否可以通过吃蜂蜜代替糖？模型回答“是的，蜂蜜是天然的，可以帮助糖尿病患者稳定血糖水平”，这是一个事实性幻觉，因为蜂蜜会升高血糖。
+
+
+忠实性幻觉 (Faithfulness Hallucination): 模型生成的内容与用户的指令或上下文不一致。例如，同样提问糖尿病患者是否可以用蜂蜜代替糖，模型回答“蜂蜜富含维生素和矿物质，对提高免疫力很有帮助，因此是一种健康的食品”，虽然这个回答本身没有事实错误，但偏离了用户关于“代替糖”的意图，属于忠实性幻觉。
+
+
+AI幻觉不仅限于文本，也可能出现在图像、音频等其他模态中，例如生成不存在的物体、错误的语音内容等。
+不同产品的幻觉率对比
+对不同大模型的幻觉率进行了初步测试，包括通用性测试和事实性幻觉测试：
+
+
+通用性测试： 随机生成100条通用提示语，模拟普通用户使用场景。
+
+DeepSeekV3: 2%
+DeepSeekR1: 3%
+Qianwen2.5-Max: 2%
+豆包: 0%
+
+
+
+事实性幻觉测试： 随机抽取300道事实性幻觉测试题，涵盖多个领域。
+
+DeepSeekV3: 29.67%
+DeepSeekR1: 22.33%
+Qianwen2.5-Max: 27.67%
+豆包: 19%
+
+
+
+根据初步测试结果，无论哪种模型其幻觉都率较高。 这些测试结果是特定条件下的初步评估，实际使用中的幻觉率可能因应用场景、提示词设计等因素而有所不同。不同的评测方法和数据集也可能导致不同的结果。
+AI幻觉的危害
+AI幻觉的潜在风险：
+
+信息污染风险： 低门槛和高普及度的AI模型可能产生大量虚假信息，加剧网络信息污染，甚至影响下一代模型的训练数据。
+信任危机： 用户难以辨别AI生成内容的真实性，可能对医疗、法律等专业领域的建议产生长期怀疑。
+控制欠缺： 部分开源模型可能被恶意行为者利用。
+安全漏洞： 错误信息若被用于自动化系统（如金融分析、工业控制），可能引发连锁反应。
+误导问题： AI幻觉在新闻传播、教育、科研等领域也可能带来误导、知识错误等问题，损害信息的准确性和可靠性。
+
+个人如何利用幻觉
+AI幻觉的有一定的创造力价值，不应仅仅将其视为缺陷，也可以加以利用：
+
+科学发现： 大卫·贝克团队利用AI的“错误折叠”启发了新型蛋白质结构的设计，并获得了诺贝尔化学奖。他们认为AI幻觉是“从零开始设计蛋白质”的关键。
+文艺与设计： AI幻觉可以突破人类思维定式，成为“超现实引擎”，为艺术创作和设计提供新的灵感。
+娱乐与游戏： AI生成的虚拟环境、角色、故事和对话可以增强游戏体验，提供无限的可能性。
+技术创新： DeepMind团队发现，AI在图像分割任务中产生的“超现实边界”意外提升了自动驾驶系统对极端天气的识别精度。
+新型科研范式： 科学界正在构建“AI幻觉-实验验证-理论重构”的研究流程，利用AI的“疯狂创意”进行创新。
+
+个人可以尝试将AI的幻觉视为一种独特的创意来源，应用于头脑风暴、艺术创作、设计探索等领域，从中获取意想不到的灵感。 利用AI幻觉的关键在于区分其创造性价值和潜在的误导性，在需要准确信息的场景下要谨慎对待。
+个人如何克服幻觉
+普通用户应对AI幻觉的三种主要方式：
+
+联网搜索： 开启模型的联网搜索功能，让模型在生成答案时能够检索最新的信息，降低生成不实信息的可能性。测试结果显示，开启联网搜索后，DeepSeekV3和DeepSeekR1的通用性和事实性幻觉率均有所下降。
+双AI验证/大模型协作： 使用一个AI模型生成答案后，再利用其他大模型进行审查，相互监督，交叉验证，以提高答案的可靠性。
+提示词工程 (Prompt Engineering)： 通过精心设计提示词来约束模型的生成行为，降低幻觉发生的概率。具体方法包括：
+
+知识边界限定： 通过时间锚定、知识锚定、领域限定符、置信度声明、上下文提示、生成参数协同控制等方式，限制模型在特定范围或条件下生成内容。
+对抗性提示： 强制模型进行自我审查，暴露推理的脆弱点。例如，要求模型在回答后列出可能导致答案错误的假设，或进行链式验证。
+
+
+
+其他应对AI幻觉的方法："><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/artificial-intelligence/03-ai%E5%B9%BB%E8%A7%89%E7%9A%84%E5%85%8B%E6%9C%8D%E4%B8%8E%E5%88%A9%E7%94%A8/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/artificial-intelligence/03-ai%E5%B9%BB%E8%A7%89%E7%9A%84%E5%85%8B%E6%9C%8D%E4%B8%8E%E5%88%A9%E7%94%A8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/artificial-intelligence/03-ai%E5%B9%BB%E8%A7%89%E7%9A%84%E5%85%8B%E6%9C%8D%E4%B8%8E%E5%88%A9%E7%94%A8/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="AI幻觉的克服与利用 什么是AI幻觉？ AI幻觉指的是模型生成与事实不符、逻辑断裂或脱离上下文的内容，其本质是统计概率驱动的“合理猜测”。简单来说，AI幻觉就是指AI一本正经地胡说八道。AI幻觉分为两种类型：
+事实性幻觉 (Factual Hallucination): 模型生成的内容与可验证的现实世界事实不一致。例如，糖尿病患者是否可以通过吃蜂蜜代替糖？模型回答“是的，蜂蜜是天然的，可以帮助糖尿病患者稳定血糖水平”，这是一个事实性幻觉，因为蜂蜜会升高血糖。
+忠实性幻觉 (Faithfulness Hallucination): 模型生成的内容与用户的指令或上下文不一致。例如，同样提问糖尿病患者是否可以用蜂蜜代替糖，模型回答“蜂蜜富含维生素和矿物质，对提高免疫力很有帮助，因此是一种健康的食品”，虽然这个回答本身没有事实错误，但偏离了用户关于“代替糖”的意图，属于忠实性幻觉。
+AI幻觉不仅限于文本，也可能出现在图像、音频等其他模态中，例如生成不存在的物体、错误的语音内容等。
+不同产品的幻觉率对比 对不同大模型的幻觉率进行了初步测试，包括通用性测试和事实性幻觉测试：
+通用性测试： 随机生成100条通用提示语，模拟普通用户使用场景。
+DeepSeekV3: 2% DeepSeekR1: 3% Qianwen2.5-Max: 2% 豆包: 0% 事实性幻觉测试： 随机抽取300道事实性幻觉测试题，涵盖多个领域。
+DeepSeekV3: 29.67% DeepSeekR1: 22.33% Qianwen2.5-Max: 27.67% 豆包: 19% 根据初步测试结果，无论哪种模型其幻觉都率较高。 这些测试结果是特定条件下的初步评估，实际使用中的幻觉率可能因应用场景、提示词设计等因素而有所不同。不同的评测方法和数据集也可能导致不同的结果。
+AI幻觉的危害 AI幻觉的潜在风险：
+信息污染风险： 低门槛和高普及度的AI模型可能产生大量虚假信息，加剧网络信息污染，甚至影响下一代模型的训练数据。 信任危机： 用户难以辨别AI生成内容的真实性，可能对医疗、法律等专业领域的建议产生长期怀疑。 控制欠缺： 部分开源模型可能被恶意行为者利用。 安全漏洞： 错误信息若被用于自动化系统（如金融分析、工业控制），可能引发连锁反应。 误导问题： AI幻觉在新闻传播、教育、科研等领域也可能带来误导、知识错误等问题，损害信息的准确性和可靠性。 个人如何利用幻觉 AI幻觉的有一定的创造力价值，不应仅仅将其视为缺陷，也可以加以利用：
+科学发现： 大卫·贝克团队利用AI的“错误折叠”启发了新型蛋白质结构的设计，并获得了诺贝尔化学奖。他们认为AI幻觉是“从零开始设计蛋白质”的关键。 文艺与设计： AI幻觉可以突破人类思维定式，成为“超现实引擎”，为艺术创作和设计提供新的灵感。 娱乐与游戏： AI生成的虚拟环境、角色、故事和对话可以增强游戏体验，提供无限的可能性。 技术创新： DeepMind团队发现，AI在图像分割任务中产生的“超现实边界”意外提升了自动驾驶系统对极端天气的识别精度。 新型科研范式： 科学界正在构建“AI幻觉-实验验证-理论重构”的研究流程，利用AI的“疯狂创意”进行创新。 个人可以尝试将AI的幻觉视为一种独特的创意来源，应用于头脑风暴、艺术创作、设计探索等领域，从中获取意想不到的灵感。 利用AI幻觉的关键在于区分其创造性价值和潜在的误导性，在需要准确信息的场景下要谨慎对待。
+个人如何克服幻觉 普通用户应对AI幻觉的三种主要方式：
+联网搜索： 开启模型的联网搜索功能，让模型在生成答案时能够检索最新的信息，降低生成不实信息的可能性。测试结果显示，开启联网搜索后，DeepSeekV3和DeepSeekR1的通用性和事实性幻觉率均有所下降。 双AI验证/大模型协作： 使用一个AI模型生成答案后，再利用其他大模型进行审查，相互监督，交叉验证，以提高答案的可靠性。 提示词工程 (Prompt Engineering)： 通过精心设计提示词来约束模型的生成行为，降低幻觉发生的概率。具体方法包括： 知识边界限定： 通过时间锚定、知识锚定、领域限定符、置信度声明、上下文提示、生成参数协同控制等方式，限制模型在特定范围或条件下生成内容。 对抗性提示： 强制模型进行自我审查，暴露推理的脆弱点。例如，要求模型在回答后列出可能导致答案错误的假设，或进行链式验证。 其他应对AI幻觉的方法："><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="AI幻觉的克服与利用
+什么是AI幻觉？
+AI幻觉指的是模型生成与事实不符、逻辑断裂或脱离上下文的内容，其本质是统计概率驱动的“合理猜测”。简单来说，AI幻觉就是指AI一本正经地胡说八道。AI幻觉分为两种类型：
+
+
+事实性幻觉 (Factual Hallucination): 模型生成的内容与可验证的现实世界事实不一致。例如，糖尿病患者是否可以通过吃蜂蜜代替糖？模型回答“是的，蜂蜜是天然的，可以帮助糖尿病患者稳定血糖水平”，这是一个事实性幻觉，因为蜂蜜会升高血糖。
+
+
+忠实性幻觉 (Faithfulness Hallucination): 模型生成的内容与用户的指令或上下文不一致。例如，同样提问糖尿病患者是否可以用蜂蜜代替糖，模型回答“蜂蜜富含维生素和矿物质，对提高免疫力很有帮助，因此是一种健康的食品”，虽然这个回答本身没有事实错误，但偏离了用户关于“代替糖”的意图，属于忠实性幻觉。
+
+
+AI幻觉不仅限于文本，也可能出现在图像、音频等其他模态中，例如生成不存在的物体、错误的语音内容等。
+不同产品的幻觉率对比
+对不同大模型的幻觉率进行了初步测试，包括通用性测试和事实性幻觉测试：
+
+
+通用性测试： 随机生成100条通用提示语，模拟普通用户使用场景。
+
+DeepSeekV3: 2%
+DeepSeekR1: 3%
+Qianwen2.5-Max: 2%
+豆包: 0%
+
+
+
+事实性幻觉测试： 随机抽取300道事实性幻觉测试题，涵盖多个领域。
+
+DeepSeekV3: 29.67%
+DeepSeekR1: 22.33%
+Qianwen2.5-Max: 27.67%
+豆包: 19%
+
+
+
+根据初步测试结果，无论哪种模型其幻觉都率较高。 这些测试结果是特定条件下的初步评估，实际使用中的幻觉率可能因应用场景、提示词设计等因素而有所不同。不同的评测方法和数据集也可能导致不同的结果。
+AI幻觉的危害
+AI幻觉的潜在风险：
+
+信息污染风险： 低门槛和高普及度的AI模型可能产生大量虚假信息，加剧网络信息污染，甚至影响下一代模型的训练数据。
+信任危机： 用户难以辨别AI生成内容的真实性，可能对医疗、法律等专业领域的建议产生长期怀疑。
+控制欠缺： 部分开源模型可能被恶意行为者利用。
+安全漏洞： 错误信息若被用于自动化系统（如金融分析、工业控制），可能引发连锁反应。
+误导问题： AI幻觉在新闻传播、教育、科研等领域也可能带来误导、知识错误等问题，损害信息的准确性和可靠性。
+
+个人如何利用幻觉
+AI幻觉的有一定的创造力价值，不应仅仅将其视为缺陷，也可以加以利用：
+
+科学发现： 大卫·贝克团队利用AI的“错误折叠”启发了新型蛋白质结构的设计，并获得了诺贝尔化学奖。他们认为AI幻觉是“从零开始设计蛋白质”的关键。
+文艺与设计： AI幻觉可以突破人类思维定式，成为“超现实引擎”，为艺术创作和设计提供新的灵感。
+娱乐与游戏： AI生成的虚拟环境、角色、故事和对话可以增强游戏体验，提供无限的可能性。
+技术创新： DeepMind团队发现，AI在图像分割任务中产生的“超现实边界”意外提升了自动驾驶系统对极端天气的识别精度。
+新型科研范式： 科学界正在构建“AI幻觉-实验验证-理论重构”的研究流程，利用AI的“疯狂创意”进行创新。
+
+个人可以尝试将AI的幻觉视为一种独特的创意来源，应用于头脑风暴、艺术创作、设计探索等领域，从中获取意想不到的灵感。 利用AI幻觉的关键在于区分其创造性价值和潜在的误导性，在需要准确信息的场景下要谨慎对待。
+个人如何克服幻觉
+普通用户应对AI幻觉的三种主要方式：
+
+联网搜索： 开启模型的联网搜索功能，让模型在生成答案时能够检索最新的信息，降低生成不实信息的可能性。测试结果显示，开启联网搜索后，DeepSeekV3和DeepSeekR1的通用性和事实性幻觉率均有所下降。
+双AI验证/大模型协作： 使用一个AI模型生成答案后，再利用其他大模型进行审查，相互监督，交叉验证，以提高答案的可靠性。
+提示词工程 (Prompt Engineering)： 通过精心设计提示词来约束模型的生成行为，降低幻觉发生的概率。具体方法包括：
+
+知识边界限定： 通过时间锚定、知识锚定、领域限定符、置信度声明、上下文提示、生成参数协同控制等方式，限制模型在特定范围或条件下生成内容。
+对抗性提示： 强制模型进行自我审查，暴露推理的脆弱点。例如，要求模型在回答后列出可能导致答案错误的假设，或进行链式验证。
+
+
+
+其他应对AI幻觉的方法："><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://bsong2015.github.io/blog/posts/"},{"@type":"ListItem","position":2,"name":"人工智能","item":"https://bsong2015.github.io/blog/posts/artificial-intelligence/"},{"@type":"ListItem","position":3,"name":"","item":"https://bsong2015.github.io/blog/posts/artificial-intelligence/03-ai%E5%B9%BB%E8%A7%89%E7%9A%84%E5%85%8B%E6%9C%8D%E4%B8%8E%E5%88%A9%E7%94%A8/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"","name":"","description":"AI幻觉的克服与利用 什么是AI幻觉？ AI幻觉指的是模型生成与事实不符、逻辑断裂或脱离上下文的内容，其本质是统计概率驱动的“合理猜测”。简单来说，AI幻觉就是指AI一本正经地胡说八道。AI幻觉分为两种类型：\n事实性幻觉 (Factual Hallucination): 模型生成的内容与可验证的现实世界事实不一致。例如，糖尿病患者是否可以通过吃蜂蜜代替糖？模型回答“是的，蜂蜜是天然的，可以帮助糖尿病患者稳定血糖水平”，这是一个事实性幻觉，因为蜂蜜会升高血糖。\n忠实性幻觉 (Faithfulness Hallucination): 模型生成的内容与用户的指令或上下文不一致。例如，同样提问糖尿病患者是否可以用蜂蜜代替糖，模型回答“蜂蜜富含维生素和矿物质，对提高免疫力很有帮助，因此是一种健康的食品”，虽然这个回答本身没有事实错误，但偏离了用户关于“代替糖”的意图，属于忠实性幻觉。\nAI幻觉不仅限于文本，也可能出现在图像、音频等其他模态中，例如生成不存在的物体、错误的语音内容等。\n不同产品的幻觉率对比 对不同大模型的幻觉率进行了初步测试，包括通用性测试和事实性幻觉测试：\n通用性测试： 随机生成100条通用提示语，模拟普通用户使用场景。\nDeepSeekV3: 2% DeepSeekR1: 3% Qianwen2.5-Max: 2% 豆包: 0% 事实性幻觉测试： 随机抽取300道事实性幻觉测试题，涵盖多个领域。\nDeepSeekV3: 29.67% DeepSeekR1: 22.33% Qianwen2.5-Max: 27.67% 豆包: 19% 根据初步测试结果，无论哪种模型其幻觉都率较高。 这些测试结果是特定条件下的初步评估，实际使用中的幻觉率可能因应用场景、提示词设计等因素而有所不同。不同的评测方法和数据集也可能导致不同的结果。\nAI幻觉的危害 AI幻觉的潜在风险：\n信息污染风险： 低门槛和高普及度的AI模型可能产生大量虚假信息，加剧网络信息污染，甚至影响下一代模型的训练数据。 信任危机： 用户难以辨别AI生成内容的真实性，可能对医疗、法律等专业领域的建议产生长期怀疑。 控制欠缺： 部分开源模型可能被恶意行为者利用。 安全漏洞： 错误信息若被用于自动化系统（如金融分析、工业控制），可能引发连锁反应。 误导问题： AI幻觉在新闻传播、教育、科研等领域也可能带来误导、知识错误等问题，损害信息的准确性和可靠性。 个人如何利用幻觉 AI幻觉的有一定的创造力价值，不应仅仅将其视为缺陷，也可以加以利用：\n科学发现： 大卫·贝克团队利用AI的“错误折叠”启发了新型蛋白质结构的设计，并获得了诺贝尔化学奖。他们认为AI幻觉是“从零开始设计蛋白质”的关键。 文艺与设计： AI幻觉可以突破人类思维定式，成为“超现实引擎”，为艺术创作和设计提供新的灵感。 娱乐与游戏： AI生成的虚拟环境、角色、故事和对话可以增强游戏体验，提供无限的可能性。 技术创新： DeepMind团队发现，AI在图像分割任务中产生的“超现实边界”意外提升了自动驾驶系统对极端天气的识别精度。 新型科研范式： 科学界正在构建“AI幻觉-实验验证-理论重构”的研究流程，利用AI的“疯狂创意”进行创新。 个人可以尝试将AI的幻觉视为一种独特的创意来源，应用于头脑风暴、艺术创作、设计探索等领域，从中获取意想不到的灵感。 利用AI幻觉的关键在于区分其创造性价值和潜在的误导性，在需要准确信息的场景下要谨慎对待。\n个人如何克服幻觉 普通用户应对AI幻觉的三种主要方式：\n联网搜索： 开启模型的联网搜索功能，让模型在生成答案时能够检索最新的信息，降低生成不实信息的可能性。测试结果显示，开启联网搜索后，DeepSeekV3和DeepSeekR1的通用性和事实性幻觉率均有所下降。 双AI验证/大模型协作： 使用一个AI模型生成答案后，再利用其他大模型进行审查，相互监督，交叉验证，以提高答案的可靠性。 提示词工程 (Prompt Engineering)： 通过精心设计提示词来约束模型的生成行为，降低幻觉发生的概率。具体方法包括： 知识边界限定： 通过时间锚定、知识锚定、领域限定符、置信度声明、上下文提示、生成参数协同控制等方式，限制模型在特定范围或条件下生成内容。 对抗性提示： 强制模型进行自我审查，暴露推理的脆弱点。例如，要求模型在回答后列出可能导致答案错误的假设，或进行链式验证。 其他应对AI幻觉的方法：\n","keywords":[],"articleBody":"AI幻觉的克服与利用 什么是AI幻觉？ AI幻觉指的是模型生成与事实不符、逻辑断裂或脱离上下文的内容，其本质是统计概率驱动的“合理猜测”。简单来说，AI幻觉就是指AI一本正经地胡说八道。AI幻觉分为两种类型：\n事实性幻觉 (Factual Hallucination): 模型生成的内容与可验证的现实世界事实不一致。例如，糖尿病患者是否可以通过吃蜂蜜代替糖？模型回答“是的，蜂蜜是天然的，可以帮助糖尿病患者稳定血糖水平”，这是一个事实性幻觉，因为蜂蜜会升高血糖。\n忠实性幻觉 (Faithfulness Hallucination): 模型生成的内容与用户的指令或上下文不一致。例如，同样提问糖尿病患者是否可以用蜂蜜代替糖，模型回答“蜂蜜富含维生素和矿物质，对提高免疫力很有帮助，因此是一种健康的食品”，虽然这个回答本身没有事实错误，但偏离了用户关于“代替糖”的意图，属于忠实性幻觉。\nAI幻觉不仅限于文本，也可能出现在图像、音频等其他模态中，例如生成不存在的物体、错误的语音内容等。\n不同产品的幻觉率对比 对不同大模型的幻觉率进行了初步测试，包括通用性测试和事实性幻觉测试：\n通用性测试： 随机生成100条通用提示语，模拟普通用户使用场景。\nDeepSeekV3: 2% DeepSeekR1: 3% Qianwen2.5-Max: 2% 豆包: 0% 事实性幻觉测试： 随机抽取300道事实性幻觉测试题，涵盖多个领域。\nDeepSeekV3: 29.67% DeepSeekR1: 22.33% Qianwen2.5-Max: 27.67% 豆包: 19% 根据初步测试结果，无论哪种模型其幻觉都率较高。 这些测试结果是特定条件下的初步评估，实际使用中的幻觉率可能因应用场景、提示词设计等因素而有所不同。不同的评测方法和数据集也可能导致不同的结果。\nAI幻觉的危害 AI幻觉的潜在风险：\n信息污染风险： 低门槛和高普及度的AI模型可能产生大量虚假信息，加剧网络信息污染，甚至影响下一代模型的训练数据。 信任危机： 用户难以辨别AI生成内容的真实性，可能对医疗、法律等专业领域的建议产生长期怀疑。 控制欠缺： 部分开源模型可能被恶意行为者利用。 安全漏洞： 错误信息若被用于自动化系统（如金融分析、工业控制），可能引发连锁反应。 误导问题： AI幻觉在新闻传播、教育、科研等领域也可能带来误导、知识错误等问题，损害信息的准确性和可靠性。 个人如何利用幻觉 AI幻觉的有一定的创造力价值，不应仅仅将其视为缺陷，也可以加以利用：\n科学发现： 大卫·贝克团队利用AI的“错误折叠”启发了新型蛋白质结构的设计，并获得了诺贝尔化学奖。他们认为AI幻觉是“从零开始设计蛋白质”的关键。 文艺与设计： AI幻觉可以突破人类思维定式，成为“超现实引擎”，为艺术创作和设计提供新的灵感。 娱乐与游戏： AI生成的虚拟环境、角色、故事和对话可以增强游戏体验，提供无限的可能性。 技术创新： DeepMind团队发现，AI在图像分割任务中产生的“超现实边界”意外提升了自动驾驶系统对极端天气的识别精度。 新型科研范式： 科学界正在构建“AI幻觉-实验验证-理论重构”的研究流程，利用AI的“疯狂创意”进行创新。 个人可以尝试将AI的幻觉视为一种独特的创意来源，应用于头脑风暴、艺术创作、设计探索等领域，从中获取意想不到的灵感。 利用AI幻觉的关键在于区分其创造性价值和潜在的误导性，在需要准确信息的场景下要谨慎对待。\n个人如何克服幻觉 普通用户应对AI幻觉的三种主要方式：\n联网搜索： 开启模型的联网搜索功能，让模型在生成答案时能够检索最新的信息，降低生成不实信息的可能性。测试结果显示，开启联网搜索后，DeepSeekV3和DeepSeekR1的通用性和事实性幻觉率均有所下降。 双AI验证/大模型协作： 使用一个AI模型生成答案后，再利用其他大模型进行审查，相互监督，交叉验证，以提高答案的可靠性。 提示词工程 (Prompt Engineering)： 通过精心设计提示词来约束模型的生成行为，降低幻觉发生的概率。具体方法包括： 知识边界限定： 通过时间锚定、知识锚定、领域限定符、置信度声明、上下文提示、生成参数协同控制等方式，限制模型在特定范围或条件下生成内容。 对抗性提示： 强制模型进行自我审查，暴露推理的脆弱点。例如，要求模型在回答后列出可能导致答案错误的假设，或进行链式验证。 其他应对AI幻觉的方法：\n三角验证法： 交叉比对多个AI的回答或权威来源的信息。 警惕“过度合理”： 对于过于细节丰富的回答要更加谨慎，因为AI可能虚构细节。 理解幻觉，享受幻觉： 认识到幻觉是AI的特点之一，在合适的场景下可以欣赏和利用其带来的创意。 批判性思维 培养批判性思维，不完全依赖AI生成的内容，进行独立思考和验证也非常重要。 总而言之，AI幻觉是当前人工智能发展中面临的重要挑战，理解其本质、危害以及应对方法，有助于我们更好地利用AI技术，并防范其潜在风险。同时，我们也可以尝试从新的视角看待AI幻觉，发掘其在创新和创意方面的独特价值。\n本文根据《DeepSeek与AI幻觉.pdf》整理而成，deepseek出来之后，清华和北大分别出了多个讲座，讲解deepseek相关的内容。我觉得最有意义的是当前这个，也就是幻觉问题，很多人还不清楚这个幻觉问题。想看原文或者下载其它资料的可以到下面地址下载，注意链接可能会失效。\nhttps://expectopatronus00.github.io/post/deepseek/doc/doc.html\n欢迎关注点赞转发\n","wordCount":"89","inLanguage":"zh","datePublished":"0001-01-01T00:00:00Z","dateModified":"0001-01-01T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://bsong2015.github.io/blog/posts/artificial-intelligence/03-ai%E5%B9%BB%E8%A7%89%E7%9A%84%E5%85%8B%E6%9C%8D%E4%B8%8E%E5%88%A9%E7%94%A8/"},"publisher":{"@type":"Organization","name":"万年水的博客","logo":{"@type":"ImageObject","url":"https://bsong2015.github.io/blog/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://bsong2015.github.io/blog/ accesskey=h title="万年水的博客 (Alt + H)">万年水的博客</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://bsong2015.github.io/blog/posts/artificial-intelligence/ title=人工智能><span>人工智能</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/reading/ title=阅读><span>阅读</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/thinking-models/ title=思维模型><span>思维模型</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/thought-experiments/ title=思想实验><span>思想实验</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/personal-growth/ title=个人成长><span>个人成长</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/technology/ title=技术><span>技术</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/current-affairs/ title=时事><span>时事</span></a></li><li><a href=https://bsong2015.github.io/blog/posts/others/ title=其它><span>其它</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent"></h1><div class=post-meta></div></header><div class=post-content><h2 id=ai幻觉的克服与利用>AI幻觉的克服与利用<a hidden class=anchor aria-hidden=true href=#ai幻觉的克服与利用>#</a></h2><h3 id=什么是ai幻觉>什么是AI幻觉？<a hidden class=anchor aria-hidden=true href=#什么是ai幻觉>#</a></h3><p>AI幻觉指的是<strong>模型生成与事实不符、逻辑断裂或脱离上下文的内容，其本质是统计概率驱动的“合理猜测”</strong>。简单来说，AI幻觉就是指AI一本正经地胡说八道。AI幻觉分为两种类型：</p><ul><li><p><strong>事实性幻觉 (Factual Hallucination):</strong> 模型生成的内容与可验证的现实世界事实不一致。例如，糖尿病患者是否可以通过吃蜂蜜代替糖？模型回答“是的，蜂蜜是天然的，可以帮助糖尿病患者稳定血糖水平”，这是一个事实性幻觉，因为蜂蜜会升高血糖。</p></li><li><p><strong>忠实性幻觉 (Faithfulness Hallucination):</strong> 模型生成的内容与用户的指令或上下文不一致。例如，同样提问糖尿病患者是否可以用蜂蜜代替糖，模型回答“蜂蜜富含维生素和矿物质，对提高免疫力很有帮助，因此是一种健康的食品”，虽然这个回答本身没有事实错误，但偏离了用户关于“代替糖”的意图，属于忠实性幻觉。</p></li></ul><p><strong>AI幻觉不仅限于文本，也可能出现在图像、音频等其他模态中，例如生成不存在的物体、错误的语音内容等。</strong></p><h3 id=不同产品的幻觉率对比>不同产品的幻觉率对比<a hidden class=anchor aria-hidden=true href=#不同产品的幻觉率对比>#</a></h3><p>对不同大模型的幻觉率进行了初步测试，包括通用性测试和事实性幻觉测试：</p><ul><li><p><strong>通用性测试：</strong> 随机生成100条通用提示语，模拟普通用户使用场景。</p><ul><li>DeepSeekV3: 2%</li><li>DeepSeekR1: 3%</li><li>Qianwen2.5-Max: 2%</li><li>豆包: 0%</li></ul></li><li><p><strong>事实性幻觉测试：</strong> 随机抽取300道事实性幻觉测试题，涵盖多个领域。</p><ul><li>DeepSeekV3: 29.67%</li><li>DeepSeekR1: 22.33%</li><li>Qianwen2.5-Max: 27.67%</li><li>豆包: 19%</li></ul></li></ul><p>根据初步测试结果，无论哪种模型其<strong>幻觉都率较高</strong>。 这些测试结果是<strong>特定条件下的初步评估</strong>，实际使用中的幻觉率可能因应用场景、提示词设计等因素而有所不同。不同的评测方法和数据集也可能导致不同的结果。</p><h3 id=ai幻觉的危害>AI幻觉的危害<a hidden class=anchor aria-hidden=true href=#ai幻觉的危害>#</a></h3><p>AI幻觉的潜在风险：</p><ul><li><strong>信息污染风险：</strong> 低门槛和高普及度的AI模型可能产生大量虚假信息，加剧网络信息污染，甚至影响下一代模型的训练数据。</li><li><strong>信任危机：</strong> 用户难以辨别AI生成内容的真实性，可能对医疗、法律等专业领域的建议产生长期怀疑。</li><li><strong>控制欠缺：</strong> 部分开源模型可能被恶意行为者利用。</li><li><strong>安全漏洞：</strong> 错误信息若被用于自动化系统（如金融分析、工业控制），可能引发连锁反应。</li><li><strong>误导问题：</strong> AI幻觉在新闻传播、教育、科研等领域也可能带来误导、知识错误等问题，损害信息的准确性和可靠性。</li></ul><h3 id=个人如何利用幻觉>个人如何利用幻觉<a hidden class=anchor aria-hidden=true href=#个人如何利用幻觉>#</a></h3><p>AI幻觉的有一定的创造力价值，不应仅仅将其视为缺陷，也可以加以利用：</p><ul><li><strong>科学发现：</strong> 大卫·贝克团队利用AI的“错误折叠”启发了新型蛋白质结构的设计，并获得了诺贝尔化学奖。他们认为AI幻觉是“从零开始设计蛋白质”的关键。</li><li><strong>文艺与设计：</strong> AI幻觉可以突破人类思维定式，成为“超现实引擎”，为艺术创作和设计提供新的灵感。</li><li><strong>娱乐与游戏：</strong> AI生成的虚拟环境、角色、故事和对话可以增强游戏体验，提供无限的可能性。</li><li><strong>技术创新：</strong> DeepMind团队发现，AI在图像分割任务中产生的“超现实边界”意外提升了自动驾驶系统对极端天气的识别精度。</li><li><strong>新型科研范式：</strong> 科学界正在构建“AI幻觉-实验验证-理论重构”的研究流程，利用AI的“疯狂创意”进行创新。</li></ul><p><strong>个人可以尝试将AI的幻觉视为一种独特的创意来源，应用于头脑风暴、艺术创作、设计探索等领域，从中获取意想不到的灵感。</strong> 利用AI幻觉的关键在于区分其创造性价值和潜在的误导性，在需要准确信息的场景下要谨慎对待。</p><h3 id=个人如何克服幻觉>个人如何克服幻觉<a hidden class=anchor aria-hidden=true href=#个人如何克服幻觉>#</a></h3><p>普通用户应对AI幻觉的三种主要方式：</p><ol><li><strong>联网搜索：</strong> 开启模型的联网搜索功能，让模型在生成答案时能够检索最新的信息，降低生成不实信息的可能性。测试结果显示，开启联网搜索后，DeepSeekV3和DeepSeekR1的通用性和事实性幻觉率均有所下降。</li><li><strong>双AI验证/大模型协作：</strong> 使用一个AI模型生成答案后，再利用其他大模型进行审查，相互监督，交叉验证，以提高答案的可靠性。</li><li><strong>提示词工程 (Prompt Engineering)：</strong> 通过精心设计提示词来约束模型的生成行为，降低幻觉发生的概率。具体方法包括：<ul><li><strong>知识边界限定：</strong> 通过时间锚定、知识锚定、领域限定符、置信度声明、上下文提示、生成参数协同控制等方式，限制模型在特定范围或条件下生成内容。</li><li><strong>对抗性提示：</strong> 强制模型进行自我审查，暴露推理的脆弱点。例如，要求模型在回答后列出可能导致答案错误的假设，或进行链式验证。</li></ul></li></ol><p><strong>其他应对AI幻觉的方法：</strong></p><ul><li><strong>三角验证法：</strong> 交叉比对多个AI的回答或权威来源的信息。</li><li><strong>警惕“过度合理”：</strong> 对于过于细节丰富的回答要更加谨慎，因为AI可能虚构细节。</li><li><strong>理解幻觉，享受幻觉：</strong> 认识到幻觉是AI的特点之一，在合适的场景下可以欣赏和利用其带来的创意。</li><li><strong>批判性思维</strong> 培养批判性思维，不完全依赖AI生成的内容，进行独立思考和验证也非常重要。</li></ul><p>总而言之，AI幻觉是当前人工智能发展中面临的重要挑战，理解其本质、危害以及应对方法，有助于我们更好地利用AI技术，并防范其潜在风险。同时，我们也可以尝试从新的视角看待AI幻觉，发掘其在创新和创意方面的独特价值。</p><p>本文根据《DeepSeek与AI幻觉.pdf》整理而成，deepseek出来之后，清华和北大分别出了多个讲座，讲解deepseek相关的内容。我觉得最有意义的是当前这个，也就是幻觉问题，很多人还不清楚这个幻觉问题。想看原文或者下载其它资料的可以到下面地址下载，注意链接可能会失效。</p><p><a href=https://expectopatronus00.github.io/post/deepseek/doc/doc.html>https://expectopatronus00.github.io/post/deepseek/doc/doc.html</a></p><h3></h3><p><strong>欢迎关注点赞转发</strong></p></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://bsong2015.github.io/blog/>万年水的博客</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
