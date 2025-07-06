@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://bsong2015.github.io/blog/'
 languageCode = "zh-CN"          # 设置默认语言为简体中文
 defaultContentLanguage = "zh"   # 内容默认语言标识（与多语言配置匹配）
 title = "万年水的博客"
