@@ -9,6 +9,8 @@ jobs:
       contents: write # <--- 授予对仓库内容的写入权限
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
       - uses: peaceiris/actions-hugo@v2
         with:
           hugo-version: 'latest'
