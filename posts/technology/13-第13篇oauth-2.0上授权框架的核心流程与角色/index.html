@@ -44,7 +44,27 @@ OAuth 2.0框架中定义了四个核心角色，理解它们之间的交互是�
 3. OAuth 2.0的四种主要授权模式（Grant Types）
 OAuth 2.0定义了多种授权模式（Grant Types），以适应不同类型的客户端和应用场景。每种模式都有其特定的工作流程和安全考量。"><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script type=module>
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
+    
+    
+    const prepareMermaid = () => {
+        document.querySelectorAll("pre code.language-mermaid").forEach(function(block) {
+            const pre = block.parentNode;
+            const mermaidContainer = document.createElement("div");
+            mermaidContainer.className = "mermaid";
+            mermaidContainer.textContent = block.textContent;
+            pre.parentNode.replaceChild(mermaidContainer, pre);
+        });
+    };
+
+    
+    const initMermaid = () => {
+        prepareMermaid();
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.run();
+    }
+
+    initMermaid();
+    document.addEventListener("astro:after-swap", initMermaid);
 </script><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第13篇：OAuth 2.0（上）：授权框架的核心流程与角色 在当今的数字生态系统中，我们经常遇到这样的场景：一个应用（例如，一个照片编辑工具）需要访问你在另一个服务（例如，Google相册）上的资源。你当然不希望把Google相册的用户名和密码直接告诉照片编辑工具，因为这不仅不安全，也意味着这个工具将拥有你账户的全部权限。
 正是为了解决这种“委托授权”的问题，OAuth 2.0应运而生。它不是一个认证协议，而是一个授权框架，允许第三方应用在不获取用户凭证的情况下，安全地访问用户在服务提供者处的受保护资源。
 1. OAuth 2.0的背景与目标 1.1 背景：为什么需要OAuth？ 在OAuth出现之前，应用程序访问用户资源的常见方式是 “共享凭证模式”：用户直接把自己在A网站的用户名和密码提供给B网站，让B网站以用户身份登录A网站并获取数据。这种模式存在巨大弊端：
