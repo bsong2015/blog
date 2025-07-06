@@ -1,6 +1,6 @@
 +++
-draft: true
-mermaid: true
+draft = true
+mermaid = true
 +++
 
 ## 第16篇：企业级SSO的利器SAML 2.0协议详解

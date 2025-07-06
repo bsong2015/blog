@@ -1,5 +1,5 @@
 +++
-mermaid: true
+mermaid = true
 +++
 ## 第12篇：策略即代码：初探基于策略的访问控制（PBAC）与XACML
 
