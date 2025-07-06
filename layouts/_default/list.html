@@ -94,6 +94,13 @@
     {{- end }}
   {{- end }}
 
+  {{- if not $image_path }}
+    {{- $default_image_path := printf "%s/default.png" $fileDir }}
+    {{- if fileExists $default_image_path }}
+      {{- $image_path = $default_image_path }}
+    {{- end }}
+  {{- end }}
+
   {{- if $image_path }}
   <div class="entry-cover">
     <img src="{{ $image_path | absURL }}" alt="Cover image for {{ $baseFileName }}" style="width: 100px; height: auto; float: left; margin-right: 15px;">
