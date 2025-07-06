@@ -1,0 +1,40 @@
+{{- with .cxt -}}
+{{- if and .Params.cover.image (not $.isHidden) -}}
+<figure class="entry-cover">
+    {{- $loading := cond $.IsSingle "eager" "lazy" -}}
+    {{- $addLink := (and site.Params.cover.linkFullImages $.IsSingle) -}}
+    {{- $alt := (.Params.cover.alt | default .Params.cover.caption | plainify) -}}
+
+    {{- $cover := .Resources.GetMatch .Params.cover.image -}}
+    {{- if not $cover -}}
+        {{- $cover = resources.Get .Params.cover.image -}}
+    {{- end -}}
+
+    {{- if $cover -}}
+        {{- $webp := $cover.Process "webp" -}}
+        {{- $lqip := $cover.Resize "20x" | $cover.Process "webp q20" -}}
+
+        {{- if $addLink -}}
+            <a href="{{ $cover.RelPermalink }}" target="_blank" rel="noopener noreferrer">
+        {{- end -}}
+
+        <picture>
+            <source srcset="{{ $webp.RelPermalink }}" type="image/webp">
+            <img src="{{ $cover.RelPermalink }}" alt="{{ $alt }}" loading="{{ $loading }}" width="{{ $cover.Width }}" height="{{ $cover.Height }}" style="background-image: url('{{ $lqip.RelPermalink }}'); background-size: cover;">
+        </picture>
+
+        {{- if $addLink -}}
+            </a>
+        {{- end -}}
+
+    {{- else -}}
+        {{- /* Fallback for external images */ -}}
+        <img loading="{{ $loading }}" src="{{ .Params.cover.image | absURL }}" alt="{{ $alt }}">
+    {{- end -}}
+
+    {{- if and $.IsSingle .Params.cover.caption -}}
+        <figcaption>{{ .Params.cover.caption | markdownify }}</figcaption>
+    {{- end -}}
+</figure>
+{{- end -}}
+{{- end -}}
