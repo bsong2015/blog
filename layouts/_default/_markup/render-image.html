@@ -1,0 +1,16 @@
+{{- $image := .Page.Resources.GetMatch .Destination -}}
+{{- if not $image -}}
+  {{- $image = resources.Get .Destination -}}
+{{- end -}}
+
+{{- if $image -}}
+  {{- $webp := $image.Process "webp" -}}
+  {{- $lqip := $image.Resize "20x" | $image.Process "webp q20" -}}
+  <picture>
+    <source srcset="{{ $webp.RelPermalink }}" type="image/webp">
+    <img src="{{ $image.RelPermalink }}" alt="{{ .Text }}" title="{{ .Title }}" loading="lazy" style="background-image: url('{{ $lqip.RelPermalink }}'); background-size: cover;">
+  </picture>
+{{- else -}}
+  <!-- Image not found, fallback to default rendering -->
+  <img src="{{ .Destination | safeURL }}" alt="{{ .Text }}" title="{{ .Title }}" loading="lazy">
+{{- end -}}
