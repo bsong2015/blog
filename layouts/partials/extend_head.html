@@ -1,6 +1,26 @@
 {{ if .Params.mermaid }}
 <script type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-    mermaid.initialize({ startOnLoad: true });
+    
+    // This function finds Hugo's generated code blocks and prepares them for Mermaid.
+    const prepareMermaid = () => {
+        document.querySelectorAll("pre code.language-mermaid").forEach(function(block) {
+            const pre = block.parentNode;
+            const mermaidContainer = document.createElement("div");
+            mermaidContainer.className = "mermaid";
+            mermaidContainer.textContent = block.textContent;
+            pre.parentNode.replaceChild(mermaidContainer, pre);
+        });
+    };
+
+    // Run on initial load or after view transitions
+    const initMermaid = () => {
+        prepareMermaid();
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.run();
+    }
+
+    initMermaid();
+    document.addEventListener("astro:after-swap", initMermaid);
 </script>
 {{ end }}
