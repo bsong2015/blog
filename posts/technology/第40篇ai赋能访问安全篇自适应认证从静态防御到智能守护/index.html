@@ -38,7 +38,30 @@ graph TD
     E -- "认证动作 (e.g., &#39;REQUIRE_MFA&#39;)" --> F
     F -- "执行" --> H
 第一支柱：数据收集与特征工程
-风险引擎无法直接处理原始数据，它需要的是被量化和标准化的特征（Features）。'><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC40%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8%E7%AF%87%E8%87%AA%E9%80%82%E5%BA%94%E8%AE%A4%E8%AF%81%E4%BB%8E%E9%9D%99%E6%80%81%E9%98%B2%E5%BE%A1%E5%88%B0%E6%99%BA%E8%83%BD%E5%AE%88%E6%8A%A4/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC40%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8%E7%AF%87%E8%87%AA%E9%80%82%E5%BA%94%E8%AE%A4%E8%AF%81%E4%BB%8E%E9%9D%99%E6%80%81%E9%98%B2%E5%BE%A1%E5%88%B0%E6%99%BA%E8%83%BD%E5%AE%88%E6%8A%A4/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC40%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8%E7%AF%87%E8%87%AA%E9%80%82%E5%BA%94%E8%AE%A4%E8%AF%81%E4%BB%8E%E9%9D%99%E6%80%81%E9%98%B2%E5%BE%A1%E5%88%B0%E6%99%BA%E8%83%BD%E5%AE%88%E6%8A%A4/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content='第40篇：【AI赋能·访问安全篇】自适应认证：从静态防御到智能守护 导言 传统的MFA（多因素认证）策略，通常是静态的、一刀切的。例如，要求所有用户在每次登录时都必须使用OTP。这种模式虽然提升了安全性，但也带来了不可避免的用户摩擦，严重影响用户体验。
+风险引擎无法直接处理原始数据，它需要的是被量化和标准化的特征（Features）。'><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC40%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8%E7%AF%87%E8%87%AA%E9%80%82%E5%BA%94%E8%AE%A4%E8%AF%81%E4%BB%8E%E9%9D%99%E6%80%81%E9%98%B2%E5%BE%A1%E5%88%B0%E6%99%BA%E8%83%BD%E5%AE%88%E6%8A%A4/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC40%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8%E7%AF%87%E8%87%AA%E9%80%82%E5%BA%94%E8%AE%A4%E8%AF%81%E4%BB%8E%E9%9D%99%E6%80%81%E9%98%B2%E5%BE%A1%E5%88%B0%E6%99%BA%E8%83%BD%E5%AE%88%E6%8A%A4/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    
+    
+    const prepareMermaid = () => {
+        document.querySelectorAll("pre code.language-mermaid").forEach(function(block) {
+            const pre = block.parentNode;
+            const mermaidContainer = document.createElement("div");
+            mermaidContainer.className = "mermaid";
+            mermaidContainer.textContent = block.textContent;
+            pre.parentNode.replaceChild(mermaidContainer, pre);
+        });
+    };
+
+    
+    const initMermaid = () => {
+        prepareMermaid();
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.run();
+    }
+
+    initMermaid();
+    document.addEventListener("astro:after-swap", initMermaid);
+</script><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC40%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%AE%BF%E9%97%AE%E5%AE%89%E5%85%A8%E7%AF%87%E8%87%AA%E9%80%82%E5%BA%94%E8%AE%A4%E8%AF%81%E4%BB%8E%E9%9D%99%E6%80%81%E9%98%B2%E5%BE%A1%E5%88%B0%E6%99%BA%E8%83%BD%E5%AE%88%E6%8A%A4/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content='第40篇：【AI赋能·访问安全篇】自适应认证：从静态防御到智能守护 导言 传统的MFA（多因素认证）策略，通常是静态的、一刀切的。例如，要求所有用户在每次登录时都必须使用OTP。这种模式虽然提升了安全性，但也带来了不可避免的用户摩擦，严重影响用户体验。
 自适应认证（Adaptive Authentication 或 Adaptive MFA） 正是为了解决这一矛盾而生。它不再是一个静态的“防御墙”，而是一个智能的“守护者”。其核心思想是：基于对每次访问请求的实时风险评估，动态地、智能地调整认证强度。
 本章将深入IDaaS平台架构的内部，解构一个由AI/ML驱动的自适应认证系统是如何实现的，重点剖析其三大核心支柱，并探讨其在工程落地中的关键挑战。
 核心架构：从信号到决策的闭环 一个完整的自适应认证系统，是一个实时的数据处理与决策闭环。

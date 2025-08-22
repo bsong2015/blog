@@ -904,10 +904,7 @@ end
 &lt;p>Claude 的能力不止于其内置功能，它能充分利用你本地的工具生态。&lt;/p>
 &lt;ul>
 &lt;li>
-&lt;p>&lt;strong>利用 Bash 工具&lt;/strong>: Claude 可以直接访问你终端环境中的所有工具。例如，如果你有一个自定义的部署脚本 deploy-to-staging.sh，你可以在 CLAUDE.md 中简单描述它：deploy-to-staging.sh: deploys the current branch to the staging environment. Claude 在接收到相关指令时，便会知道如何使用这个脚本。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC33%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E8%B5%8B%E8%83%BD%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9Ciam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81radius-mfa/</link><pubDate>Wed, 30 Jul 2025 12:38:31 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC33%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E8%B5%8B%E8%83%BD%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9Ciam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81radius-mfa/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第33篇解决方案赋能传统网络iam平台如何支持radius-mfa">&lt;strong>第33篇：【解决方案】赋能传统网络：IAM平台如何支持RADIUS MFA&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>利用 Bash 工具&lt;/strong>: Claude 可以直接访问你终端环境中的所有工具。例如，如果你有一个自定义的部署脚本 deploy-to-staging.sh，你可以在 CLAUDE.md 中简单描述它：deploy-to-staging.sh: deploys the current branch to the staging environment. Claude 在接收到相关指令时，便会知道如何使用这个脚本。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC33%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E8%B5%8B%E8%83%BD%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9Ciam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81radius-mfa/</link><pubDate>Wed, 30 Jul 2025 12:38:31 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC33%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E8%B5%8B%E8%83%BD%E4%BC%A0%E7%BB%9F%E7%BD%91%E7%BB%9Ciam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E6%94%AF%E6%8C%81radius-mfa/</guid><description>&lt;h2 id="第33篇解决方案赋能传统网络iam平台如何支持radius-mfa">&lt;strong>第33篇：【解决方案】赋能传统网络：IAM平台如何支持RADIUS MFA&lt;/strong>&lt;/h2>
 &lt;h3 id="导言">&lt;strong>导言&lt;/strong>&lt;/h3>
 &lt;p>在企业的网络基础设施中，VPN网关、Wi-Fi控制器、交换机和防火墙等大量关键设备，其认证机制都深深地根植于一个经典协议——RADIUS（远程身份验证拨入用户服务）。然而，这些设备自身的认证能力通常仅限于用户名和密码，难以满足现代零信任安全模型对多因素认证（MFA）的强制要求。&lt;/p>
 &lt;p>为了弥补这一安全短板，现代IAM/IDaaS平台提供了一种创新的解决方案：&lt;strong>将自身打造为一个支持MFA的、企业级的RADIUS服务端&lt;/strong>。这种模式并非要取代现有的RADIUS基础设施，而是要&lt;strong>拦截&lt;/strong>和&lt;strong>增强&lt;/strong>它。&lt;/p>
@@ -1051,10 +1048,7 @@ VPN_Gateway--&amp;gt;&amp;gt;User: 12. 认证成功, 建立VPN连接
 &lt;li>&lt;strong>Agent间交互的新治理挑战 (New Governance Challenges with Agent-to-Agent Interaction)&lt;/strong>：AI Agent需要与其他AI Agent安全地进行交互和协作，这引入了传统系统未曾考虑的新治理挑战。例如，可能需要AI Agent自身评估其他AI Agent的访问请求，形成复杂的信任链，这超出了传统IAM/IGA系统的设计范畴。&lt;/li>
 &lt;li>&lt;strong>身份蔓延 (Identity Sprawl)&lt;/strong>：随着AI Agent数量的激增，每个应用程序可能创建数百甚至数千个Agent实例。如果权限在Agent生命周期结束后仍未撤销，将导致“僵尸凭证”和身份蔓延，形成巨大的安全盲点，使攻击者有机可乘。这种无序的身份增长使得审计和合规性变得极其困难。&lt;/li>
 &lt;/ul>
-&lt;p>传统IAM/IGA系统基于“人类行为模式”的假设，而AI Agent的“非人”特性（例如，短暂性、自主性、动态性）与这些假设根本不兼容。这种不兼容性并非简单的功能缺失，而是架构层面的根本性不匹配。当AI Agent被视为“通用应用程序”或“后台进程”时，无法为其应用特定的安全策略，也无法区分其行为与人类行为，从而导致问责链条模糊不清。这种架构不匹配导致AI Agent在企业网络中成为“安全盲点”。如果企业不主动解决这一问题，大规模部署AI Agent将不可避免地带来“内部威胁”，因为这些Agent可能拥有过高的权限、行为难以追踪，并成为攻击者的主要目标。这不仅是一个技术问题，更是治理和合规的重大风险，可能导致数据泄露、系统破坏和严重的法律后果。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC32%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88iam%E9%9B%86%E6%88%90%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E8%AE%A4%E8%AF%81%E8%BA%AB%E4%BB%BD%E5%BD%92%E4%B8%80%E4%B8%8E%E8%BA%AB%E4%BB%BD%E9%9A%94%E7%A6%BB/</link><pubDate>Thu, 24 Jul 2025 13:31:04 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC32%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88iam%E9%9B%86%E6%88%90%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E8%AE%A4%E8%AF%81%E8%BA%AB%E4%BB%BD%E5%BD%92%E4%B8%80%E4%B8%8E%E8%BA%AB%E4%BB%BD%E9%9A%94%E7%A6%BB/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第32篇解决方案iam集成企业微信认证身份归一与身份隔离">&lt;strong>第32篇：【解决方案】IAM集成企业微信认证：身份归一与身份隔离&lt;/strong>&lt;/h2>
+&lt;p>传统IAM/IGA系统基于“人类行为模式”的假设，而AI Agent的“非人”特性（例如，短暂性、自主性、动态性）与这些假设根本不兼容。这种不兼容性并非简单的功能缺失，而是架构层面的根本性不匹配。当AI Agent被视为“通用应用程序”或“后台进程”时，无法为其应用特定的安全策略，也无法区分其行为与人类行为，从而导致问责链条模糊不清。这种架构不匹配导致AI Agent在企业网络中成为“安全盲点”。如果企业不主动解决这一问题，大规模部署AI Agent将不可避免地带来“内部威胁”，因为这些Agent可能拥有过高的权限、行为难以追踪，并成为攻击者的主要目标。这不仅是一个技术问题，更是治理和合规的重大风险，可能导致数据泄露、系统破坏和严重的法律后果。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC32%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88iam%E9%9B%86%E6%88%90%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E8%AE%A4%E8%AF%81%E8%BA%AB%E4%BB%BD%E5%BD%92%E4%B8%80%E4%B8%8E%E8%BA%AB%E4%BB%BD%E9%9A%94%E7%A6%BB/</link><pubDate>Thu, 24 Jul 2025 13:31:04 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC32%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88iam%E9%9B%86%E6%88%90%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1%E8%AE%A4%E8%AF%81%E8%BA%AB%E4%BB%BD%E5%BD%92%E4%B8%80%E4%B8%8E%E8%BA%AB%E4%BB%BD%E9%9A%94%E7%A6%BB/</guid><description>&lt;h2 id="第32篇解决方案iam集成企业微信认证身份归一与身份隔离">&lt;strong>第32篇：【解决方案】IAM集成企业微信认证：身份归一与身份隔离&lt;/strong>&lt;/h2>
 &lt;h3 id="导言">&lt;strong>导言&lt;/strong>&lt;/h3>
 &lt;p>将应用与企业微信集成时，一个核心的架构决策摆在IAM/IDaaS平台面前：当一个用户通过企业微信认证后，应用系统应该如何看待他的身份？这通常会归结为两种截然不同的业务场景：&lt;/p>
 &lt;ol>
@@ -1100,10 +1094,21 @@ mermaid = true
 &lt;p>在用户会话建立后，IAM在为目标应用生成SSO令牌之前，会检查该应用在IAM中注册的配置需求。&lt;/p>
 &lt;ul>
 &lt;li>
-&lt;p>&lt;strong>场景A：身份归一（应用不需要企业微信身份）&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC31%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%97%A0%E7%BC%9Dssoiam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90kerberos%E8%AE%A4%E8%AF%81/</link><pubDate>Wed, 23 Jul 2025 12:57:26 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC31%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%97%A0%E7%BC%9Dssoiam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90kerberos%E8%AE%A4%E8%AF%81/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第31篇解决方案无缝ssoiam平台如何集成kerberos认证">&lt;strong>第31篇：【解决方案】无缝SSO：IAM平台如何集成Kerberos认证&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>场景A：身份归一（应用不需要企业微信身份）&lt;/strong>&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>应用配置：&lt;/strong> 该应用（如在线学习平台）在IAM中注册时，未要求任何特定的企业微信上下文声明。&lt;/li>
+&lt;li>&lt;strong>令牌生成逻辑：&lt;/strong> IAM在生成令牌时，&lt;strong>忽略&lt;/strong>会话中的企业微信身份上下文信息。
+&lt;ul>
+&lt;li>令牌基于用户的&lt;strong>核心身份&lt;/strong>构建。&lt;/li>
+&lt;li>&lt;code>sub&lt;/code> (Subject) 等关键声明指向IAM的核心&lt;code>user_id&lt;/code>。&lt;/li>
+&lt;li>不包含任何&lt;code>corpid&lt;/code>或特定于子公司的部门、职位等信息。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>&lt;strong>结果：&lt;/strong> 应用接收到一个“干净”的、只代表该自然人的身份令牌。&lt;/li>
+&lt;/ul>
+&lt;/li>
+&lt;li>
+&lt;p>&lt;strong>场景B：身份隔离（应用需要企业微信身份）&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC31%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%97%A0%E7%BC%9Dssoiam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90kerberos%E8%AE%A4%E8%AF%81/</link><pubDate>Wed, 23 Jul 2025 12:57:26 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC31%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%97%A0%E7%BC%9Dssoiam%E5%B9%B3%E5%8F%B0%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90kerberos%E8%AE%A4%E8%AF%81/</guid><description>&lt;h2 id="第31篇解决方案无缝ssoiam平台如何集成kerberos认证">&lt;strong>第31篇：【解决方案】无缝SSO：IAM平台如何集成Kerberos认证&lt;/strong>&lt;/h2>
 &lt;h3 id="导言">&lt;strong>导言&lt;/strong>&lt;/h3>
 &lt;p>在企业内部网络中，员工早已习惯于“登录一次Windows，畅行所有内部应用”的无缝体验。这种便捷、安全的单点登录（SSO）背后，正是由Kerberos协议所驱动的集成Windows认证（Integrated Windows Authentication, IWA）。对于任何希望在企业内部落地并提供卓越用户体验的IAM/IDaaS平台而言，能否完美地继承和利用现有的Kerberos体系，是其成功的关键试金石。&lt;/p>
 &lt;p>现代IAM平台并非要取代Kerberos，而是要&lt;strong>与之深度集成，强强联合&lt;/strong>。通过集成，IAM可以：&lt;/p>
@@ -1182,10 +1187,7 @@ style F fill:#ccf,stroke:#333,stroke-width:2px
 &lt;ul>
 &lt;li>Context Engineering for AI Agents: Lessons from Building Manus - &lt;a href="https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus">https://manus.im/blog/Context-Engineering-for-AI-Agents-Lessons-from-Building-Manus&lt;/a>&lt;/li>
 &lt;/ul>
-&lt;p>&lt;strong>欢迎关注+点赞+推荐+转发&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC30%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%96%B0%E8%BE%B9%E7%95%8Ciamidaas%E5%A6%82%E4%BD%95%E6%B2%BB%E7%90%86api%E5%AE%89%E5%85%A8/</link><pubDate>Mon, 21 Jul 2025 13:14:24 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC30%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%96%B0%E8%BE%B9%E7%95%8Ciamidaas%E5%A6%82%E4%BD%95%E6%B2%BB%E7%90%86api%E5%AE%89%E5%85%A8/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第30篇解决方案新边界iamidaas如何治理api安全">&lt;strong>第30篇：【解决方案】新边界：IAM/IDaaS如何治理API安全&lt;/strong>&lt;/h2>
+&lt;p>&lt;strong>欢迎关注+点赞+推荐+转发&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC30%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%96%B0%E8%BE%B9%E7%95%8Ciamidaas%E5%A6%82%E4%BD%95%E6%B2%BB%E7%90%86api%E5%AE%89%E5%85%A8/</link><pubDate>Mon, 21 Jul 2025 13:14:24 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC30%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E6%96%B0%E8%BE%B9%E7%95%8Ciamidaas%E5%A6%82%E4%BD%95%E6%B2%BB%E7%90%86api%E5%AE%89%E5%85%A8/</guid><description>&lt;h2 id="第30篇解决方案新边界iamidaas如何治理api安全">&lt;strong>第30篇：【解决方案】新边界：IAM/IDaaS如何治理API安全&lt;/strong>&lt;/h2>
 &lt;h3 id="导言">&lt;strong>导言&lt;/strong>&lt;/h3>
 &lt;p>在微服务架构和API经济盛行的今天，应用程序之间的通信（Machine-to-Machine, M2M）流量已远远超过人与应用的交互。API，作为这些通信的契约，构成了企业新的、无形的攻击面。传统的、依赖静态API密钥（API Key）的防护方式，因其凭证固定、权限粗糙、难以轮换和审计等弊端，已无法满足现代零信任安全模型的要求。&lt;/p>
 &lt;p>为了应对这一挑战，现代IAM/IDaaS平台正在将其治理能力从用户延伸至API，将API安全作为其核心功能之一。它不再仅仅是“人的身份平台”，更是“服务与应用的身份平台”。&lt;/p>
@@ -1256,10 +1258,7 @@ else 验证失败 (Validation Failed)
 Gateway--&amp;gt;&amp;gt;-App: 10. 返回 401 Unauthorized 或 403 Forbidden
 end
 &lt;/code>&lt;/pre>&lt;h3 id="三-access-token深度解析jwt声明的含义">&lt;strong>三、 Access Token深度解析：JWT声明的含义&lt;/strong>&lt;/h3>
-&lt;p>在M2M场景中，由IAM颁发的Access Token（通常是JWT格式）是安全的核心。理解其内部声明对于实现正确的访问控制至关重要。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC29%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%BB%9F%E4%B8%80%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95%E5%8D%95%E7%A0%81%E5%A4%9A%E8%83%BD%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/</link><pubDate>Mon, 21 Jul 2025 12:46:23 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC29%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%BB%9F%E4%B8%80%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95%E5%8D%95%E7%A0%81%E5%A4%9A%E8%83%BD%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第29篇解决方案统一扫码登录单码多能的原理与实现">&lt;strong>第29篇：【解决方案】统一扫码登录：单码多能的原理与实现&lt;/strong>&lt;/h2>
+&lt;p>在M2M场景中，由IAM颁发的Access Token（通常是JWT格式）是安全的核心。理解其内部声明对于实现正确的访问控制至关重要。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC29%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%BB%9F%E4%B8%80%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95%E5%8D%95%E7%A0%81%E5%A4%9A%E8%83%BD%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/</link><pubDate>Mon, 21 Jul 2025 12:46:23 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC29%E7%AF%87%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E7%BB%9F%E4%B8%80%E6%89%AB%E7%A0%81%E7%99%BB%E5%BD%95%E5%8D%95%E7%A0%81%E5%A4%9A%E8%83%BD%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/</guid><description>&lt;h2 id="第29篇解决方案统一扫码登录单码多能的原理与实现">&lt;strong>第29篇：【解决方案】统一扫码登录：单码多能的原理与实现&lt;/strong>&lt;/h2>
 &lt;h3 id="导言">&lt;strong>导言&lt;/strong>&lt;/h3>
 &lt;p>在移动优先的时代，扫码登录已成为用户体验的标配。然而，传统的扫码登录通常是“单对单”的，例如，微信的二维码只能由微信App扫描。为了追求极致的用户便捷性，现代IAM/IDaaS平台正在探索一种更高级的模式——&lt;strong>统一扫码登录&lt;/strong>。&lt;/p>
 &lt;p>其核心目标是：在PC端的登录页面上只展示&lt;strong>一个动态二维码&lt;/strong>，但这个二维码可以被&lt;strong>多个不同的App（如微信、钉钉、企业自有App）&lt;/strong> 同时识别和扫描，并最终完成PC端的安全登录。&lt;/p>
@@ -1997,10 +1996,7 @@ style E fill:#e6ffed,stroke:#333,stroke-width:2px
 style K fill:#fff0b3,stroke:#333,stroke-width:2px
 style Q fill:#d1e7ff,stroke:#333,stroke-width:2px
 &lt;/code>&lt;/pre>&lt;h4 id="阶段一铸造黄金评估集定义好的唯一标准">&lt;strong>阶段一：铸造黄金评估集——定义“好”的唯一标准&lt;/strong>&lt;/h4>
-&lt;p>评估的质量上限取决于评估集的质量。一个高质量的评估集（黄金集）是整个流程中最宝贵的资产，是定义“好”的唯一事实来源。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/</link><pubDate>Thu, 10 Jul 2025 12:54:28 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第20篇架构篇idaas架构的试金石驾驭多租户api与高可用的三重挑战">第20篇：【架构篇】IDaaS架构的“试金石”：驾驭多租户、API与高可用的三重挑战&lt;/h2>
+&lt;p>评估的质量上限取决于评估集的质量。一个高质量的评估集（黄金集）是整个流程中最宝贵的资产，是定义“好”的唯一事实来源。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/</link><pubDate>Thu, 10 Jul 2025 12:54:28 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/</guid><description>&lt;h2 id="第20篇架构篇idaas架构的试金石驾驭多租户api与高可用的三重挑战">第20篇：【架构篇】IDaaS架构的“试金石”：驾驭多租户、API与高可用的三重挑战&lt;/h2>
 &lt;p>多租户（Multi-tenancy）和API优先（API-First）是IDaaS的两大基石。但对于平台构建者而言，真正的挑战在于：&lt;strong>如何在这两大基石之上，构建真正意义上的高可用性、弹性和安全性？&lt;/strong>&lt;/p>
 &lt;h3 id="1-多租户架构从逻辑隔离到命运共同体的管理艺术">1. 多租户架构：从“逻辑隔离”到“命运共同体”的管理艺术&lt;/h3>
 &lt;p>多租户是IDaaS的商业模式基石，但在技术上，它是一把双刃剑。它在带来成本效益的同时，也引入了“命运共同体”的风险——例如，一个租户的资源滥用、性能瓶颈或安全漏洞可能会通过共享基础设施波及其他所有租户。因此，系统设计的核心目标是：&lt;strong>在共享资源的前提下，实现最大程度的故障隔离和性能隔离。&lt;/strong>&lt;/p>
@@ -2068,10 +2064,7 @@ mermaid = true
 &lt;/ul>
 &lt;hr>
 &lt;h3 id="2-api从优先设计到平台即产品的演进">2. API：从“优先设计”到“平台即产品”的演进&lt;/h3>
-&lt;p>在IDaaS领域，&lt;strong>API不仅是集成手段，它本身就是核心产品&lt;/strong>。平台的价值直接体现在其API的质量、稳定性和可扩展性上。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC19%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AAiam%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%E5%89%96%E6%9E%90/</link><pubDate>Mon, 07 Jul 2025 13:32:22 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC19%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AAiam%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%E5%89%96%E6%9E%90/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第19篇架构篇设计一个iam系统核心模块剖析">第19篇：【架构篇】设计一个IAM系统：核心模块剖析&lt;/h2>
+&lt;p>在IDaaS领域，&lt;strong>API不仅是集成手段，它本身就是核心产品&lt;/strong>。平台的价值直接体现在其API的质量、稳定性和可扩展性上。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC19%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AAiam%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%E5%89%96%E6%9E%90/</link><pubDate>Mon, 07 Jul 2025 13:32:22 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC19%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AAiam%E7%B3%BB%E7%BB%9F%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97%E5%89%96%E6%9E%90/</guid><description>&lt;h2 id="第19篇架构篇设计一个iam系统核心模块剖析">第19篇：【架构篇】设计一个IAM系统：核心模块剖析&lt;/h2>
 &lt;p>在前面的模块中，我们已经深入探讨了身份认证（Authentication）与授权（Authorization）的各种模型，并精解了支撑现代IAM体系的核心协议，如OAuth 2.0、OIDC、SAML及SCIM。我们已经掌握了构建身份信任的“积木块”。现在，我们将把这些独立的知识点串联起来，进入&lt;strong>模块五：IAM/IDaaS系统架构设计&lt;/strong>。本篇将从系统架构的视角，审视如何将这些协议与模型组装成一个功能完备、安全且可扩展的IAM系统。&lt;/p>
 &lt;p>设计一个IAM系统远非简单地实现几个协议，它是一项复杂的系统工程，需要对多个核心模块进行深思熟虑的设计，并确保它们之间的高效协作。这不仅是技术的挑战，更是在安全性、用户体验、开发成本和运维复杂度之间进行艰难权衡的艺术。&lt;/p>
 &lt;h3 id="iam系统核心模块概览与动态交互">IAM系统核心模块概览与动态交互&lt;/h3>
@@ -2136,10 +2129,7 @@ AuthzService-&amp;gt;&amp;gt;AuditLog: 11. 记录授权决策日志
 SessionMgmt-&amp;gt;&amp;gt;AuditLog: 11. 记录会话管理日志
 ProtectedAPI-&amp;gt;&amp;gt;AuditLog: 11. 记录API访问日志
 &lt;/code>&lt;/pre>&lt;h3 id="1-身份存储-identity-store权威的真理之源-the-authoritative-source-of-truth">1. 身份存储 (Identity Store)：权威的真理之源 (The Authoritative Source of Truth)&lt;/h3>
-&lt;p>身份存储是IAM的心脏，但它的设计远非“选择一个数据库”那么简单。它的核心挑战在于如何定义和维护关于“身份”的唯一、权威的真实来源，并平衡一致性、性能和集成成本。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/18-%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</link><pubDate>Fri, 04 Jul 2025 13:26:27 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/18-%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第18篇老牌目录服务ldap协议基础与应用场景">第18篇：老牌目录服务：LDAP协议基础与应用场景&lt;/h2>
+&lt;p>身份存储是IAM的心脏，但它的设计远非“选择一个数据库”那么简单。它的核心挑战在于如何定义和维护关于“身份”的唯一、权威的真实来源，并平衡一致性、性能和集成成本。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/18-%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</link><pubDate>Fri, 04 Jul 2025 13:26:27 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/18-%E7%AC%AC18%E7%AF%87%E8%80%81%E7%89%8C%E7%9B%AE%E5%BD%95%E6%9C%8D%E5%8A%A1ldap%E5%8D%8F%E8%AE%AE%E5%9F%BA%E7%A1%80%E4%B8%8E%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF/</guid><description>&lt;h2 id="第18篇老牌目录服务ldap协议基础与应用场景">第18篇：老牌目录服务：LDAP协议基础与应用场景&lt;/h2>
 &lt;p>在之前我们探讨的身份与访问管理（IAM）体系中，无论是用户认证、授权决策，还是身份供给，其核心都离不开对&lt;strong>用户身份信息&lt;/strong>的存储和管理。这些信息需要被高效地查询、更新，并能够被各种应用服务共享。而承担这一重任的，正是&lt;strong>目录服务&lt;/strong>。&lt;/p>
 &lt;p>在众多目录服务技术中，&lt;strong>LDAP（Lightweight Directory Access Protocol，轻量级目录访问协议）&lt;/strong> 无疑是最古老、最成熟且应用最为广泛的标准之一。它在企业级IAM领域占据着举足轻重的地位，是许多传统系统和现代解决方案的基石。&lt;/p>
 &lt;h3 id="1-什么是ldap">1. 什么是LDAP？&lt;/h3>
@@ -2207,10 +2197,7 @@ H --&amp;gt; I(cn=John Doe);
 end
 B --- E;
 &lt;/code>&lt;/pre>&lt;h3 id="3-ldap的常用操作">3. LDAP的常用操作&lt;/h3>
-&lt;p>LDAP协议定义了一系列用于访问和修改目录数据的标准操作：&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/17-%E7%AC%AC17%E7%AF%87%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BA%AB%E4%BB%BD%E4%BE%9B%E7%BB%99scim%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E7%AE%80%E5%8C%96%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><pubDate>Fri, 04 Jul 2025 13:08:05 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/17-%E7%AC%AC17%E7%AF%87%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BA%AB%E4%BB%BD%E4%BE%9B%E7%BB%99scim%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E7%AE%80%E5%8C%96%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第17篇自动化身份供给scim协议如何简化用户管理">第17篇：自动化身份供给：SCIM协议如何简化用户管理&lt;/h2>
+&lt;p>LDAP协议定义了一系列用于访问和修改目录数据的标准操作：&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/17-%E7%AC%AC17%E7%AF%87%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BA%AB%E4%BB%BD%E4%BE%9B%E7%BB%99scim%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E7%AE%80%E5%8C%96%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</link><pubDate>Fri, 04 Jul 2025 13:08:05 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/17-%E7%AC%AC17%E7%AF%87%E8%87%AA%E5%8A%A8%E5%8C%96%E8%BA%AB%E4%BB%BD%E4%BE%9B%E7%BB%99scim%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E7%AE%80%E5%8C%96%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86/</guid><description>&lt;h2 id="第17篇自动化身份供给scim协议如何简化用户管理">第17篇：自动化身份供给：SCIM协议如何简化用户管理&lt;/h2>
 &lt;p>在之前的文章中，我们讨论了身份认证（Authentication）和授权管理（Authorization）的各种核心协议与模型。然而，一个完整的身份和访问管理（IAM）体系，不仅仅包括“谁能登录”和“谁能做什么”，还必须高效地解决“用户身份信息如何创建、更新和同步到各个应用”的问题。这正是&lt;strong>身份供给（Identity Provisioning）&lt;/strong> 的职责所在。&lt;/p>
 &lt;p>想象一下，当一个新员工入职时，他需要访问公司的CRM、ERP、协作套件（如Office 365）等多个系统。如果每次都需要IT管理员手动在每个系统中创建账户、分配权限，这无疑是一项繁琐、耗时且容易出错的工作。当员工离职或部门调动时，手动管理带来的效率低下和安全风险（权限未及时撤销）将更加凸显。&lt;/p>
 &lt;p>&lt;strong>SCIM（System for Cross-domain Identity Management）协议&lt;/strong>正是为了解决这一痛点而诞生的。它提供了一种标准化的方式，实现用户和组身份信息的自动化管理和跨域同步。&lt;/p>
@@ -2253,10 +2240,7 @@ mermaid = true
 &lt;/ul>
 &lt;/li>
 &lt;/ul>
-&lt;p>SCIM通过这些标准化的资源和属性，确保了不同系统之间身份数据的一致性和可理解性。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/16-%E7%AC%AC16%E7%AF%87%E4%BC%81%E4%B8%9A%E7%BA%A7sso%E7%9A%84%E5%88%A9%E5%99%A8saml-2.0%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</link><pubDate>Thu, 03 Jul 2025 13:28:37 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/16-%E7%AC%AC16%E7%AF%87%E4%BC%81%E4%B8%9A%E7%BA%A7sso%E7%9A%84%E5%88%A9%E5%99%A8saml-2.0%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第16篇企业级sso的利器saml-20协议详解">第16篇：企业级SSO的利器SAML 2.0协议详解&lt;/h2>
+&lt;p>SCIM通过这些标准化的资源和属性，确保了不同系统之间身份数据的一致性和可理解性。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/16-%E7%AC%AC16%E7%AF%87%E4%BC%81%E4%B8%9A%E7%BA%A7sso%E7%9A%84%E5%88%A9%E5%99%A8saml-2.0%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</link><pubDate>Thu, 03 Jul 2025 13:28:37 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/16-%E7%AC%AC16%E7%AF%87%E4%BC%81%E4%B8%9A%E7%BA%A7sso%E7%9A%84%E5%88%A9%E5%99%A8saml-2.0%E5%8D%8F%E8%AE%AE%E8%AF%A6%E8%A7%A3/</guid><description>&lt;h2 id="第16篇企业级sso的利器saml-20协议详解">第16篇：企业级SSO的利器SAML 2.0协议详解&lt;/h2>
 &lt;p>在上一篇文章中，我们深入探讨了OpenID Connect (OIDC) 如何在OAuth 2.0之上构建身份认证层，成为现代互联网和移动应用SSO的主流选择。然而，在企业级应用和组织间协作的场景中，尤其是一些传统或遗留系统，你可能更常听到另一个强大的SSO协议——&lt;strong>SAML 2.0 (Security Assertion Markup Language)&lt;/strong>。&lt;/p>
 &lt;p>SAML 2.0是基于XML的开放标准，专门用于在不同安全域之间安全地交换认证和授权数据。它在企业级SSO领域扮演着举足轻重的角色，是许多大型企业内部应用以及企业与云服务（如Salesforce、Microsoft 365等）进行身份联邦的基石。&lt;/p>
 &lt;h3 id="1-saml-20的核心概念信任的桥梁">1. SAML 2.0的核心概念：信任的桥梁&lt;/h3>
@@ -2301,10 +2285,7 @@ mermaid = true
 &lt;li>&lt;strong>安全性：&lt;/strong> SAML断言必须由IdP进行&lt;strong>数字签名&lt;/strong>，以确保其完整性和真实性，防止篡改。SP会使用IdP的公共证书来验证此签名。断言通常也会被加密传输。&lt;/li>
 &lt;/ul>
 &lt;h3 id="2-saml-20的两种主要工作流程">2. SAML 2.0的两种主要工作流程&lt;/h3>
-&lt;p>SAML 2.0主要定义了两种用户启动SSO的流程，它们决定了用户在未登录时首先访问哪一方。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/15-%E7%AC%AC15%E7%AF%87openid-connect-oidc%E5%9C%A8oauth-2.0%E4%B9%8B%E4%B8%8A%E6%9E%84%E5%BB%BA%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%B1%82/</link><pubDate>Wed, 02 Jul 2025 13:25:42 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/15-%E7%AC%AC15%E7%AF%87openid-connect-oidc%E5%9C%A8oauth-2.0%E4%B9%8B%E4%B8%8A%E6%9E%84%E5%BB%BA%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%B1%82/</guid><description>&lt;p>+++
-draft = true
-+++&lt;/p>
-&lt;h2 id="第15篇openid-connect-oidc在oauth-20之上构建身份认证层">第15篇：OpenID Connect (OIDC)：在OAuth 2.0之上构建身份认证层&lt;/h2>
+&lt;p>SAML 2.0主要定义了两种用户启动SSO的流程，它们决定了用户在未登录时首先访问哪一方。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/15-%E7%AC%AC15%E7%AF%87openid-connect-oidc%E5%9C%A8oauth-2.0%E4%B9%8B%E4%B8%8A%E6%9E%84%E5%BB%BA%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%B1%82/</link><pubDate>Wed, 02 Jul 2025 13:25:42 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/15-%E7%AC%AC15%E7%AF%87openid-connect-oidc%E5%9C%A8oauth-2.0%E4%B9%8B%E4%B8%8A%E6%9E%84%E5%BB%BA%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%B1%82/</guid><description>&lt;h2 id="第15篇openid-connect-oidc在oauth-20之上构建身份认证层">第15篇：OpenID Connect (OIDC)：在OAuth 2.0之上构建身份认证层&lt;/h2>
 &lt;p>在前面的文章中，我们深入探讨了OAuth 2.0，了解到它是一个强大的&lt;strong>授权框架&lt;/strong>，解决了“客户端应用如何安全地访问用户资源”的问题。然而，OAuth 2.0本身并不直接提供&lt;strong>身份认证（Authentication）&lt;/strong> 功能，也就是说，它无法直接回答“当前登录的用户是谁”这个问题。&lt;/p>
 &lt;p>在实际应用中，尤其是在需要单点登录（SSO）的场景下，应用不仅需要获取用户的授权去访问资源，更需要确认用户的身份。这就是&lt;strong>OpenID Connect (OIDC)&lt;/strong> 出现的背景。OIDC巧妙地构建在OAuth 2.0之上，为我们提供了一个简单、可互操作的身份认证层。&lt;/p>
 &lt;h3 id="1-oidc与oauth-20的关系授权之上的身份认证">1. OIDC与OAuth 2.0的关系：授权之上的身份认证&lt;/h3>
@@ -2325,7 +2306,22 @@ draft = true
 &lt;li>&lt;strong>Signature（签名）：&lt;/strong> 用于验证令牌的完整性，确保令牌在传输过程中没有被篡改。&lt;/li>
 &lt;/ul>
 &lt;h4 id="22-id-token中的核心claims">2.2 ID Token中的核心Claims&lt;/h4>
-&lt;p>ID Token的Payload中包含了一系列标准化的&lt;strong>Claims&lt;/strong>（声明），这些声明提供了用户的身份信息和认证上下文。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/14-%E7%AC%AC14%E7%AF%87oauth-2.0%E4%B8%8B%E4%BB%A4%E7%89%8Ctoken%E8%8C%83%E5%9B%B4scope%E4%B8%8E%E5%AE%89%E5%85%A8%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link><pubDate>Wed, 02 Jul 2025 13:08:22 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/14-%E7%AC%AC14%E7%AF%87oauth-2.0%E4%B8%8B%E4%BB%A4%E7%89%8Ctoken%E8%8C%83%E5%9B%B4scope%E4%B8%8E%E5%AE%89%E5%85%A8%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid><description>&lt;h2 id="第14篇oauth-20下令牌token范围scope与安全最佳实践">第14篇：OAuth 2.0（下）：令牌（Token）、范围（Scope）与安全最佳实践&lt;/h2>
+&lt;p>ID Token的Payload中包含了一系列标准化的&lt;strong>Claims&lt;/strong>（声明），这些声明提供了用户的身份信息和认证上下文。&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>iss (Issuer)：&lt;/strong> 必选。ID Token的颁发者，通常是OpenID Provider的URL。RP会验证此值。&lt;/li>
+&lt;li>&lt;strong>sub (Subject)：&lt;/strong> 必选。主题标识符，是OP为此用户分配的唯一标识。在OP的上下文中，此值在所有客户端中对该用户都是唯一的且不可重新分配。&lt;/li>
+&lt;li>&lt;strong>aud (Audience)：&lt;/strong> 必选。ID Token的接收方，即依赖方（RP）的client_id。RP会验证此值，确保令牌是为其自身颁发的。&lt;/li>
+&lt;li>&lt;strong>exp (Expiration Time)：&lt;/strong> 必选。JWT的过期时间戳。RP会检查此值，拒绝过期的令牌。&lt;/li>
+&lt;li>&lt;strong>iat (Issued At)：&lt;/strong> 必选。JWT的签发时间戳。&lt;/li>
+&lt;li>&lt;strong>auth_time (Authentication Time)：&lt;/strong> 可选。用户进行认证的时间。RP可以使用此值来判断用户上次认证的时间是否满足其安全策略。&lt;/li>
+&lt;li>&lt;strong>nonce：&lt;/strong> 可选，但强烈推荐在授权码模式和隐式模式中使用。一个由RP生成，在认证请求中发送到OP，并在ID Token中返回的随机值。用于防止&lt;strong>重放攻击&lt;/strong>和&lt;strong>CSRF攻击&lt;/strong>。RP会验证此值是否与请求时发送的一致。&lt;/li>
+&lt;li>&lt;strong>azp (Authorized Party)：&lt;/strong> 可选，但推荐在某些场景下使用。表示授权令牌的客户端ID，用于RP验证。&lt;/li>
+&lt;li>&lt;strong>amr (Authentication Methods References)：&lt;/strong> 可选。指示用户认证时使用的认证方法列表（如pwd密码、mfa多因素认证、face面部识别等）。&lt;/li>
+&lt;li>&lt;strong>acr (Authentication Context Class Reference)：&lt;/strong> 可选。指示用户认证的上下文级别或强度，例如，LoA2低安全级别，LoA3高安全级别。&lt;/li>
+&lt;li>&lt;strong>c_hash (Code Hash) / at_hash (Access Token Hash)：&lt;/strong> 可选，用于隐式模式和混合模式，用于客户端验证授权码或访问令牌是否与ID Token相关联，防止令牌注入攻击。&lt;/li>
+&lt;/ul>
+&lt;h4 id="23-id-token的验证">2.3 ID Token的验证&lt;/h4>
+&lt;p>依赖方（RP）收到ID Token后，必须对其进行严格验证，才能信任其中的身份信息：&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/14-%E7%AC%AC14%E7%AF%87oauth-2.0%E4%B8%8B%E4%BB%A4%E7%89%8Ctoken%E8%8C%83%E5%9B%B4scope%E4%B8%8E%E5%AE%89%E5%85%A8%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</link><pubDate>Wed, 02 Jul 2025 13:08:22 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/14-%E7%AC%AC14%E7%AF%87oauth-2.0%E4%B8%8B%E4%BB%A4%E7%89%8Ctoken%E8%8C%83%E5%9B%B4scope%E4%B8%8E%E5%AE%89%E5%85%A8%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5/</guid><description>&lt;h2 id="第14篇oauth-20下令牌token范围scope与安全最佳实践">第14篇：OAuth 2.0（下）：令牌（Token）、范围（Scope）与安全最佳实践&lt;/h2>
 &lt;p>在上一篇文章中，我们介绍了OAuth 2.0作为授权框架的背景、核心角色以及四种主要的授权模式。我们了解到，OAuth 2.0的核心目标是在不共享用户凭证的前提下，安全地实现第三方应用对用户资源的访问。而实现这一目标的关键，正是其所颁发的各种&lt;strong>令牌（Token）&lt;/strong> 以及对&lt;strong>授权范围（Scope）&lt;/strong> 的精确控制。&lt;/p>
 &lt;p>本篇将深入探讨OAuth 2.0中的令牌类型、作用域概念，并重点讲解确保OAuth 2.0流程安全的关键机制和最佳实践，帮助你构建更健壮、更安全的授权体系。&lt;/p>
 &lt;h3 id="1-核心令牌类型授权的凭证">1. 核心令牌类型：授权的凭证&lt;/h3>
@@ -2375,10 +2371,7 @@ draft = true
 &lt;li>&lt;strong>工作原理：&lt;/strong> 用户在授权服务器的同意页面上，可以看到客户端请求的&amp;quot;scope&amp;rdquo;，并选择“同意”或“拒绝”。只有当用户明确同意后，授权服务器才会继续颁发令牌。&lt;/li>
 &lt;/ul>
 &lt;h3 id="3-oauth-20安全最佳实践铸就铜墙铁壁">3. OAuth 2.0安全最佳实践：铸就铜墙铁壁&lt;/h3>
-&lt;p>尽管OAuth 2.0框架本身具有较高的安全性，但错误的实现或忽视某些安全细节仍可能导致严重漏洞。以下是一些重要的安全考量和最佳实践：&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/</link><pubDate>Wed, 02 Jul 2025 12:54:59 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/</guid><description>&lt;p>+++
-mermaid = true
-+++&lt;/p>
-&lt;h2 id="第13篇oauth-20上授权框架的核心流程与角色">第13篇：OAuth 2.0（上）：授权框架的核心流程与角色&lt;/h2>
+&lt;p>尽管OAuth 2.0框架本身具有较高的安全性，但错误的实现或忽视某些安全细节仍可能导致严重漏洞。以下是一些重要的安全考量和最佳实践：&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/</link><pubDate>Wed, 02 Jul 2025 12:54:59 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/13-%E7%AC%AC13%E7%AF%87oauth-2.0%E4%B8%8A%E6%8E%88%E6%9D%83%E6%A1%86%E6%9E%B6%E7%9A%84%E6%A0%B8%E5%BF%83%E6%B5%81%E7%A8%8B%E4%B8%8E%E8%A7%92%E8%89%B2/</guid><description>&lt;h2 id="第13篇oauth-20上授权框架的核心流程与角色">第13篇：OAuth 2.0（上）：授权框架的核心流程与角色&lt;/h2>
 &lt;p>在当今的数字生态系统中，我们经常遇到这样的场景：一个应用（例如，一个照片编辑工具）需要访问你在另一个服务（例如，Google相册）上的资源。你当然不希望把Google相册的用户名和密码直接告诉照片编辑工具，因为这不仅不安全，也意味着这个工具将拥有你账户的全部权限。&lt;/p>
 &lt;p>正是为了解决这种“委托授权”的问题，&lt;strong>OAuth 2.0&lt;/strong>应运而生。它不是一个认证协议，而是一个授权框架，允许第三方应用&lt;strong>在不获取用户凭证的情况下，安全地访问用户在服务提供者处的受保护资源。&lt;/strong>&lt;/p>
 &lt;h3 id="1-oauth-20的背景与目标">1. OAuth 2.0的背景与目标&lt;/h3>
@@ -4791,10 +4784,7 @@ participant Authenticator as 认证器 (如指纹识别器/USB Key)&lt;/p></desc
 &lt;p>思维模型不是教条，而是航海图上的坐标。金字塔原理为我们指明了清晰沟通的灯塔方向，但我们依然需要根据实际的海况（沟通情境、问题性质、受众特点），灵活调整航向，甚至在必要时，暂时放下地图，靠经验和直觉去探索未知的海域。&lt;/p>
 &lt;p>最终，最重要的不是掌握多少个思维模型，而是拥有&lt;strong>批判性地看待和灵活运用&lt;/strong>这些模型的心智。愿你的思考如金字塔般坚固清晰，又不失面对复杂世界时的柔软与灵活。&lt;/p>
 &lt;h3>&lt;/h3>
-&lt;p>&lt;strong>欢迎关注+点赞+推荐+转发&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</link><pubDate>Tue, 29 Apr 2025 13:05:43 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</guid><description>&lt;p>+++
-draft = true
-+++&lt;/p>
-&lt;h2 id="在刻度与脉搏间感知世界你的数字敏感性有多少">在刻度与脉搏间感知世界：你的“数字敏感性”有多少？&lt;/h2>
+&lt;p>&lt;strong>欢迎关注+点赞+推荐+转发&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/technology/%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</link><pubDate>Tue, 29 Apr 2025 13:05:43 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/technology/%E6%95%B0%E5%AD%97%E6%95%8F%E6%84%9F%E6%80%A7/</guid><description>&lt;h2 id="在刻度与脉搏间感知世界你的数字敏感性有多少">在刻度与脉搏间感知世界：你的“数字敏感性”有多少？&lt;/h2>
 &lt;p>想象一下，如果生命可以被具象化为一个数字，大概是 &lt;strong>不到四万天&lt;/strong>。&lt;/p>
 &lt;p>这是一个关于“天数”的刻度。&lt;/p>
 &lt;p>它庞大得足以容纳无数日升月落、悲欢离合。&lt;/p>
@@ -4838,7 +4828,12 @@ draft = true
 &lt;p>如何培养它？&lt;/p>
 &lt;p>从身边的数字开始。&lt;/p>
 &lt;p>你的手机使用时长、步数、App 消耗的流量、电脑的内存占用…&lt;/p>
-&lt;p>尝试去理解这些数字代表着什么，它们如何影响你的生活或工作。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/thinking-models/25-%E4%BD%A0%E6%98%AF%E9%95%BF%E5%9C%A8%E6%9A%97%E5%A4%84%E7%9A%84%E8%98%91%E8%8F%87%E5%90%97%E6%8B%86%E8%A7%A3%E9%82%A3%E4%B8%AA%E6%AD%A3%E5%9C%A8%E6%89%BC%E6%9D%80%E4%BD%A0%E5%92%8C%E5%9B%A2%E9%98%9F%E7%9A%84%E6%80%9D%E7%BB%B4%E6%AF%92%E7%B4%A0/</link><pubDate>Tue, 29 Apr 2025 12:21:33 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/thinking-models/25-%E4%BD%A0%E6%98%AF%E9%95%BF%E5%9C%A8%E6%9A%97%E5%A4%84%E7%9A%84%E8%98%91%E8%8F%87%E5%90%97%E6%8B%86%E8%A7%A3%E9%82%A3%E4%B8%AA%E6%AD%A3%E5%9C%A8%E6%89%BC%E6%9D%80%E4%BD%A0%E5%92%8C%E5%9B%A2%E9%98%9F%E7%9A%84%E6%80%9D%E7%BB%B4%E6%AF%92%E7%B4%A0/</guid><description>&lt;h2 id="你是长在暗处的蘑菇吗拆解那个正在扼杀你和团队的思维毒素">你是“长在暗处的蘑菇”吗？拆解那个正在扼杀你和团队的“思维毒素”&lt;/h2>
+&lt;p>尝试去理解这些数字代表着什么，它们如何影响你的生活或工作。&lt;/p>
+&lt;p>当你面对一个技术名词或一个商业指标时，别只停留在概念，问问自己：&lt;/p>
+&lt;p>&lt;strong>“这个数字大概是多大？它的量级如何？在什么范围内算好？差一点或好一点会有什么后果？”&lt;/strong>&lt;/p>
+&lt;p>将抽象的数字，锚定到具体的感受或结果上。&lt;/p>
+&lt;h3 id="结语做一个对数字有感觉的人">结语：做一个对数字有感觉的人&lt;/h3>
+&lt;p>不到四万天，提醒我们去热爱和珍惜。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/thinking-models/25-%E4%BD%A0%E6%98%AF%E9%95%BF%E5%9C%A8%E6%9A%97%E5%A4%84%E7%9A%84%E8%98%91%E8%8F%87%E5%90%97%E6%8B%86%E8%A7%A3%E9%82%A3%E4%B8%AA%E6%AD%A3%E5%9C%A8%E6%89%BC%E6%9D%80%E4%BD%A0%E5%92%8C%E5%9B%A2%E9%98%9F%E7%9A%84%E6%80%9D%E7%BB%B4%E6%AF%92%E7%B4%A0/</link><pubDate>Tue, 29 Apr 2025 12:21:33 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/thinking-models/25-%E4%BD%A0%E6%98%AF%E9%95%BF%E5%9C%A8%E6%9A%97%E5%A4%84%E7%9A%84%E8%98%91%E8%8F%87%E5%90%97%E6%8B%86%E8%A7%A3%E9%82%A3%E4%B8%AA%E6%AD%A3%E5%9C%A8%E6%89%BC%E6%9D%80%E4%BD%A0%E5%92%8C%E5%9B%A2%E9%98%9F%E7%9A%84%E6%80%9D%E7%BB%B4%E6%AF%92%E7%B4%A0/</guid><description>&lt;h2 id="你是长在暗处的蘑菇吗拆解那个正在扼杀你和团队的思维毒素">你是“长在暗处的蘑菇”吗？拆解那个正在扼杀你和团队的“思维毒素”&lt;/h2>
 &lt;p>想象一下这个场景：你每天坐在工位前，接到上级分派的任务，也许是处理一堆数据，也许是执行某个流程，但你对这项工作的来龙去脉、它在整个项目中的位置、最终的目标是什么，几乎一无所知。你只知道要“按要求做”，信息是零散的，反馈是模糊的，偶尔得到的“指点”也像是一团迷雾。&lt;/p>
 &lt;p>你就像一颗被种在潮湿、阴暗角落里的蘑菇，被定期浇灌一些“肥料”（任务或指令），除此之外，你对周围的世界一无所知，也无从感知自己生长的价值和方向。直到有一天，你“成熟了”，或许就会被迅速地“采摘”——可能是因为项目结束，也可能是因为你不再“有用”，或者仅仅是因为“长”得不如预期。&lt;/p>
 &lt;p>这种令人窒息的体验，在管理学或更准确地说，在职场“反模式”中，有一个广为人知的形象化称谓——&lt;strong>“蘑菇管理”（Mushroom Management）&lt;/strong>。&lt;/p>
@@ -5780,10 +5775,7 @@ draft = true
 &lt;p>AI的发展很快，当智商达到140的时候可能带来巨大的进步和机遇，但也伴随着失业、伦理和安全等风险。当达到160的时候可能代表着一个全新的智能时代，其潜力巨大，但也带来了前所未有的挑战，甚至可能涉及人类的生存问题。到那时候它的伦理道德和政治倾向将影响更大。&lt;/p>
 &lt;p>参考https://trackingai.org/home&lt;/p>
 &lt;h3>&lt;/h3>
-&lt;p>&lt;strong>欢迎关注+点赞+转发&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/ai%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%8C%85%E6%8B%ACdeepseek/</link><pubDate>Sat, 19 Apr 2025 21:15:47 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/ai%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%8C%85%E6%8B%ACdeepseek/</guid><description>&lt;p>+++
-draft = true
-+++&lt;/p>
-&lt;h2 id="ai大语言模型的幻觉包括deepseek再论中小学生批判性思维">AI大语言模型的幻觉,包括DeepSeek&amp;ndash;再论中小学生批判性思维&lt;/h2>
+&lt;p>&lt;strong>欢迎关注+点赞+转发&lt;/strong>&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/ai%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%8C%85%E6%8B%ACdeepseek/</link><pubDate>Sat, 19 Apr 2025 21:15:47 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/ai%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E5%B9%BB%E8%A7%89%E5%8C%85%E6%8B%ACdeepseek/</guid><description>&lt;h2 id="ai大语言模型的幻觉包括deepseek再论中小学生批判性思维">AI大语言模型的幻觉,包括DeepSeek&amp;ndash;再论中小学生批判性思维&lt;/h2>
 &lt;p>前几天写了一篇关于中小学生使用AI的一篇文章，中间提到培养批判性思维，只是点到为止，感觉有必要再重新强调一下。&lt;/p>
 &lt;h3 id="ai幻觉不容忽视的现实">AI“幻觉”：不容忽视的现实&lt;/h3>
 &lt;p>AI“幻觉”并非科幻小说中的情节，而是真实存在的现象。当前的人工智能，尤其是大型语言模型，其工作原理是基于对海量数据的学习和模式识别。尽管这些模型在很多任务上表现出色，但它们并不真正理解知识，也不具备人类的常识和逻辑推理能力。因此，当面对超出其训练数据范围或需要复杂推理的问题时，AI就可能产生“幻觉”，编造看似合理但实则错误的信息。&lt;/p>

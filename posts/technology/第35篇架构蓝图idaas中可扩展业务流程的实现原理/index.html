@@ -33,7 +33,30 @@ CREATE TABLE custom_logics (
 );
 
 
-trigger_bindings 表： 这是将“钩子”与“动作”绑定在一起的“触发器”表。"><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC35%E7%AF%87%E6%9E%B6%E6%9E%84%E8%93%9D%E5%9B%BEidaas%E4%B8%AD%E5%8F%AF%E6%89%A9%E5%B1%95%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC35%E7%AF%87%E6%9E%B6%E6%9E%84%E8%93%9D%E5%9B%BEidaas%E4%B8%AD%E5%8F%AF%E6%89%A9%E5%B1%95%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC35%E7%AF%87%E6%9E%B6%E6%9E%84%E8%93%9D%E5%9B%BEidaas%E4%B8%AD%E5%8F%AF%E6%89%A9%E5%B1%95%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第35篇：【架构蓝图】IDaaS中可扩展业务流程的实现原理 导言 在上一章中，我们探讨了IDaaS平台如何通过元数据驱动的架构，实现对任意对象和属性的灵活定义。然而，一个真正的平台不仅要能定义“是什么”（对象），更要能定义“做什么”（流程）。当一个用户被创建、一个设备被注册、或一次敏感的认证发生时，企业往往需要注入其独特的业务逻辑——可能是数据校验、是属性增强、或是对下游系统的异步通知。
+trigger_bindings 表： 这是将“钩子”与“动作”绑定在一起的“触发器”表。"><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC35%E7%AF%87%E6%9E%B6%E6%9E%84%E8%93%9D%E5%9B%BEidaas%E4%B8%AD%E5%8F%AF%E6%89%A9%E5%B1%95%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC35%E7%AF%87%E6%9E%B6%E6%9E%84%E8%93%9D%E5%9B%BEidaas%E4%B8%AD%E5%8F%AF%E6%89%A9%E5%B1%95%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    
+    
+    const prepareMermaid = () => {
+        document.querySelectorAll("pre code.language-mermaid").forEach(function(block) {
+            const pre = block.parentNode;
+            const mermaidContainer = document.createElement("div");
+            mermaidContainer.className = "mermaid";
+            mermaidContainer.textContent = block.textContent;
+            pre.parentNode.replaceChild(mermaidContainer, pre);
+        });
+    };
+
+    
+    const initMermaid = () => {
+        prepareMermaid();
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.run();
+    }
+
+    initMermaid();
+    document.addEventListener("astro:after-swap", initMermaid);
+</script><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC35%E7%AF%87%E6%9E%B6%E6%9E%84%E8%93%9D%E5%9B%BEidaas%E4%B8%AD%E5%8F%AF%E6%89%A9%E5%B1%95%E4%B8%9A%E5%8A%A1%E6%B5%81%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第35篇：【架构蓝图】IDaaS中可扩展业务流程的实现原理 导言 在上一章中，我们探讨了IDaaS平台如何通过元数据驱动的架构，实现对任意对象和属性的灵活定义。然而，一个真正的平台不仅要能定义“是什么”（对象），更要能定义“做什么”（流程）。当一个用户被创建、一个设备被注册、或一次敏感的认证发生时，企业往往需要注入其独特的业务逻辑——可能是数据校验、是属性增强、或是对下游系统的异步通知。
 传统的IAM系统将这些流程硬编码在系统内部，无法满足企业个性化的需求。而现代IDaaS平台则通过一个可扩展的、事件驱动的“钩子”（Hook）系统，将自身的核心流程开放出来，允许租户管理员或开发者注入自定义逻辑。
 本章将深入IDaaS平台架构的内部，解构这个强大的业务流程引擎是如何实现的，重点关注：
 核心架构： 事件、钩子与动作的元数据模型，以及自定义对象钩子的动态生成机制。 运行时引擎： 系统如何发现并执行这些自定义逻辑。 应用场景： 如何将其应用于对象生命周期和核心认证流程。 核心架构之一：流程的元数据模型与动态钩子生成 可扩展流程的基石，是一个强大的元数据管理层。它不仅定义了系统中所有可被“挂接”的事件点，更关键的是，它具备为全新的自定义对象动态生成这些事件点的能力。

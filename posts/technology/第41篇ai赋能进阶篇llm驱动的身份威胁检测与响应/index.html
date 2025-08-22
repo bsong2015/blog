@@ -69,7 +69,30 @@ LLM能够处理一个事件序列（Sequence of Events），并从中推理出�
       
   
 
-分析： LLM通过推理，将三个独立的、中低风险的异常，整合成了一个高风险、高置信度的安全事件，并生成了清晰的“威胁叙事”（Threat Narrative）。"><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC41%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%BF%9B%E9%98%B6%E7%AF%87llm%E9%A9%B1%E5%8A%A8%E7%9A%84%E8%BA%AB%E4%BB%BD%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC41%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%BF%9B%E9%98%B6%E7%AF%87llm%E9%A9%B1%E5%8A%A8%E7%9A%84%E8%BA%AB%E4%BB%BD%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC41%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%BF%9B%E9%98%B6%E7%AF%87llm%E9%A9%B1%E5%8A%A8%E7%9A%84%E8%BA%AB%E4%BB%BD%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第41篇：【AI赋能·进阶篇】LLM驱动的身份威胁检测与响应 导言 在上一章中，我们探讨了自适应认证如何利用AI在登录入口处进行实时风险评估。然而，身份安全的核心挑战不止于此，更在于如何检测和理解用户成功登录之后的复杂行为，特别是那些由被盗账户或内部人员发起的、潜在的恶意活动。
+分析： LLM通过推理，将三个独立的、中低风险的异常，整合成了一个高风险、高置信度的安全事件，并生成了清晰的“威胁叙事”（Threat Narrative）。"><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC41%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%BF%9B%E9%98%B6%E7%AF%87llm%E9%A9%B1%E5%8A%A8%E7%9A%84%E8%BA%AB%E4%BB%BD%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.8fe10233a706bc87f2e08b3cf97b8bd4c0a80f10675a143675d59212121037c0.css integrity="sha256-j+ECM6cGvIfy4Is8+XuL1MCoDxBnWhQ2ddWSEhIQN8A=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC41%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%BF%9B%E9%98%B6%E7%AF%87llm%E9%A9%B1%E5%8A%A8%E7%9A%84%E8%BA%AB%E4%BB%BD%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script type=module>
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    
+    
+    const prepareMermaid = () => {
+        document.querySelectorAll("pre code.language-mermaid").forEach(function(block) {
+            const pre = block.parentNode;
+            const mermaidContainer = document.createElement("div");
+            mermaidContainer.className = "mermaid";
+            mermaidContainer.textContent = block.textContent;
+            pre.parentNode.replaceChild(mermaidContainer, pre);
+        });
+    };
+
+    
+    const initMermaid = () => {
+        prepareMermaid();
+        mermaid.initialize({ startOnLoad: true });
+        mermaid.run();
+    }
+
+    initMermaid();
+    document.addEventListener("astro:after-swap", initMermaid);
+</script><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/%E7%AC%AC41%E7%AF%87ai%E8%B5%8B%E8%83%BD%E8%BF%9B%E9%98%B6%E7%AF%87llm%E9%A9%B1%E5%8A%A8%E7%9A%84%E8%BA%AB%E4%BB%BD%E5%A8%81%E8%83%81%E6%A3%80%E6%B5%8B%E4%B8%8E%E5%93%8D%E5%BA%94/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第41篇：【AI赋能·进阶篇】LLM驱动的身份威胁检测与响应 导言 在上一章中，我们探讨了自适应认证如何利用AI在登录入口处进行实时风险评估。然而，身份安全的核心挑战不止于此，更在于如何检测和理解用户成功登录之后的复杂行为，特别是那些由被盗账户或内部人员发起的、潜在的恶意活动。
 传统的UEBA（用户与实体行为分析）系统为此应运而生，它通过统计学方法检测行为异常。但UEBA存在一个根本性的 “语义鸿沟”：它能识别出行为模式的统计学偏差（例如，异地登录），但无法深入理解这些行为背后的业务逻辑和潜在意图，因为它难以解析审计日志中信息最丰富的、非结构化的文本内容。
 本章将深入探讨生成式AI（LLM）如何弥补这一鸿沟。我们将揭示LLM如何通过其强大的上下文推理能力，将海量的、孤立的IAM审计日志，关联分析成高保真的 “身份威胁事件”，实现从事后审计到主动威胁洞察的认知飞跃。
 传统UEBA的局限性：高召回率与高误报率并存 为了理解LLM带来的价值，我们必须首先精确地理解UEBA的工作机制及其局限性。
