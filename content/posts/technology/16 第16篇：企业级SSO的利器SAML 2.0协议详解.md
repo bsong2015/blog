@@ -1,9 +1,7 @@
 ---
 date: 2025-07-03T13:28:37+08:00
+mermaid: true
 ---
-+++
-mermaid = true
-+++
 
 ## 第16篇：企业级SSO的利器SAML 2.0协议详解
 

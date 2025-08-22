@@ -1,9 +1,6 @@
 ---
 date: 2025-07-02T13:25:42+08:00
 ---
-+++
-draft = true
-+++
 
 ## 第15篇：OpenID Connect (OIDC)：在OAuth 2.0之上构建身份认证层
 

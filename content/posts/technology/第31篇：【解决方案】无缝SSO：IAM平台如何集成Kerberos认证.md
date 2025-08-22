@@ -1,9 +1,8 @@
 ---
 date: 2025-07-23T12:57:26+08:00
+mermaid: true
 ---
-+++
-mermaid = true
-+++
+
 ## **第31篇：【解决方案】无缝SSO：IAM平台如何集成Kerberos认证**
 
 ### **导言**
