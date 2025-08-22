@@ -4,6 +4,9 @@ defaultContentLanguage = "zh"   # 内容默认语言标识（与多语言配置�
 title = "万年水的博客"
 theme = ["PaperMod"]
 
+[params]
+  disableSpecial1stPost = true
+
 # 配置中文语言细节（可选但推荐）
 [languages.zh]
 languageName = "中文"
@@ -63,6 +66,10 @@ weight = 1                      # 权重，用于多语言排序
   url = "/posts/others/"
   weight = 80
 
+[imaging]
+  quality = 75
+  resampleFilter = "Lanczos"
+
 [params.mermaid]
   enable = true
 
@@ -70,3 +77,6 @@ weight = 1                      # 权重，用于多语言排序
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[build]
+  enableGitInfo = true

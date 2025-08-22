@@ -52,6 +52,7 @@
 {{- end }}
 
 {{- $term := .Data.Term }}
+{{- if not .Params.hideChildren }}
 {{- range $index, $page := $paginator.Pages }}
 
 {{- $class := "post-entry" }}
@@ -65,7 +66,7 @@
 
 <article class="{{ $class }}">
   {{- $baseFileName := .File.BaseFileName }}
-  {{- $fileDir := .File.Dir }}
+  {{- $fileDir := replace (replace .File.Dir "\\" "/") "\\" "/" }}
   {{- $image_path := "" }}
 
   {{- $matches := findRE `^\d+` $baseFileName }}
@@ -103,13 +104,26 @@
 
   {{- if $image_path }}
   <div class="entry-cover">
-    <img src="{{ $image_path | absURL }}" alt="Cover image for {{ $baseFileName }}" style="width: 100px; height: auto; float: left; margin-right: 15px;">
+    {{- $imageFileName := path.Base $image_path -}}
+    {{- $sectionPage := .Parent -}}
+
+    {{- $img := "" -}}
+    {{- if $sectionPage -}}
+      {{- $img = $sectionPage.Resources.GetMatch $imageFileName -}}
+    {{- end -}}
+
+    {{- if $img -}}
+      {{- $thumbnail := $img.Fill "100x100 webp" -}}
+      <img src="{{ $thumbnail.RelPermalink }}" alt="{{ printf "Cover image for %s" $page.Title }}" loading="lazy" style="width: 100px; height: 100px; float: left; margin-right: 15px;">
+    {{- else -}}
+      <img src="{{ $image_path | absURL }}" alt="{{ printf "Cover image for %s" $page.Title }}" loading="lazy" style="width: 100px; height: auto; float: left; margin-right: 15px;">
+    {{- end -}}
   </div>
   {{- end }}
 
   <header class="entry-header">
     <h2 class="entry-hint-parent">
-      {{- $baseFileName }}
+      {{- replaceRE "^\\d+\\s+" "" $baseFileName }}
       {{- if .Draft }}
       <span class="entry-hint" title="Draft">
         <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
@@ -123,7 +137,9 @@
   <a class="entry-link" aria-label="post link to {{ $baseFileName }}" href="{{ .Permalink }}"></a>
 </article>
 {{- end }}
+{{- end }} {{/* end if not .Params.hideChildren */}}
 
+{{- if not .Params.hideChildren }}
 {{- if gt $paginator.TotalPages 1 }}
 <footer class="page-footer">
   <nav class="pagination">
@@ -146,6 +162,7 @@
   </nav>
 </footer>
 {{- end }}
+{{- end }} {{/* end if not .Params.hideChildren */}}
 
 {{- end }}{{/* end profileMode */}}
 
