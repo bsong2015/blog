@@ -121,7 +121,7 @@
   </div>
   {{- end }}
 
-  <header class="entry-header">
+    <header class="entry-header">
     <h2 class="entry-hint-parent">
       {{- replaceRE "^\\d+\\s+" "" $baseFileName }}
       {{- if .Draft }}
@@ -134,6 +134,13 @@
       {{- end }}
     </h2>
   </header>
+  {{- if isset .Params "date" }}
+  <footer class="entry-footer">
+    <span class="entry-date" style="font-size: 0.8em; color: var(--secondary);">
+      {{- .Date.Format "2006-01-02" -}}
+    </span>
+  </footer>
+  {{- end }}
   <a class="entry-link" aria-label="post link to {{ $baseFileName }}" href="{{ .Permalink }}"></a>
 </article>
 {{- end }}
