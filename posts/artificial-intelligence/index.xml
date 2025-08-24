@@ -1,4 +1,47 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>人工智能 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/</link><description>Recent content in 人工智能 on 万年水的博客</description><generator>Hugo -- 0.148.2</generator><language>zh</language><lastBuildDate>Sat, 23 Aug 2025 15:25:09 +0800</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/27-%E6%88%91%E8%A7%A3%E9%9B%87%E4%BA%86%E6%8A%80%E6%9C%AF%E7%90%90%E4%BA%8B%E8%81%98%E8%AF%B7-ai-%E6%8B%85%E4%BB%BB%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E5%90%88%E4%BC%99%E4%BA%BA/</link><pubDate>Sat, 23 Aug 2025 15:25:09 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/27-%E6%88%91%E8%A7%A3%E9%9B%87%E4%BA%86%E6%8A%80%E6%9C%AF%E7%90%90%E4%BA%8B%E8%81%98%E8%AF%B7-ai-%E6%8B%85%E4%BB%BB%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E5%90%88%E4%BC%99%E4%BA%BA/</guid><description>&lt;h2 id="我解雇了技术琐事聘请-ai-担任我的技术合伙人">&lt;strong>我解雇了“技术琐事”，聘请 AI 担任我的技术合伙人&lt;/strong>&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>人工智能 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/</link><description>Recent content in 人工智能 on 万年水的博客</description><generator>Hugo -- 0.148.2</generator><language>zh</language><lastBuildDate>Sun, 24 Aug 2025 11:25:33 +0800</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/28-%E8%B6%85%E8%B6%8A%E7%BC%96%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8Cai%E5%A6%82%E4%BD%95%E5%BC%80%E5%90%AF%E6%84%8F%E5%9B%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%9A%84%E6%96%B0%E7%BA%AA%E5%85%83/</link><pubDate>Sun, 24 Aug 2025 11:25:33 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/28-%E8%B6%85%E8%B6%8A%E7%BC%96%E7%A0%81%E5%91%BD%E4%BB%A4%E8%A1%8Cai%E5%A6%82%E4%BD%95%E5%BC%80%E5%90%AF%E6%84%8F%E5%9B%BE%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%9A%84%E6%96%B0%E7%BA%AA%E5%85%83/</guid><description>&lt;h2 id="超越编码命令行ai如何开启意图驱动开发的新纪元">超越编码：命令行AI如何开启“意图驱动开发”的新纪元&lt;/h2>
+&lt;p>&lt;strong>摘要：&lt;/strong> 近期，以Gemini CLI和Claude Code为代表的新一代命令行AI工具正引发一场深刻的变革。本文通过一个“零代码”完成全栈项目的真实案例，剖析了这场变革的本质，指出我们正从传统的“代码辅助”迈向一个全新的“自主执行”阶段。文章详细阐述了“意图驱动开发”（Intent-Driven Development, IDD）这一新兴的软件工程范式，并探讨了在此范式下，命令行界面（CLI）的独特优势、开发者角色的根本性重塑，以及这场堪比从汇编到高级语言的飞跃，将如何最终导向“计算的民主化”。&lt;/p>
+&lt;h3 id="引子我的零代码全栈项目与一场编程革命的序幕">&lt;strong>引子：我的“零代码”全栈项目与一场编程革命的序幕&lt;/strong>&lt;/h3>
+&lt;p>最近，我完成了一项在过去看来无法想象的任务：在没有亲手编写一行代码的情况下，我构建了一个包含前端与后端的完整TypeScript项目，并顺手将一批公众号文章高效地转换成了个人博客。我的角色不是“程序员”，更像是一位“指挥家”。我与AI的交互完全通过命令行界面进行：首先，通过对话沟通需求；接着，AI为我生成了详细的需求文档和设计方案；在与我互动确认后，它输出了标准作业程序（SOP），并最终自主执行了所有编码、文件创建和结构组织工作。我需要做的，仅仅是验证最终的成果。&lt;/p>
+&lt;p>这个经历带来的震撼远超任何代码自动补全工具。它标志着一种根本性的范式转移：我们正从一个由人类主导编写、AI辅助的时代，跨入一个由人类定义意图、AI负责实现的新纪元。而这场革命的理想载体，正是看似复古的命令行界面（CLI）。&lt;/p>
+&lt;h3 id="第一章从代码副驾驶到自主执行官一次质的飞跃">&lt;strong>第一章：从代码副驾驶到自主执行官：一次质的飞跃&lt;/strong>&lt;/h3>
+&lt;p>传统的AI编程辅助工具，如早期的GitHub Copilot，其核心定位是“副驾驶”（Co-pilot）。它们在开发者编写代码时提供建议、补全片段，极大地提升了编码效率，但并未改变开发流程的本质——开发者依然是驾驶员，掌控着方向盘和油门。&lt;/p>
+&lt;p>而Gemini CLI这类新工具则扮演着“自主执行官”（Autonomous Executor）的角色。其核心差异在于：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>理解深度：&lt;/strong> 它们不再局限于上下文的代码片段，而是能够理解横跨整个项目的复杂、高层次的需求。&lt;/li>
+&lt;li>&lt;strong>任务广度：&lt;/strong> 它们的能力从“写代码”扩展到了“做工程”，涵盖了需求分析、系统设计、脚手架搭建、代码编写、文件操作乃至与版本控制系统交互的完整链路。&lt;/li>
+&lt;li>&lt;strong>交互模式：&lt;/strong> 交互的核心从“请求代码片段”转变为“委派工程任务”。&lt;/li>
+&lt;/ol>
+&lt;p>这不再是量的提升，而是质的飞跃。AI不再仅仅是我们的工具，它正在成为能够独立执行复杂工程任务的代理（Agent）。&lt;/p>
+&lt;h3 id="第二章命令行的复兴承载新范式的理想界面">&lt;strong>第二章：命令行的复兴：承载新范式的理想界面&lt;/strong>&lt;/h3>
+&lt;p>在图形用户界面（GUI）主导的今天，为何这场革命的先锋会出现在命令行（CLI）中？答案在于CLI的内在属性，使其成为AI执行官最理想的操作环境：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>与工具链的无缝集成：&lt;/strong> 软件开发是一个由Git、Docker、Webpack、npm/yarn等无数CLI工具构成的复杂生态。AI通过CLI，可以像人类开发者一样，原生、高效地调用这些工具，组成自动化工作流。&lt;/li>
+&lt;li>&lt;strong>精确与无歧义的执行：&lt;/strong> CLI的指令是精确的。对于一个需要直接、批量、精确操作文件系统的AI来说，mv src/*.ts dist/ 远比模拟鼠标拖拽更可靠、更高效。&lt;/li>
+&lt;li>&lt;strong>可脚本化与自动化：&lt;/strong> CLI的本质就是可编程的。这使得AI可以将复杂的构建、部署流程固化为脚本，实现高度的自动化和可复现性。&lt;/li>
+&lt;li>&lt;strong>资源效率与远程能力：&lt;/strong> CLI的轻量化特性使其在任何环境下都能高效运行，尤其是在服务器和容器化的远程开发环境中，这是GUI难以比拟的。&lt;/li>
+&lt;/ul>
+&lt;p>因此，CLI并非复古，而是为AI代理提供了一个最直接、最强大、最接近机器执行逻辑的“原生操作系统”。&lt;/p>
+&lt;h3 id="第三章意图驱动开发idd一个新的软件工程范式">&lt;strong>第三章：意图驱动开发（IDD）：一个新的软件工程范式&lt;/strong>&lt;/h3>
+&lt;p>我亲身经历的那个“零代码”项目流程，揭示了一个正在形成的、全新的软件工程范式——&lt;strong>意图驱动开发（Intent-Driven Development, IDD）&lt;/strong>。&lt;/p>
+&lt;p>IDD的核心思想是：&lt;strong>将人类开发者的认知资源从繁琐的“如何实现”（How）中解放出来，使其能完全专注于高价值的“做什么”（What）和“为什么做”（Why）。&lt;/strong>&lt;/p>
+&lt;p>一个典型的IDD工作流闭环如下：&lt;/p>
+&lt;ol>
+&lt;li>&lt;strong>意图定义（Intent Definition）：&lt;/strong> 开发者通过自然语言与AI进行高级对话，描述项目的目标、核心功能、技术栈约束和设计原则。&lt;/li>
+&lt;li>&lt;strong>规格生成（Specification Generation）：&lt;/strong> AI将模糊的自然语言意图，转化为结构化的需求文档、API契约或用户故事。&lt;/li>
+&lt;li>&lt;strong>互动式设计（Interactive Design）：&lt;/strong> 开发者与AI共同探讨系统架构、数据模型和关键算法。AI提供多种备选方案，人类进行决策和权衡。&lt;/li>
+&lt;li>&lt;strong>执行规划（Execution Planning）：&lt;/strong> AI生成详细的SOP，列出所有需要执行的步骤，包括要创建的文件、要编写的代码、要安装的依赖等。&lt;/li>
+&lt;li>&lt;strong>自主执行（Autonomous Execution）：&lt;/strong> AI通过CLI执行上述计划，完成整个项目的构建。&lt;/li>
+&lt;li>&lt;strong>验证与迭代（Verification &amp;amp; Iteration）：&lt;/strong> 开发者作为最终的质量控制者，通过测试、审查和试用，验证AI的交付成果，并提出新的意图进行下一轮迭代。&lt;/li>
+&lt;/ol>
+&lt;p>IDD范式将软件开发从一种“手工技艺”提升为一种“工业化构建”过程，其核心产品的交付物不再是代码，而是精确的、可执行的“意图”。&lt;/p>
+&lt;h3 id="第四章终极抽象从高级语言到自然语言">&lt;strong>第四章：终极抽象：从高级语言到自然语言&lt;/strong>&lt;/h3>
+&lt;p>回顾编程语言的发展史，就是一部不断抽象、持续解放生产力的历史：&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>汇编语言&lt;/strong>将程序员从二进制机器码中解放出来。&lt;/li>
+&lt;li>&lt;strong>C等高级语言&lt;/strong>通过编译器/解释器，将程序员从繁琐的内存管理和硬件细节中解放出来。&lt;/li>
+&lt;li>&lt;strong>Java/Python等现代语言&lt;/strong>通过垃圾回收和丰富的库，进一步提升了抽象层次。&lt;/li>
+&lt;/ul>
+&lt;p>今天，我们正站在下一次、也可能是终极一次抽象革命的门槛上。&lt;strong>以Gemini CLI为代表的工具，正在将“自然语言”确立为新的、最高级的编程语言。&lt;/strong> 在这个层次上，我们不再需要关心语法、设计模式或底层API的细节。我们的“思想”本身，通过清晰的表达，就能被“编译”成可运行的软件。这场变革的深远意义，堪比从汇编到高级语言的飞跃。&lt;/p></description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/27-%E6%88%91%E8%A7%A3%E9%9B%87%E4%BA%86%E6%8A%80%E6%9C%AF%E7%90%90%E4%BA%8B%E8%81%98%E8%AF%B7-ai-%E6%8B%85%E4%BB%BB%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E5%90%88%E4%BC%99%E4%BA%BA/</link><pubDate>Sat, 23 Aug 2025 15:25:09 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/27-%E6%88%91%E8%A7%A3%E9%9B%87%E4%BA%86%E6%8A%80%E6%9C%AF%E7%90%90%E4%BA%8B%E8%81%98%E8%AF%B7-ai-%E6%8B%85%E4%BB%BB%E6%88%91%E7%9A%84%E6%8A%80%E6%9C%AF%E5%90%88%E4%BC%99%E4%BA%BA/</guid><description>&lt;h2 id="我解雇了技术琐事聘请-ai-担任我的技术合伙人">&lt;strong>我解雇了“技术琐事”，聘请 AI 担任我的技术合伙人&lt;/strong>&lt;/h2>
 &lt;blockquote>
 &lt;p>&lt;strong>副标题：&lt;/strong> 一次将45篇公众号文章变为专业在线书籍的经历，揭示了人机协作的未来范式。&lt;/p>&lt;/blockquote>
 &lt;h3 id="一引言每一个创作者内心的隐痛">一、引言：每一个创作者内心的隐痛&lt;/h3>
