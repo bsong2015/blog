@@ -5,6 +5,7 @@ title = "万年水的博客"
 theme = ["PaperMod"]
 
 [params]
+  defaultTheme = "auto"
   disableSpecial1stPost = true
 
 # 配置中文语言细节（可选但推荐）
