@@ -18,59 +18,133 @@ weight = 1                      # 权重，用于多语言排序
 [security]
   fileGetDir = "content/**"  # 显式允许中文路径
 
+# 前沿技术 (一级菜单)
 [[menu.main]]
+  identifier = "cutting-edge-technology"
+  name = "前沿技术"
+  # 如果您有一个技术汇总页，可以取消下面的注释并修改链接
+  # url = "/posts/technology/" 
+  weight = 10
+
+# “前沿技术”的子菜单
+[[menu.main]]
+  parent = "cutting-edge-technology"
   identifier = "artificial-intelligence"
   name = "人工智能"
   url = "/posts/artificial-intelligence/"
-  weight = 10
-
-[[menu.main]]
-  identifier = "reading"
-  name = "阅读"
-  url = "/posts/reading/"
-  weight = 20
+  weight = 1
   
 [[menu.main]]
+  parent = "cutting-edge-technology"
+  identifier = "blockchain"
+  name = "区块链"
+  url = "/posts/blockchain/"
+  weight = 2
+
+[[menu.main]]
+  parent = "cutting-edge-technology"
+  identifier = "iam-idaas"
+  name = "IAM&IDaaS"
+  url = "/posts/iam/"
+  weight = 3
+
+[[menu.main]]
+  parent = "cutting-edge-technology"
+  identifier = "technology"
+  name = "通用技术"
+  url = "/posts/technology/"
+  weight = 4
+
+# 认知与思考 (一级菜单)
+[[menu.main]]
+  identifier = "cognition-and-thinking"
+  name = "认知与思考"
+  weight = 20
+
+# “认知与思考”的子菜单
+[[menu.main]]
+  parent = "cognition-and-thinking"
   identifier = "thinking-models"
   name = "思维模型"
   url = "/posts/thinking-models/"
-  weight = 30
-  
+  weight = 1
+
 [[menu.main]]
+  parent = "cognition-and-thinking"
   identifier = "thought-experiments"
   name = "思想实验"
   url = "/posts/thought-experiments/"
-  weight = 40
+  weight = 2
   
 [[menu.main]]
+  parent = "cognition-and-thinking"
+  identifier = "psychoanalysis"
+  name = "精神分析"
+  url = "/posts/psychoanalysis/"
+  weight = 3
+
+# 人物与思想 (一级菜单)
+[[menu.main]]
+  identifier = "people-and-philosophy"
+  name = "人物与思想"
+  weight = 30
+
+# “人物与思想”的子菜单
+[[menu.main]]
+  parent = "people-and-philosophy"
+  identifier = "wangyangming"
+  name = "王阳明"
+  url = "/posts/wangmingyang/"
+  weight = 1
+
+[[menu.main]]
+  parent = "people-and-philosophy"
+  identifier = "naval"
+  name = "纳瓦尔"
+  url = "/posts/naval/"
+  weight = 2
+
+# 生活与视野 (一级菜单)
+[[menu.main]]
+  identifier = "life-and-horizon"
+  name = "生活与视野"
+  weight = 40
+
+# “生活与视野”的子菜单
+[[menu.main]]
+  parent = "life-and-horizon"
   identifier = "personal-growth"
   name = "个人成长"
   url = "/posts/personal-growth/"
-  weight = 50
-
-[[menu.main]]
-  identifier = "technology"
-  name = "技术"
-  url = "/posts/technology/"
-  weight = 60
+  weight = 1
   
 [[menu.main]]
+  parent = "life-and-horizon"
+  identifier = "reading"
+  name = "阅读"
+  url = "/posts/reading/"
+  weight = 2
+
+[[menu.main]]
+  parent = "life-and-horizon"
   identifier = "current-affairs"
   name = "时事"
   url = "/posts/current-affairs/"
-  weight = 70
-  
+  weight = 3
+
+# 其它 (独立一级菜单)
 [[menu.main]]
   identifier = "others"
   name = "其它"
   url = "/posts/others/"
-  weight = 80
+  weight = 50
 
+# 关于 (独立一级菜单)
 [[menu.main]]
   identifier = "about"
   name = "关于"
   url = "/about/"
-  weight = 90
+  weight = 60
 
 [imaging]
   quality = 75

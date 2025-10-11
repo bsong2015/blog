@@ -1,0 +1,81 @@
+{{- /* CORRECTED version to support dropdown menus */ -}}
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            {{- if .Site.Params.logo -}}
+            <a href="{{ "" | absLangURL }}" accesskey="h" title="{{ .Site.Params.logo.alt | default .Site.Title }} (Alt + H)">
+                {{- $logoPath := .Site.Params.logo.path -}}
+                {{- $logoWidth := .Site.Params.logo.width -}}
+                {{- $logoHeight := .Site.Params.logo.height -}}
+                <img src="{{ $logoPath | absURL }}" alt="{{ .Site.Params.logo.alt | default .Site.Title }}" width="{{ $logoWidth }}"
+                    height="{{ $logoHeight }}">
+            </a>
+            {{- end -}}
+            <div class="logo-switches">
+                {{- if .Site.Params.ShowLanguageSwitcher -}}
+                <button id="language-switcher" type="button" aria-label="language-switcher">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor" class="language-icon">
+                        <path d="M472 448H40a24 24 0 0 1-24-24V88a24 24 0 0 1 24-24h432a24 24 0 0 1 24 24v336a24 24 0 0 1-24-24zM88 128H56v32h32zm-32 64h32v32H56zm0 64h32v32H56zm0 64h32v32H56zm360-192h-32v32h32zm-32 64h32v32h-32zm0 64h32v32h-32zm0 64h32v32h-32zM296.2 128h-80.4l-26.6 64h32l8.6-21.2h44.2l8.6 21.2h32L296.2 128zM256 161l-6.4 15.8h12.8L256 161zM144 320h16v-32h32v-32h-32v-32h-16v32h-32v32h32v32zm64 32h144v-32H208z"/>
+                    </svg>
+                </button>
+                {{- end -}}
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            {{- $currentPage := . -}}
+            {{- range .Site.Menus.main -}}
+            {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
+            {{- $active = or $active (eq .Name $currentPage.Title) -}}
+            {{- $active = or $active (and (eq .Name (`Rss`| T)) (eq $currentPage.Kind `rss`)) -}}
+            {{- if .HasChildren -}}
+            <li class="menu-item-has-children">
+                <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }}">
+                    <!-- FIX: Removed conditional logic and directly added the arrow -->
+                    <span>{{ .Name }} </span>
+                </a>
+                <ul class="sub-menu">
+                    {{- range .Children -}}
+                    {{- $child_active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) -}}
+                    <li>
+                        <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }}" class="{{ if $child_active }}active{{ end }}">
+                            {{ .Name }}
+                        </a>
+                    </li>
+                    {{- end }}
+                </ul>
+            </li>
+            {{- else -}}
+            <li>
+                <a href="{{ .URL | absLangURL }}" title="{{ .Title | default .Name }}"{{ if $active }} class="active"{{ end }}>
+                    <span>{{ .Name }}</span>
+                </a>
+            </li>
+            {{- end -}}
+            {{- end -}}
+        </ul>
+    </nav>
+</header>
+{{- $customJS := resources.Get "js/custom.js" -}}
+{{- if $customJS -}}
+    <script src="{{ $customJS.RelPermalink }}"></script>
+{{- end -}}

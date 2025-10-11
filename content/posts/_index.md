@@ -23,5 +23,8 @@ hideChildren: true
 - [思维模型](/posts/thinking-models/)
 - [思想实验](/posts/thought-experiments/)
 - [精神分析](/posts/psychoanalysis/)
-
+- [王阳明](/posts/wangmingyang/) 
+- [纳瓦尔](/posts/Nava/) 
+- [区块链](/posts/blockchain/)
+- [IAM&IDaaS](/posts/iam/)
 ---

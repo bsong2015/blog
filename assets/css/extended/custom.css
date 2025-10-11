@@ -1,0 +1,65 @@
+/* Prevent layout shift (jiggle) when scrollbar appears/disappears */
+body {
+    scrollbar-gutter: stable;
+}
+
+/* Fix header stacking context to prevent dropdown overlap */
+.header {
+    position: relative;
+    z-index: 101;
+}
+
+#menu .menu-item-has-children > a {
+    cursor: pointer;
+}
+
+#menu .sub-menu {
+    display: none;
+    position: absolute;
+    background-color: var(--background);
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100;
+    list-style: none;
+    padding: 10px 0;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+
+/* Reset styles for submenu list items to prevent inheritance from top-level li */
+#menu .sub-menu li {
+    padding: 0;
+    margin: 0;
+    display: block;
+}
+
+/* Style for submenu links */
+#menu .sub-menu a {
+    color: var(--content);
+    padding: 8px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+    line-height: normal; /* Override inherited line-height */
+}
+
+/* Unified and subtle hover/active state */
+#menu .sub-menu a:hover,
+#menu .sub-menu a.active {
+    background-color: var(--border);
+}
+
+#menu .menu-item-has-children.open > .sub-menu {
+    display: block;
+}
+
+.dropdown-arrow {
+    font-size: 0.8em;
+    margin-left: 5px;
+    display: inline-block;
+    transition: transform 0.2s ease-in-out;
+}
+
+.menu-item-has-children.open > a > span > .dropdown-arrow {
+    transform: rotate(180deg);
+}
