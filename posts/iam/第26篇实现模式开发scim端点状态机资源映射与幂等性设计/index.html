@@ -1,0 +1,167 @@
+<!doctype html><html lang=zh dir=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>万年水的博客</title><meta name=keywords content><meta name=description content="第26篇：【实现模式】开发SCIM端点：状态机、资源映射与幂等性设计
+导言
+SCIM（System for Cross-domain Identity Management）协议为跨应用的用户和组管理自动化提供了标准化的RESTful API。在IAM/IDaaS生态中，SCIM扮演着至关重要的双向连接器角色，存在两种核心应用场景：
+
+作为“南向接口”（Southbound Interface）： 下游应用（如Salesforce、Office 365）作为SCIM服务端（Server），暴露SCIM端点。IAM/IDaaS平台作为SCIM客户端（Client），调用这些接口，将身份变更（如用户创建、更新）向下游推送（Provisioning）。
+作为“北向接口”（Northbound Interface）： IAM/IDaaS平台自身作为SCIM服务端（Server），暴露SCIM端点。上游的权威身份源（Authoritative Source），如HR系统，作为SCIM客户端（Client），调用这些接口，将员工的入职、调岗、离职等事件推送到IAM/IDaaS平台。
+
+本章将聚焦于如何构建一个健壮、高质量的SCIM服务端点。无论您的角色是开发一个SaaS应用以供IDaaS集成，还是在自研的IAM平台中接收来自HR系统的数据，都需要在架构层面解决三个核心问题：
+
+资源映射： 如何在SCIM标准模式与应用程序本地用户模型之间建立一个精确的转换层。
+状态机驱动的工作流： 如何将外部业务事件转化为具体的SCIM API操作。
+幂等性设计： 如何确保在面对网络重试等不可靠因素时，重复的API请求不会产生非预期的副作用。
+
+本章将深入探讨这三个实现模式，为开发高质量的SCIM服务端点提供一个通用的工程架构指南。
+一、 SCIM核心端点与资源映射
+资源映射是实现SCIM服务时首要解决的问题。它定义了SCIM实体与本地数据存储之间的对应关系。
+1. 核心API端点
+一个基础的SCIM服务至少需要实现以下端点：
+
+POST /Users: 创建一个新用户。
+GET /Users/{id}: 根据ID读取一个用户。
+GET /Users: 查询和筛选用户列表。
+PUT /Users/{id}: 整体替换一个用户的所有属性。
+PATCH /Users/{id}: 部分修改一个用户的属性。
+DELETE /Users/{id}: 删除一个用户。
+
+（/Groups 端点的实现与 /Users 类似）
+2. 设计资源映射层（Translation Layer）
+应用程序的本地用户模型很少与SCIM的标准模式（Schema）完全一致。因此，必须设计一个适配器或转换层来处理双向映射。
+示例：SCIM模式与本地数据库模型的映射
+
+  
+      
+          SCIM 2.0 Core User Schema
+          本地应用数据库 users 表字段
+          映射逻辑/转换规则
+      
+  
+  
+      
+          userName (String)
+          username (VARCHAR)
+          直接映射。
+      
+      
+          active (Boolean)
+          status (INTEGER)
+          true 映射为 1 (Active)；false 映射为 0 (Inactive)。
+      
+      
+          name.formatted (String)
+          full_name (VARCHAR)
+          出站映射: CONCAT(first_name, ' ', last_name)。
+      
+      
+          name.givenName (String)
+          first_name (VARCHAR)
+          直接映射。
+      
+      
+          name.familyName (String)
+          last_name (VARCHAR)
+          直接映射。
+      
+      
+          emails (Array of Objects)
+          email (VARCHAR)
+          入站映射: 取emails数组中&#34;primary&#34;: true的对象的value。
+      
+      
+          externalId (String)
+          external_identity_id (VARCHAR)
+          直接映射。此字段对实现幂等性至关重要。
+      
+  
+
+实现要点："><meta name=author content><link rel=canonical href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC26%E7%AF%87%E5%AE%9E%E7%8E%B0%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91scim%E7%AB%AF%E7%82%B9%E7%8A%B6%E6%80%81%E6%9C%BA%E8%B5%84%E6%BA%90%E6%98%A0%E5%B0%84%E4%B8%8E%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.847e74805c60fccdbbd0c0aafdc88931f01bfb3b983db3a3ac27b83f4f8e3146.css integrity="sha256-hH50gFxg/M270MCq/ciJMfAb+zuYPbOjrCe4P0+OMUY=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC26%E7%AF%87%E5%AE%9E%E7%8E%B0%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91scim%E7%AB%AF%E7%82%B9%E7%8A%B6%E6%80%81%E6%9C%BA%E8%B5%84%E6%BA%90%E6%98%A0%E5%B0%84%E4%B8%8E%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC26%E7%AF%87%E5%AE%9E%E7%8E%B0%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91scim%E7%AB%AF%E7%82%B9%E7%8A%B6%E6%80%81%E6%9C%BA%E8%B5%84%E6%BA%90%E6%98%A0%E5%B0%84%E4%B8%8E%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第26篇：【实现模式】开发SCIM端点：状态机、资源映射与幂等性设计 导言 SCIM（System for Cross-domain Identity Management）协议为跨应用的用户和组管理自动化提供了标准化的RESTful API。在IAM/IDaaS生态中，SCIM扮演着至关重要的双向连接器角色，存在两种核心应用场景：
+作为“南向接口”（Southbound Interface）： 下游应用（如Salesforce、Office 365）作为SCIM服务端（Server），暴露SCIM端点。IAM/IDaaS平台作为SCIM客户端（Client），调用这些接口，将身份变更（如用户创建、更新）向下游推送（Provisioning）。 作为“北向接口”（Northbound Interface）： IAM/IDaaS平台自身作为SCIM服务端（Server），暴露SCIM端点。上游的权威身份源（Authoritative Source），如HR系统，作为SCIM客户端（Client），调用这些接口，将员工的入职、调岗、离职等事件推送到IAM/IDaaS平台。 本章将聚焦于如何构建一个健壮、高质量的SCIM服务端点。无论您的角色是开发一个SaaS应用以供IDaaS集成，还是在自研的IAM平台中接收来自HR系统的数据，都需要在架构层面解决三个核心问题：
+资源映射： 如何在SCIM标准模式与应用程序本地用户模型之间建立一个精确的转换层。 状态机驱动的工作流： 如何将外部业务事件转化为具体的SCIM API操作。 幂等性设计： 如何确保在面对网络重试等不可靠因素时，重复的API请求不会产生非预期的副作用。 本章将深入探讨这三个实现模式，为开发高质量的SCIM服务端点提供一个通用的工程架构指南。
+一、 SCIM核心端点与资源映射 资源映射是实现SCIM服务时首要解决的问题。它定义了SCIM实体与本地数据存储之间的对应关系。
+1. 核心API端点 一个基础的SCIM服务至少需要实现以下端点：
+POST /Users: 创建一个新用户。 GET /Users/{id}: 根据ID读取一个用户。 GET /Users: 查询和筛选用户列表。 PUT /Users/{id}: 整体替换一个用户的所有属性。 PATCH /Users/{id}: 部分修改一个用户的属性。 DELETE /Users/{id}: 删除一个用户。 （/Groups 端点的实现与 /Users 类似）
+2. 设计资源映射层（Translation Layer） 应用程序的本地用户模型很少与SCIM的标准模式（Schema）完全一致。因此，必须设计一个适配器或转换层来处理双向映射。
+示例：SCIM模式与本地数据库模型的映射
+SCIM 2.0 Core User Schema 本地应用数据库 users 表字段 映射逻辑/转换规则 userName (String) username (VARCHAR) 直接映射。 active (Boolean) status (INTEGER) true 映射为 1 (Active)；false 映射为 0 (Inactive)。 name.formatted (String) full_name (VARCHAR) 出站映射: CONCAT(first_name, ' ', last_name)。 name.givenName (String) first_name (VARCHAR) 直接映射。 name.familyName (String) last_name (VARCHAR) 直接映射。 emails (Array of Objects) email (VARCHAR) 入站映射: 取emails数组中&#34;primary&#34;: true的对象的value。 externalId (String) external_identity_id (VARCHAR) 直接映射。此字段对实现幂等性至关重要。 实现要点："><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-07-17T13:34:57+08:00"><meta property="article:modified_time" content="2025-07-17T13:34:57+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="第26篇：【实现模式】开发SCIM端点：状态机、资源映射与幂等性设计
+导言
+SCIM（System for Cross-domain Identity Management）协议为跨应用的用户和组管理自动化提供了标准化的RESTful API。在IAM/IDaaS生态中，SCIM扮演着至关重要的双向连接器角色，存在两种核心应用场景：
+
+作为“南向接口”（Southbound Interface）： 下游应用（如Salesforce、Office 365）作为SCIM服务端（Server），暴露SCIM端点。IAM/IDaaS平台作为SCIM客户端（Client），调用这些接口，将身份变更（如用户创建、更新）向下游推送（Provisioning）。
+作为“北向接口”（Northbound Interface）： IAM/IDaaS平台自身作为SCIM服务端（Server），暴露SCIM端点。上游的权威身份源（Authoritative Source），如HR系统，作为SCIM客户端（Client），调用这些接口，将员工的入职、调岗、离职等事件推送到IAM/IDaaS平台。
+
+本章将聚焦于如何构建一个健壮、高质量的SCIM服务端点。无论您的角色是开发一个SaaS应用以供IDaaS集成，还是在自研的IAM平台中接收来自HR系统的数据，都需要在架构层面解决三个核心问题：
+
+资源映射： 如何在SCIM标准模式与应用程序本地用户模型之间建立一个精确的转换层。
+状态机驱动的工作流： 如何将外部业务事件转化为具体的SCIM API操作。
+幂等性设计： 如何确保在面对网络重试等不可靠因素时，重复的API请求不会产生非预期的副作用。
+
+本章将深入探讨这三个实现模式，为开发高质量的SCIM服务端点提供一个通用的工程架构指南。
+一、 SCIM核心端点与资源映射
+资源映射是实现SCIM服务时首要解决的问题。它定义了SCIM实体与本地数据存储之间的对应关系。
+1. 核心API端点
+一个基础的SCIM服务至少需要实现以下端点：
+
+POST /Users: 创建一个新用户。
+GET /Users/{id}: 根据ID读取一个用户。
+GET /Users: 查询和筛选用户列表。
+PUT /Users/{id}: 整体替换一个用户的所有属性。
+PATCH /Users/{id}: 部分修改一个用户的属性。
+DELETE /Users/{id}: 删除一个用户。
+
+（/Groups 端点的实现与 /Users 类似）
+2. 设计资源映射层（Translation Layer）
+应用程序的本地用户模型很少与SCIM的标准模式（Schema）完全一致。因此，必须设计一个适配器或转换层来处理双向映射。
+示例：SCIM模式与本地数据库模型的映射
+
+  
+      
+          SCIM 2.0 Core User Schema
+          本地应用数据库 users 表字段
+          映射逻辑/转换规则
+      
+  
+  
+      
+          userName (String)
+          username (VARCHAR)
+          直接映射。
+      
+      
+          active (Boolean)
+          status (INTEGER)
+          true 映射为 1 (Active)；false 映射为 0 (Inactive)。
+      
+      
+          name.formatted (String)
+          full_name (VARCHAR)
+          出站映射: CONCAT(first_name, ' ', last_name)。
+      
+      
+          name.givenName (String)
+          first_name (VARCHAR)
+          直接映射。
+      
+      
+          name.familyName (String)
+          last_name (VARCHAR)
+          直接映射。
+      
+      
+          emails (Array of Objects)
+          email (VARCHAR)
+          入站映射: 取emails数组中&#34;primary&#34;: true的对象的value。
+      
+      
+          externalId (String)
+          external_identity_id (VARCHAR)
+          直接映射。此字段对实现幂等性至关重要。
+      
+  
+
+实现要点："><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"所有文章","item":"https://bsong2015.github.io/blog/posts/"},{"@type":"ListItem","position":2,"name":"IAM\u0026IDaaS","item":"https://bsong2015.github.io/blog/posts/iam/"},{"@type":"ListItem","position":3,"name":"","item":"https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC26%E7%AF%87%E5%AE%9E%E7%8E%B0%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91scim%E7%AB%AF%E7%82%B9%E7%8A%B6%E6%80%81%E6%9C%BA%E8%B5%84%E6%BA%90%E6%98%A0%E5%B0%84%E4%B8%8E%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"","name":"","description":"第26篇：【实现模式】开发SCIM端点：状态机、资源映射与幂等性设计 导言 SCIM（System for Cross-domain Identity Management）协议为跨应用的用户和组管理自动化提供了标准化的RESTful API。在IAM/IDaaS生态中，SCIM扮演着至关重要的双向连接器角色，存在两种核心应用场景：\n作为“南向接口”（Southbound Interface）： 下游应用（如Salesforce、Office 365）作为SCIM服务端（Server），暴露SCIM端点。IAM/IDaaS平台作为SCIM客户端（Client），调用这些接口，将身份变更（如用户创建、更新）向下游推送（Provisioning）。 作为“北向接口”（Northbound Interface）： IAM/IDaaS平台自身作为SCIM服务端（Server），暴露SCIM端点。上游的权威身份源（Authoritative Source），如HR系统，作为SCIM客户端（Client），调用这些接口，将员工的入职、调岗、离职等事件推送到IAM/IDaaS平台。 本章将聚焦于如何构建一个健壮、高质量的SCIM服务端点。无论您的角色是开发一个SaaS应用以供IDaaS集成，还是在自研的IAM平台中接收来自HR系统的数据，都需要在架构层面解决三个核心问题：\n资源映射： 如何在SCIM标准模式与应用程序本地用户模型之间建立一个精确的转换层。 状态机驱动的工作流： 如何将外部业务事件转化为具体的SCIM API操作。 幂等性设计： 如何确保在面对网络重试等不可靠因素时，重复的API请求不会产生非预期的副作用。 本章将深入探讨这三个实现模式，为开发高质量的SCIM服务端点提供一个通用的工程架构指南。\n一、 SCIM核心端点与资源映射 资源映射是实现SCIM服务时首要解决的问题。它定义了SCIM实体与本地数据存储之间的对应关系。\n1. 核心API端点 一个基础的SCIM服务至少需要实现以下端点：\nPOST /Users: 创建一个新用户。 GET /Users/{id}: 根据ID读取一个用户。 GET /Users: 查询和筛选用户列表。 PUT /Users/{id}: 整体替换一个用户的所有属性。 PATCH /Users/{id}: 部分修改一个用户的属性。 DELETE /Users/{id}: 删除一个用户。 （/Groups 端点的实现与 /Users 类似）\n2. 设计资源映射层（Translation Layer） 应用程序的本地用户模型很少与SCIM的标准模式（Schema）完全一致。因此，必须设计一个适配器或转换层来处理双向映射。\n示例：SCIM模式与本地数据库模型的映射\nSCIM 2.0 Core User Schema 本地应用数据库 users 表字段 映射逻辑/转换规则 userName (String) username (VARCHAR) 直接映射。 active (Boolean) status (INTEGER) true 映射为 1 (Active)；false 映射为 0 (Inactive)。 name.formatted (String) full_name (VARCHAR) 出站映射: CONCAT(first_name, ' ', last_name)。 name.givenName (String) first_name (VARCHAR) 直接映射。 name.familyName (String) last_name (VARCHAR) 直接映射。 emails (Array of Objects) email (VARCHAR) 入站映射: 取emails数组中\u0026quot;primary\u0026quot;: true的对象的value。 externalId (String) external_identity_id (VARCHAR) 直接映射。此字段对实现幂等性至关重要。 实现要点：\n","keywords":[],"articleBody":"第26篇：【实现模式】开发SCIM端点：状态机、资源映射与幂等性设计 导言 SCIM（System for Cross-domain Identity Management）协议为跨应用的用户和组管理自动化提供了标准化的RESTful API。在IAM/IDaaS生态中，SCIM扮演着至关重要的双向连接器角色，存在两种核心应用场景：\n作为“南向接口”（Southbound Interface）： 下游应用（如Salesforce、Office 365）作为SCIM服务端（Server），暴露SCIM端点。IAM/IDaaS平台作为SCIM客户端（Client），调用这些接口，将身份变更（如用户创建、更新）向下游推送（Provisioning）。 作为“北向接口”（Northbound Interface）： IAM/IDaaS平台自身作为SCIM服务端（Server），暴露SCIM端点。上游的权威身份源（Authoritative Source），如HR系统，作为SCIM客户端（Client），调用这些接口，将员工的入职、调岗、离职等事件推送到IAM/IDaaS平台。 本章将聚焦于如何构建一个健壮、高质量的SCIM服务端点。无论您的角色是开发一个SaaS应用以供IDaaS集成，还是在自研的IAM平台中接收来自HR系统的数据，都需要在架构层面解决三个核心问题：\n资源映射： 如何在SCIM标准模式与应用程序本地用户模型之间建立一个精确的转换层。 状态机驱动的工作流： 如何将外部业务事件转化为具体的SCIM API操作。 幂等性设计： 如何确保在面对网络重试等不可靠因素时，重复的API请求不会产生非预期的副作用。 本章将深入探讨这三个实现模式，为开发高质量的SCIM服务端点提供一个通用的工程架构指南。\n一、 SCIM核心端点与资源映射 资源映射是实现SCIM服务时首要解决的问题。它定义了SCIM实体与本地数据存储之间的对应关系。\n1. 核心API端点 一个基础的SCIM服务至少需要实现以下端点：\nPOST /Users: 创建一个新用户。 GET /Users/{id}: 根据ID读取一个用户。 GET /Users: 查询和筛选用户列表。 PUT /Users/{id}: 整体替换一个用户的所有属性。 PATCH /Users/{id}: 部分修改一个用户的属性。 DELETE /Users/{id}: 删除一个用户。 （/Groups 端点的实现与 /Users 类似）\n2. 设计资源映射层（Translation Layer） 应用程序的本地用户模型很少与SCIM的标准模式（Schema）完全一致。因此，必须设计一个适配器或转换层来处理双向映射。\n示例：SCIM模式与本地数据库模型的映射\nSCIM 2.0 Core User Schema 本地应用数据库 users 表字段 映射逻辑/转换规则 userName (String) username (VARCHAR) 直接映射。 active (Boolean) status (INTEGER) true 映射为 1 (Active)；false 映射为 0 (Inactive)。 name.formatted (String) full_name (VARCHAR) 出站映射: CONCAT(first_name, ' ', last_name)。 name.givenName (String) first_name (VARCHAR) 直接映射。 name.familyName (String) last_name (VARCHAR) 直接映射。 emails (Array of Objects) email (VARCHAR) 入站映射: 取emails数组中\"primary\": true的对象的value。 externalId (String) external_identity_id (VARCHAR) 直接映射。此字段对实现幂等性至关重要。 实现要点：\n双向转换： 映射逻辑必须是双向的。既要能处理从SCIM请求到本地模型的入站（Inbound）数据，也要能处理从本地模型到SCIM响应的出站（Outbound）数据。 处理复杂类型： 特别注意SCIM中的多值属性（如emails, phoneNumbers）和复杂属性（如name），并设计好与本地扁平化或关联数据模型的转换规则。 二、 状态机：驱动身份生命周期工作流 孤立的CRUD端点无法体现SCIM的真正价值。其核心目标是自动化响应身份生命周期（Identity Lifecycle）事件。使用状态机模型可以清晰地定义这些事件如何驱动SCIM操作。\n定义用户身份状态：\nNonExistent: 用户在目标系统中不存在。 Active: 用户已创建且处于活动状态。 Suspended/Inactive: 用户存在但已被禁用，无法登录。 Terminated/Deleted: 用户已被逻辑或物理删除。 定义事件与状态转换（Actions）：\n触发事件 (Event) (源自IdP或HR系统) 初始状态 (From) 目标状态 (To) 对应的SCIM API操作 入职 (Joiner) NonExistent Active POST /Users (携带用户属性，active: true) 激活 (Enable) Suspended Active PATCH /Users/{id} (操作: replace, path: \"active\", value: true) 信息变更 (Mover) Active Active PATCH /Users/{id} (操作: replace, path: \"department\", value: \"New Dept\") 停用 (Leaver) Active Suspended PATCH /Users/{id} (操作: replace, path: \"active\", value: false) 删除 (Delete) Suspended Terminated DELETE /Users/{id} 再激活 (Re-hire) Suspended Active PATCH /Users/{id} (操作: replace, path: \"active\", value: true) 实现要点：\n事件驱动： SCIM端点的实现应被视为响应外部系统事件的处理器。 策略分离： 将“何时做”（事件）与“做什么”（SCIM API）的逻辑分离，使系统更清晰、更易于维护。例如，公司的离职策略是“停用账户”还是“立即删除”，应在状态机模型中定义，而不是硬编码在API实现中。 三、 幂等性设计：确保操作的安全性与一致性 在分布式系统中，网络客户端可能会因为超时或故障而重试请求。SCIM服务必须被设计为幂等的，以防止重复请求创建重复数据或导致状态不一致。\n各HTTP方法的幂等性策略：\nPOST /Users (创建):\n问题： POST方法天然不具备幂等性。重复的POST请求会创建多个相同的用户。 解决方案： 利用externalId。在创建用户时，必须提供一个在其自身系统中唯一且稳定的externalId。 实现逻辑： 当收到POST /Users请求时，首先检查请求体中是否存在externalId。 使用该externalId查询本地数据库，看是否存在已映射的用户。 如果存在，则不创建新用户，而是返回HTTP 409 Conflict状态码，并在响应体中包含已存在用户的SCIM表示。 如果不存在，则创建新用户，将其与externalId关联，并返回HTTP 201 Created。 PUT /Users/{id} (替换):\n天然幂等。 对一个资源执行两次相同的PUT操作，其最终状态与执行一次完全相同。 PATCH /Users/{id} (部分更新):\n条件性幂等。 大多数PATCH操作（如replace一个属性值）是幂等的。 非幂等风险： 需要特别注意add操作。例如，向一个多值属性（如用户所属的用户组）中add一个值，重复执行会导致该值被添加多次。 解决方案： 在处理add操作时，应先检查目标值是否已存在于该属性中，只有在不存在时才执行添加。 DELETE /Users/{id} (删除):\n天然幂等。 第一次请求删除资源，成功后返回HTTP 204 No Content。后续对同一ID的DELETE请求，因为资源已不存在，应返回HTTP 404 Not Found。从客户端视角看，最终结果（资源不存在）是一致的。 四、 场景视角：作为“北向”与“南向”接口的考量 虽然构建SCIM服务端的核心技术模式是通用的，但在不同的场景下，其业务关注点和实现细节会有所侧重。\n1. 作为“南向接口”（供IDaaS调用） 当您的应用（如一个SaaS产品）作为SCIM服务端时，主要消费方是专业的IDaaS平台。\n关注点： 严格的协议合规性： IDaaS客户端通常会严格遵循SCIM RFC规范，包括对过滤（filtering）、分页（pagination）、批量操作（bulk operations）等高级功能的支持。实现这些功能将极大提升应用的可集成性。 清晰的错误响应： 必须提供标准化的、信息明确的错误响应（如400 Bad Request并附带SCIM错误详情），以便IDaaS平台能够正确诊断和报告集成问题。 健壮的认证机制： 通常需要支持标准的认证方式，如OAuth 2.0 Bearer Token，以安全地接收来自IDaaS平台的调用。 2. 作为“北向接口”（供HR系统等调用） 当您的IAM/IDaaS平台作为SCIM服务端时，主要消费方可能是HR系统或其他权威身份源。\n关注点： 灵活的属性映射： HR系统可能包含大量非标准的员工属性。SCIM服务需要支持扩展模式（Schema Extension），以接收这些自定义属性，并将其映射到IAM的内部用户模型中。 强大的容错与重试逻辑： 来自上游的调用可能不如标准IDaaS客户端那样规范。服务端需要有更强的容错能力，并能处理好因上游系统重试而带来的幂等性挑战。 丰富的业务逻辑触发： 接收到SCIM事件（如用户创建）后，往往需要触发更复杂的内部工作流，例如分配默认权限、发送欢迎邮件、创建其他系统账户等。状态机模型在此场景下尤为重要。 总结 实现一个企业级的SCIM服务端点，其复杂性远超简单的CRUD接口开发。它要求开发者具备系统设计的思维，并能清晰地认知其在整个身份生态中的角色——无论是作为连接下游应用的“南向接口”，还是作为接收上游数据的“北向接口”。\n通过构建一个精确的资源映射层，可以确保数据的正确转换；通过引入状态机模型，可以将业务流程与技术实现清晰解耦；通过实施严格的幂等性设计，可以保证系统在分布式环境下的稳定与可靠。这三大实现模式，结合对不同场景的深刻理解，共同构成了一个健壮、可扩展的SCIM服务架构的基础。\n欢迎关注+点赞+推荐+转发\n","wordCount":"295","inLanguage":"zh","datePublished":"2025-07-17T13:34:57+08:00","dateModified":"2025-07-17T13:34:57+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC26%E7%AF%87%E5%AE%9E%E7%8E%B0%E6%A8%A1%E5%BC%8F%E5%BC%80%E5%8F%91scim%E7%AB%AF%E7%82%B9%E7%8A%B6%E6%80%81%E6%9C%BA%E8%B5%84%E6%BA%90%E6%98%A0%E5%B0%84%E4%B8%8E%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/"},"publisher":{"@type":"Organization","name":"万年水的博客","logo":{"@type":"ImageObject","url":"https://bsong2015.github.io/blog/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=nav><div class=logo><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)">
+<svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li class=menu-item-has-children><a href=https://bsong2015.github.io/blog/ title=前沿技术><span>前沿技术</span></a><ul class=sub-menu><li><a href=https://bsong2015.github.io/blog/posts/artificial-intelligence/ title=人工智能>人工智能</a></li><li><a href=https://bsong2015.github.io/blog/posts/blockchain/ title=区块链>区块链</a></li><li><a href=https://bsong2015.github.io/blog/posts/iam/ title=IAM&amp;IDaaS>IAM&amp;IDaaS</a></li><li><a href=https://bsong2015.github.io/blog/posts/technology/ title=通用技术>通用技术</a></li></ul></li><li class=menu-item-has-children><a href=https://bsong2015.github.io/blog/ title=认知与思考><span>认知与思考</span></a><ul class=sub-menu><li><a href=https://bsong2015.github.io/blog/posts/thinking-models/ title=思维模型>思维模型</a></li><li><a href=https://bsong2015.github.io/blog/posts/thought-experiments/ title=思想实验>思想实验</a></li><li><a href=https://bsong2015.github.io/blog/posts/psychoanalysis/ title=精神分析>精神分析</a></li></ul></li><li class=menu-item-has-children><a href=https://bsong2015.github.io/blog/ title=人物与思想><span>人物与思想</span></a><ul class=sub-menu><li><a href=https://bsong2015.github.io/blog/posts/wangmingyang/ title=王阳明>王阳明</a></li><li><a href=https://bsong2015.github.io/blog/posts/naval/ title=纳瓦尔>纳瓦尔</a></li></ul></li><li class=menu-item-has-children><a href=https://bsong2015.github.io/blog/ title=生活与视野><span>生活与视野</span></a><ul class=sub-menu><li><a href=https://bsong2015.github.io/blog/posts/personal-growth/ title=个人成长>个人成长</a></li><li><a href=https://bsong2015.github.io/blog/posts/reading/ title=阅读>阅读</a></li><li><a href=https://bsong2015.github.io/blog/posts/current-affairs/ title=时事>时事</a></li></ul></li><li><a href=https://bsong2015.github.io/blog/posts/others/ title=其它><span>其它</span></a></li><li><a href=https://bsong2015.github.io/blog/about/ title=关于><span>关于</span></a></li></ul></nav></header><script src=/blog/js/custom.js></script><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent"></h1><div class=post-meta><span title='2025-07-17 13:34:57 +0800 +0800'>七月 17, 2025</span></div></header><div class=post-content><h2 id=第26篇实现模式开发scim端点状态机资源映射与幂等性设计><strong>第26篇：【实现模式】开发SCIM端点：状态机、资源映射与幂等性设计</strong><a hidden class=anchor aria-hidden=true href=#第26篇实现模式开发scim端点状态机资源映射与幂等性设计>#</a></h2><h3 id=导言><strong>导言</strong><a hidden class=anchor aria-hidden=true href=#导言>#</a></h3><p>SCIM（System for Cross-domain Identity Management）协议为跨应用的用户和组管理自动化提供了标准化的RESTful API。在IAM/IDaaS生态中，SCIM扮演着至关重要的双向连接器角色，存在两种核心应用场景：</p><ol><li><strong>作为“南向接口”（Southbound Interface）：</strong> 下游应用（如Salesforce、Office 365）作为<strong>SCIM服务端（Server）</strong>，暴露SCIM端点。IAM/IDaaS平台作为<strong>SCIM客户端（Client）</strong>，调用这些接口，将身份变更（如用户创建、更新）<strong>向下游</strong>推送（Provisioning）。</li><li><strong>作为“北向接口”（Northbound Interface）：</strong> IAM/IDaaS平台自身作为<strong>SCIM服务端（Server）</strong>，暴露SCIM端点。上游的权威身份源（Authoritative Source），如HR系统，作为<strong>SCIM客户端（Client）</strong>，调用这些接口，将员工的入职、调岗、离职等事件<strong>推送到</strong>IAM/IDaaS平台。</li></ol><p>本章将聚焦于<strong>如何构建一个健壮、高质量的SCIM服务端点</strong>。无论您的角色是开发一个SaaS应用以供IDaaS集成，还是在自研的IAM平台中接收来自HR系统的数据，都需要在架构层面解决三个核心问题：</p><ul><li><strong>资源映射：</strong> 如何在SCIM标准模式与应用程序本地用户模型之间建立一个精确的转换层。</li><li><strong>状态机驱动的工作流：</strong> 如何将外部业务事件转化为具体的SCIM API操作。</li><li><strong>幂等性设计：</strong> 如何确保在面对网络重试等不可靠因素时，重复的API请求不会产生非预期的副作用。</li></ul><p>本章将深入探讨这三个实现模式，为开发高质量的SCIM服务端点提供一个通用的工程架构指南。</p><h3 id=一-scim核心端点与资源映射><strong>一、 SCIM核心端点与资源映射</strong><a hidden class=anchor aria-hidden=true href=#一-scim核心端点与资源映射>#</a></h3><p>资源映射是实现SCIM服务时首要解决的问题。它定义了SCIM实体与本地数据存储之间的对应关系。</p><h4 id=1-核心api端点><strong>1. 核心API端点</strong><a hidden class=anchor aria-hidden=true href=#1-核心api端点>#</a></h4><p>一个基础的SCIM服务至少需要实现以下端点：</p><ul><li><code>POST /Users</code>: 创建一个新用户。</li><li><code>GET /Users/{id}</code>: 根据ID读取一个用户。</li><li><code>GET /Users</code>: 查询和筛选用户列表。</li><li><code>PUT /Users/{id}</code>: 整体替换一个用户的所有属性。</li><li><code>PATCH /Users/{id}</code>: 部分修改一个用户的属性。</li><li><code>DELETE /Users/{id}</code>: 删除一个用户。</li></ul><p>（<code>/Groups</code> 端点的实现与 <code>/Users</code> 类似）</p><h4 id=2-设计资源映射层translation-layer><strong>2. 设计资源映射层（Translation Layer）</strong><a hidden class=anchor aria-hidden=true href=#2-设计资源映射层translation-layer>#</a></h4><p>应用程序的本地用户模型很少与SCIM的标准模式（Schema）完全一致。因此，必须设计一个适配器或转换层来处理双向映射。</p><p><strong>示例：SCIM模式与本地数据库模型的映射</strong></p><table><thead><tr><th style=text-align:left>SCIM 2.0 Core User Schema</th><th style=text-align:left>本地应用数据库 <code>users</code> 表字段</th><th style=text-align:left>映射逻辑/转换规则</th></tr></thead><tbody><tr><td style=text-align:left><code>userName</code> (String)</td><td style=text-align:left><code>username</code> (VARCHAR)</td><td style=text-align:left>直接映射。</td></tr><tr><td style=text-align:left><code>active</code> (Boolean)</td><td style=text-align:left><code>status</code> (INTEGER)</td><td style=text-align:left><code>true</code> 映射为 <code>1</code> (Active)；<code>false</code> 映射为 <code>0</code> (Inactive)。</td></tr><tr><td style=text-align:left><code>name.formatted</code> (String)</td><td style=text-align:left><code>full_name</code> (VARCHAR)</td><td style=text-align:left><strong>出站映射:</strong> <code>CONCAT(first_name, ' ', last_name)</code>。</td></tr><tr><td style=text-align:left><code>name.givenName</code> (String)</td><td style=text-align:left><code>first_name</code> (VARCHAR)</td><td style=text-align:left>直接映射。</td></tr><tr><td style=text-align:left><code>name.familyName</code> (String)</td><td style=text-align:left><code>last_name</code> (VARCHAR)</td><td style=text-align:left>直接映射。</td></tr><tr><td style=text-align:left><code>emails</code> (Array of Objects)</td><td style=text-align:left><code>email</code> (VARCHAR)</td><td style=text-align:left><strong>入站映射:</strong> 取<code>emails</code>数组中<code>"primary": true</code>的对象的<code>value</code>。</td></tr><tr><td style=text-align:left><code>externalId</code> (String)</td><td style=text-align:left><code>external_identity_id</code> (VARCHAR)</td><td style=text-align:left>直接映射。此字段对实现幂等性至关重要。</td></tr></tbody></table><p><strong>实现要点：</strong></p><ul><li><strong>双向转换：</strong> 映射逻辑必须是双向的。既要能处理从SCIM请求到本地模型的入站（Inbound）数据，也要能处理从本地模型到SCIM响应的出站（Outbound）数据。</li><li><strong>处理复杂类型：</strong> 特别注意SCIM中的多值属性（如<code>emails</code>, <code>phoneNumbers</code>）和复杂属性（如<code>name</code>），并设计好与本地扁平化或关联数据模型的转换规则。</li></ul><h3 id=二-状态机驱动身份生命周期工作流><strong>二、 状态机：驱动身份生命周期工作流</strong><a hidden class=anchor aria-hidden=true href=#二-状态机驱动身份生命周期工作流>#</a></h3><p>孤立的CRUD端点无法体现SCIM的真正价值。其核心目标是自动化响应身份生命周期（Identity Lifecycle）事件。使用状态机模型可以清晰地定义这些事件如何驱动SCIM操作。</p><p><strong>定义用户身份状态：</strong></p><ul><li><strong>NonExistent:</strong> 用户在目标系统中不存在。</li><li><strong>Active:</strong> 用户已创建且处于活动状态。</li><li><strong>Suspended/Inactive:</strong> 用户存在但已被禁用，无法登录。</li><li><strong>Terminated/Deleted:</strong> 用户已被逻辑或物理删除。</li></ul><p><strong>定义事件与状态转换（Actions）：</strong></p><table><thead><tr><th style=text-align:left>触发事件 (Event) (源自IdP或HR系统)</th><th style=text-align:left>初始状态 (From)</th><th style=text-align:left>目标状态 (To)</th><th style=text-align:left>对应的SCIM API操作</th></tr></thead><tbody><tr><td style=text-align:left><strong>入职 (Joiner)</strong></td><td style=text-align:left>NonExistent</td><td style=text-align:left>Active</td><td style=text-align:left><code>POST /Users</code> (携带用户属性，<code>active: true</code>)</td></tr><tr><td style=text-align:left><strong>激活 (Enable)</strong></td><td style=text-align:left>Suspended</td><td style=text-align:left>Active</td><td style=text-align:left><code>PATCH /Users/{id}</code> (操作: <code>replace</code>, <code>path: "active"</code>, <code>value: true</code>)</td></tr><tr><td style=text-align:left><strong>信息变更 (Mover)</strong></td><td style=text-align:left>Active</td><td style=text-align:left>Active</td><td style=text-align:left><code>PATCH /Users/{id}</code> (操作: <code>replace</code>, <code>path: "department"</code>, <code>value: "New Dept"</code>)</td></tr><tr><td style=text-align:left><strong>停用 (Leaver)</strong></td><td style=text-align:left>Active</td><td style=text-align:left>Suspended</td><td style=text-align:left><code>PATCH /Users/{id}</code> (操作: <code>replace</code>, <code>path: "active"</code>, <code>value: false</code>)</td></tr><tr><td style=text-align:left><strong>删除 (Delete)</strong></td><td style=text-align:left>Suspended</td><td style=text-align:left>Terminated</td><td style=text-align:left><code>DELETE /Users/{id}</code></td></tr><tr><td style=text-align:left><strong>再激活 (Re-hire)</strong></td><td style=text-align:left>Suspended</td><td style=text-align:left>Active</td><td style=text-align:left><code>PATCH /Users/{id}</code> (操作: <code>replace</code>, <code>path: "active"</code>, <code>value: true</code>)</td></tr></tbody></table><p><strong>实现要点：</strong></p><ul><li><strong>事件驱动：</strong> SCIM端点的实现应被视为响应外部系统事件的处理器。</li><li><strong>策略分离：</strong> 将“何时做”（事件）与“做什么”（SCIM API）的逻辑分离，使系统更清晰、更易于维护。例如，公司的离职策略是“停用账户”还是“立即删除”，应在状态机模型中定义，而不是硬编码在API实现中。</li></ul><h3 id=三-幂等性设计确保操作的安全性与一致性><strong>三、 幂等性设计：确保操作的安全性与一致性</strong><a hidden class=anchor aria-hidden=true href=#三-幂等性设计确保操作的安全性与一致性>#</a></h3><p>在分布式系统中，网络客户端可能会因为超时或故障而重试请求。SCIM服务必须被设计为幂等的，以防止重复请求创建重复数据或导致状态不一致。</p><p><strong>各HTTP方法的幂等性策略：</strong></p><ul><li><p><strong><code>POST /Users</code> (创建):</strong></p><ul><li><strong>问题：</strong> <code>POST</code>方法天然不具备幂等性。重复的<code>POST</code>请求会创建多个相同的用户。</li><li><strong>解决方案：</strong> 利用<code>externalId</code>。在创建用户时，必须提供一个在其自身系统中唯一且稳定的<code>externalId</code>。</li><li><strong>实现逻辑：</strong><ol><li>当收到<code>POST /Users</code>请求时，首先检查请求体中是否存在<code>externalId</code>。</li><li>使用该<code>externalId</code>查询本地数据库，看是否存在已映射的用户。</li><li><strong>如果存在</strong>，则不创建新用户，而是返回<code>HTTP 409 Conflict</code>状态码，并在响应体中包含已存在用户的SCIM表示。</li><li><strong>如果不存在</strong>，则创建新用户，将其与<code>externalId</code>关联，并返回<code>HTTP 201 Created</code>。</li></ol></li></ul></li><li><p><strong><code>PUT /Users/{id}</code> (替换):</strong></p><ul><li><strong>天然幂等。</strong> 对一个资源执行两次相同的<code>PUT</code>操作，其最终状态与执行一次完全相同。</li></ul></li><li><p><strong><code>PATCH /Users/{id}</code> (部分更新):</strong></p><ul><li><strong>条件性幂等。</strong> 大多数<code>PATCH</code>操作（如<code>replace</code>一个属性值）是幂等的。</li><li><strong>非幂等风险：</strong> 需要特别注意<code>add</code>操作。例如，向一个多值属性（如用户所属的用户组）中<code>add</code>一个值，重复执行会导致该值被添加多次。</li><li><strong>解决方案：</strong> 在处理<code>add</code>操作时，应先检查目标值是否已存在于该属性中，只有在不存在时才执行添加。</li></ul></li><li><p><strong><code>DELETE /Users/{id}</code> (删除):</strong></p><ul><li><strong>天然幂等。</strong> 第一次请求删除资源，成功后返回<code>HTTP 204 No Content</code>。后续对同一ID的<code>DELETE</code>请求，因为资源已不存在，应返回<code>HTTP 404 Not Found</code>。从客户端视角看，最终结果（资源不存在）是一致的。</li></ul></li></ul><h3 id=四-场景视角作为北向与南向接口的考量><strong>四、 场景视角：作为“北向”与“南向”接口的考量</strong><a hidden class=anchor aria-hidden=true href=#四-场景视角作为北向与南向接口的考量>#</a></h3><p>虽然构建SCIM服务端的核心技术模式是通用的，但在不同的场景下，其业务关注点和实现细节会有所侧重。</p><h4 id=1-作为南向接口供idaas调用><strong>1. 作为“南向接口”（供IDaaS调用）</strong><a hidden class=anchor aria-hidden=true href=#1-作为南向接口供idaas调用>#</a></h4><p>当您的应用（如一个SaaS产品）作为SCIM服务端时，主要消费方是专业的IDaaS平台。</p><ul><li><strong>关注点：</strong><ul><li><strong>严格的协议合规性：</strong> IDaaS客户端通常会严格遵循SCIM RFC规范，包括对过滤（filtering）、分页（pagination）、批量操作（bulk operations）等高级功能的支持。实现这些功能将极大提升应用的可集成性。</li><li><strong>清晰的错误响应：</strong> 必须提供标准化的、信息明确的错误响应（如<code>400 Bad Request</code>并附带SCIM错误详情），以便IDaaS平台能够正确诊断和报告集成问题。</li><li><strong>健壮的认证机制：</strong> 通常需要支持标准的认证方式，如OAuth 2.0 Bearer Token，以安全地接收来自IDaaS平台的调用。</li></ul></li></ul><h4 id=2-作为北向接口供hr系统等调用><strong>2. 作为“北向接口”（供HR系统等调用）</strong><a hidden class=anchor aria-hidden=true href=#2-作为北向接口供hr系统等调用>#</a></h4><p>当您的IAM/IDaaS平台作为SCIM服务端时，主要消费方可能是HR系统或其他权威身份源。</p><ul><li><strong>关注点：</strong><ul><li><strong>灵活的属性映射：</strong> HR系统可能包含大量非标准的员工属性。SCIM服务需要支持扩展模式（Schema Extension），以接收这些自定义属性，并将其映射到IAM的内部用户模型中。</li><li><strong>强大的容错与重试逻辑：</strong> 来自上游的调用可能不如标准IDaaS客户端那样规范。服务端需要有更强的容错能力，并能处理好因上游系统重试而带来的幂等性挑战。</li><li><strong>丰富的业务逻辑触发：</strong> 接收到SCIM事件（如用户创建）后，往往需要触发更复杂的内部工作流，例如分配默认权限、发送欢迎邮件、创建其他系统账户等。状态机模型在此场景下尤为重要。</li></ul></li></ul><h3 id=总结><strong>总结</strong><a hidden class=anchor aria-hidden=true href=#总结>#</a></h3><p>实现一个企业级的SCIM服务端点，其复杂性远超简单的CRUD接口开发。它要求开发者具备系统设计的思维，并能清晰地认知其在整个身份生态中的角色——无论是作为连接下游应用的“南向接口”，还是作为接收上游数据的“北向接口”。</p><p>通过构建一个精确的<strong>资源映射层</strong>，可以确保数据的正确转换；通过引入<strong>状态机模型</strong>，可以将业务流程与技术实现清晰解耦；通过实施严格的<strong>幂等性设计</strong>，可以保证系统在分布式环境下的稳定与可靠。这三大实现模式，结合对不同场景的深刻理解，共同构成了一个健壮、可扩展的SCIM服务架构的基础。</p><p><strong>欢迎关注+点赞+推荐+转发</strong></p></div><footer class=post-footer><ul class=post-tags></ul></footer></article></main><footer class=footer><span>&copy; 2025 <a href=https://bsong2015.github.io/blog/>万年水的博客</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
