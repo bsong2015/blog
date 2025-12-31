@@ -1,0 +1,84 @@
+{{- $src := .Get "src" -}}
+{{- $height := .Get "height" | default "800px" -}}
+{{- $width := .Get "width" | default "100%" -}}
+{{- $border := .Get "border" | default "1px solid #ddd" -}}
+{{- $title := .Get "title" | default "Embedded Content" -}}
+{{- $uniqueId := printf "embed-%d" (now.UnixNano) -}}
+
+<div class="embed-html-wrapper">
+    <iframe 
+        id="{{ $uniqueId }}"
+        src="{{ $src | relURL }}" 
+        width="{{ $width }}" 
+        height="{{ $height }}" 
+        title="{{ $title }}"
+        style="border: {{ $border }}; border-radius: 8px;"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads"
+        loading="lazy"
+        allowfullscreen>
+    </iframe>
+</div>
+
+<style>
+.embed-html-wrapper {
+    margin: 20px 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.embed-html-wrapper iframe {
+    display: block;
+    width: 100%;
+    height: {{ $height }};
+}
+
+@media (max-width: 768px) {
+    .embed-html-wrapper iframe {
+        height: calc({{ $height }} * 0.8);
+    }
+}
+</style>
+
+<script>
+(function() {
+    var iframe = document.getElementById('{{ $uniqueId }}');
+    if (iframe) {
+        iframe.addEventListener('load', function() {
+            try {
+                var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc && iframeDoc.body) {
+                    // 添加样式强制隐藏目录面板
+                    var style = iframeDoc.createElement('style');
+                    style.textContent = `
+                        .toc-panel {
+                            right: -100% !important;
+                            width: 85% !important;
+                        }
+                        .toc-panel.open {
+                            right: 0 !important;
+                        }
+                        .toc-overlay {
+                            display: none !important;
+                        }
+                    `;
+                    iframeDoc.head.appendChild(style);
+
+                    // 确保目录面板保持隐藏状态
+                    var tocPanel = iframeDoc.querySelector('.toc-panel');
+                    if (tocPanel) {
+                        tocPanel.classList.remove('open');
+                    }
+
+                    var tocOverlay = iframeDoc.querySelector('.toc-overlay');
+                    if (tocOverlay) {
+                        tocOverlay.style.display = 'none';
+                    }
+                }
+            } catch (e) {
+                // 跨域或安全限制，忽略错误
+                console.log('Cannot modify iframe content:', e);
+            }
+        });
+    }
+})();
+</script>
