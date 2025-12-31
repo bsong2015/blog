@@ -1,0 +1,2584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to Agents - 智能体介绍</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 3vh 5vw;
+            background: white;
+            display: none;
+            overflow-y: auto;
+            box-shadow: 0 1vh 4vh rgba(0,0,0,0.3);
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in-out;
+            justify-content: flex-start;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-right: 1vw;
+            justify-content: center;
+            align-items: stretch;
+            margin-top: 1vh;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 0.5vw;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        body.exporting .slide.active {
+            animation: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(1vh);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: 4.5vh;
+            color: #667eea;
+            margin-bottom: 2vh;
+            border-bottom: 0.4vh solid #667eea;
+            padding-bottom: 1vh;
+            line-height: 1.2;
+            flex-shrink: 0;
+        }
+
+        .slide h1 .english-title {
+            display: block;
+            font-size: 0.6em;
+            color: #999;
+            font-weight: 400;
+            margin-top: 1vh;
+            font-style: italic;
+        }
+
+        .slide h2 {
+            font-size: 3.5vh;
+            color: #764ba2;
+            margin: 2vh 0 1.5vh 0;
+            border-left: 0.8vh solid #764ba2;
+            padding-left: 1.5vw;
+            line-height: 1.2;
+        }
+
+        .slide h3 {
+            font-size: 2.8vh;
+            color: #555;
+            margin: 2vh 0 1.2vh 0;
+            line-height: 1.3;
+        }
+
+        .slide h4 {
+            font-size: 2.4vh;
+            color: #666;
+            margin: 1.5vh 0 1vh 0;
+        }
+
+        .slide p {
+            font-size: 2.1vh;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 1.5vh;
+        }
+
+        .slide ul, .slide ol {
+            margin: 1.5vh 0 1.5vh 3vw;
+            font-size: 2.1vh;
+            line-height: 1.6;
+        }
+
+        .slide li {
+            margin-bottom: 0.8vh;
+        }
+
+        .slide strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .slide em {
+            color: #764ba2;
+            font-style: italic;
+        }
+
+        .slide .highlight {
+            background: linear-gradient(120deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 0.2vh 0.8vw;
+            border-radius: 4px;
+        }
+
+        .slide .box {
+            background: #f8f9fa;
+            border-left: 0.6vh solid #667eea;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .warning {
+            background: #fff3cd;
+            border-left: 0.6vh solid #ffc107;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .success {
+            background: #d4edda;
+            border-left: 0.6vh solid #28a745;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .info {
+            background: #d1ecf1;
+            border-left: 0.6vh solid #17a2b8;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2vh 0;
+            font-size: 1.8vh;
+        }
+
+        .slide th, .slide td {
+            border: 0.2vh solid #ddd;
+            padding: 0.8vh 0.8vw;
+            text-align: left;
+        }
+
+        .slide th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .slide tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .slide tr:hover {
+            background: #e9ecef;
+        }
+
+        .slide pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2vh 2vw;
+            border-radius: 1vh;
+            overflow-x: auto;
+            margin: 2vh 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.6vh;
+            line-height: 1.5;
+        }
+
+        .slide code {
+            background: #f4f4f4;
+            padding: 0.2vh 0.5vw;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        .slide pre code {
+            background: none;
+            padding: 0;
+            color: #f8f8f2;
+        }
+
+        .slide .figure {
+            text-align: center;
+            margin: 2.5vh 0;
+            padding: 2vh 2vw;
+            background: #f8f9fa;
+            border-radius: 1vh;
+        }
+
+        .slide .figure-caption {
+            font-size: 1.6vh;
+            color: #666;
+            margin-top: 1vh;
+            font-style: italic;
+        }
+
+        .slide .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vh 3vw;
+            margin: 2vh 0;
+        }
+
+        .slide .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2vh 2vw;
+            margin: 2vh 0;
+        }
+
+        .slide .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2vh 2vw;
+            border-radius: 1.5vh;
+            box-shadow: 0 0.8vh 1.5vh rgba(0,0,0,0.1);
+        }
+
+        .slide .card h3 {
+            color: white;
+            margin-top: 0;
+            font-size: 2.4vh;
+        }
+
+        .slide .card p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.8vh;
+        }
+
+        .slide .card strong {
+            color: white;
+        }
+
+        .slide .card ul {
+            margin: 1vh 0 1vh 2vw;
+            font-size: 1.7vh;
+        }
+
+        .slide .card li {
+            margin-bottom: 0.5vh;
+        }
+
+        .controls {
+            background: white;
+            padding: 2vh 3vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -0.5vh 2vh rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.5vh 2.5vw;
+            border-radius: 4vh;
+            cursor: pointer;
+            font-size: 2.2vh;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0.5vh 2vh rgba(102, 126, 234, 0.4);
+        }
+
+        .controls button:hover {
+            transform: translateY(-0.3vh);
+            box-shadow: 0 0.8vh 2.5vh rgba(102, 126, 234, 0.6);
+        }
+
+        .controls button:active {
+            transform: translateY(0);
+        }
+
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .controls .page-info {
+            font-size: 2.4vh;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .controls .page-info span {
+            color: #667eea;
+        }
+
+        .slide-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 0.6vh;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .toc-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1.5vh 2.5vw;
+            border-radius: 4vh;
+            cursor: pointer;
+            font-size: 2.2vh;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toc-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -1vh 0 3vh rgba(0,0,0,0.2);
+            padding: 4vh 2vw;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toc-panel.open {
+            right: 0;
+        }
+
+        .toc-panel h2 {
+            color: #667eea;
+            margin-bottom: 3vh;
+            font-size: 3.5vh;
+            border: none;
+            padding: 0;
+        }
+
+        .toc-panel ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-panel li {
+            margin-bottom: 1vh;
+        }
+
+        .toc-panel a {
+            color: #333;
+            text-decoration: none;
+            font-size: 2.2vh;
+            display: block;
+            padding: 1.2vh 1vw;
+            border-radius: 1vh;
+            transition: all 0.3s ease;
+        }
+
+        .toc-panel a:hover {
+            background: #f8f9fa;
+            color: #667eea;
+            padding-left: 1.5vw;
+        }
+
+        .toc-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .close-toc {
+            position: absolute;
+            top: 2vh;
+            right: 1vw;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 5vh;
+            height: 5vh;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 3vh;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-footer {
+            margin-top: 3vh;
+            padding-top: 2vh;
+            border-top: 0.3vh solid #f0f0f0;
+            font-size: 1.8vh;
+            color: #999;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 3vh 5vw;
+            }
+
+            .slide h1 { font-size: 4.5vh; }
+            .slide h2 { font-size: 3.5vh; }
+            .slide h3 { font-size: 2.8vh; }
+            .slide p, .slide ul, .slide ol { font-size: 2.2vh; }
+
+            .controls {
+                padding: 1.5vh 3vw;
+                gap: 1vh;
+            }
+
+            .controls button {
+                padding: 1.2vh 3vw;
+                font-size: 1.8vh;
+            }
+
+            .toc-panel {
+                width: 85%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .controls,
+            .toc-panel,
+            .toc-overlay {
+                display: none;
+            }
+
+            .slide {
+                position: relative;
+                page-break-after: always;
+                display: block;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="slides-container" id="slidesContainer">
+            <!-- Slide 1: 封面 -->
+            <div class="slide active" data-slide="1">
+                <div class="slide-content">
+                    <h1>智能体介绍<span class="english-title">Introduction to Agents</span></h1>
+                    <div class="box">
+                        <p><strong>作者：</strong>Alan Blount, Antonio Gulli, Shubham Saboo, Michael Zimmermann, 和 Vladimir Vuskovic</p>
+                        <p><strong>发布日期：</strong>2025年11月</p>
+                    </div>
+                    <div class="figure">
+                        <div style="font-size: 15vh; margin: 4vh 0;">🤖</div>
+                        <p class="figure-caption">从预测AI到自主智能体</p>
+                    </div>
+                    <p style="text-align: center; font-size: 3vh; color: #666;">探索智能体架构、设计和部署的全面指南</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: 目录 -->
+            <div class="slide" data-slide="2">
+                <div class="slide-content">
+                    <h1>目录</h1>
+                    <div class="two-columns">
+                        <div>
+                            <h3>第一部分：基础概念</h3>
+                            <ul>
+                                <li>从预测AI到自主智能体</li>
+                                <li>AI智能体介绍</li>
+                                <li>智能体问题解决过程</li>
+                                <li>智能体系统分类</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>第二部分：核心架构</h3>
+                            <ul>
+                                <li>核心智能体架构</li>
+                                <li>模型（大脑）</li>
+                                <li>工具（手）</li>
+                                <li>编排层（神经系统）</li>
+                                <li>核心设计选择</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="two-columns">
+                        <div>
+                            <h3>第三部分：部署和运维</h3>
+                            <ul>
+                                <li>智能体部署和服务</li>
+                                <li>Agent Ops</li>
+                                <li>衡量重要指标</li>
+                                <li>使用OpenTelemetry跟踪调试</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>第四部分：高级主题</h3>
+                            <ul>
+                                <li>智能体互操作性</li>
+                                <li>保护单个智能体</li>
+                                <li>扩展到企业级舰队</li>
+                                <li>智能体如何学习和进化</li>
+                                <li>高级智能体示例</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 从预测AI到自主智能体 -->
+            <div class="slide" data-slide="3">
+                <div class="slide-content">
+                    <h1>从预测AI到自主智能体<span class="english-title">From Predictive AI to Autonomous Agents</span></h1>
+                    <div class="box">
+                        <p><strong>范式转变：</strong>人工智能正在发生变化。多年来，重点一直放在擅长被动、离散任务的模型上：回答问题、翻译文本或从提示生成图像</p>
+                    </div>
+                    <h3>传统AI范式</h3>
+                    <div class="two-columns">
+                        <div class="card">
+                            <h3>📝 被动任务</h3>
+                            <p><strong>特点：</strong></p>
+                            <ul>
+                                <li>回答问题</li>
+                                <li>翻译文本</li>
+                                <li>生成图像</li>
+                                <li>需要持续的人类指导</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🎯 局限性</h3>
+                            <p><strong>问题：</strong></p>
+                            <ul>
+                                <li>模型本身无法独立工作</li>
+                                <li>每一步都需要人工干预</li>
+                                <li>无法自主解决问题</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="success">
+                        <p><strong>新范式：</strong>我们正在看到一个范式转变，从只是预测或创建内容的AI转向一类能够自主解决问题和执行任务的新软件。这个新前沿围绕AI智能体构建</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: 什么是智能体 -->
+            <div class="slide" data-slide="4">
+                <h1>什么是智能体？<span class="english-title">What is an Agent?</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>智能体不仅仅是在静态工作流中的AI模型；它是一个完整的应用程序，制定计划并采取行动以实现目标</p>
+                </div>
+                <h3>智能体的核心能力</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🧠 推理能力</h3>
+                        <p><strong>Reasoning：</strong></p>
+                        <ul>
+                            <li>结合语言模型（LM）的推理能力</li>
+                            <li>处理信息</li>
+                            <li>评估选项</li>
+                            <li>做出决策</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🖐️ 行动能力</h3>
+                        <p><strong>Acting：</strong></p>
+                        <ul>
+                            <li>结合实际行动能力</li>
+                            <li>处理复杂、多步骤任务</li>
+                            <li>模型本身无法完成的任务</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>关键特性：</strong>智能体的关键能力是它可以自主工作，弄清楚实现目标所需的下一步，而无需人在每个转弯处指导它</p>
+                </div>
+                <div class="info">
+                    <p><strong>本质：</strong>智能体是语言模型的自然进化，在软件中变得有用</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: 文档范围 -->
+            <div class="slide" data-slide="5">
+                <h1>文档范围<span class="english-title">Document Scope</span></h1>
+                <div class="box">
+                    <p><strong>目标：</strong>本文档是五部分系列中的第一部分，作为从概念验证转向稳健、生产级智能体系统的开发人员、架构师和产品领导者的正式指南</p>
+                </div>
+                <h3>核心内容</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🔧 Core Anatomy</h3>
+                        <p><strong>核心解剖：</strong></p>
+                        <ul>
+                            <li>将智能体解构为三个基本组件</li>
+                            <li>推理模型</li>
+                            <li>可操作工具</li>
+                            <li>治理编排层</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 A Taxonomy of Capabilities</h3>
+                        <p><strong>能力分类：</strong></p>
+                        <ul>
+                            <li>从简单的连接问题解决者</li>
+                            <li>到复杂的多智能体系统</li>
+                            <li>分类智能体系统</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🏗️ Architectural Design</h3>
+                        <p><strong>架构设计：</strong></p>
+                        <ul>
+                            <li>深入每个组件的实际设计考虑</li>
+                            <li>从模型选择到工具实现</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🚀 Building for Production</h3>
+                    <p><strong>构建生产级系统：</strong>建立Agent Ops学科，用于评估、调试、保护和扩展智能体系统，从单个实例到具有企业治理的舰队</p>
+                </div>
+            </div>
+
+            <!-- Slide 6: 智能体介绍 -->
+            <div class="slide" data-slide="6">
+                <h1>AI智能体介绍<span class="english-title">Introduction to AI Agents</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>在最简单的术语中，AI智能体可以定义为模型、工具、编排层和运行时服务的组合，它使用LM在循环中实现目标</p>
+                </div>
+                <h3>四个基本元素</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🧠 The Model (The "Brain")</h3>
+                        <p><strong>模型（大脑）：</strong></p>
+                        <ul>
+                            <li>核心语言模型（LM）或基础模型</li>
+                            <li>作为智能体的中央推理引擎</li>
+                            <li>处理信息、评估选项和做出决策</li>
+                            <li>模型类型决定智能体的认知能力</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🖐️ Tools (The "Hands")</h3>
+                        <p><strong>工具（手）：</strong></p>
+                        <ul>
+                            <li>将智能体的推理与外部世界连接起来</li>
+                            <li>启用文本生成之外的操作</li>
+                            <li>包括API扩展、代码函数和数据存储</li>
+                            <li>访问实时、事实信息</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔗 The Orchestration Layer (The "Nervous System")</h3>
+                        <p><strong>编排层（神经系统）：</strong></p>
+                        <ul>
+                            <li>管理智能体操作循环的治理过程</li>
+                            <li>处理规划、记忆（状态）和推理策略执行</li>
+                            <li>使用提示框架和推理技术</li>
+                            <li>决定何时思考与使用工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🏃 Deployment (The "Body and Legs")</h3>
+                        <p><strong>部署（身体和腿）：</strong></p>
+                        <ul>
+                            <li>在生产环境中部署智能体</li>
+                            <li>托管在安全、可扩展的服务器上</li>
+                            <li>集成监控、日志记录和管理服务</li>
+                            <li>通过图形界面或A2A API访问</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: 开发范式转变 -->
+            <div class="slide" data-slide="7">
+                <h1>开发范式转变<span class="english-title">Paradigm Shift in Development</span></h1>
+                <p>归根结底，构建生成式AI智能体是一种开发解决方案以完成任务的新方式</p>
+                <h3>传统开发者 vs 智能体开发者</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🧱 Traditional Developer</h3>
+                        <p><strong>传统开发者：</strong></p>
+                        <ul>
+                            <li>像"砌砖工人"</li>
+                            <li>精确定义每个逻辑步骤</li>
+                            <li>为每个操作编写显式代码</li>
+                            <li>确定性方法</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎬 Agent Developer</h3>
+                        <p><strong>智能体开发者：</strong></p>
+                        <ul>
+                            <li>更像"导演"</li>
+                            <li>设置场景（指导指令和提示）</li>
+                            <li>选择演员（工具和API）</li>
+                            <li>提供必要的上下文（数据）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>核心任务：</strong>主要任务变成引导这个自主"演员"交付预期的性能</p>
+                </div>
+                <div class="info">
+                    <p><strong>上下文工程：</strong>我们过去称之为"提示工程"，现在称之为"上下文工程"，指导LM生成所需的输出</p>
+                </div>
+            </div>
+
+            <!-- Slide 8: 智能体问题解决过程 -->
+            <div class="slide" data-slide="8">
+                <h1>智能体问题解决过程<span class="english-title">The Agentic Problem-Solving Process</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>我们将AI智能体定义为完整的、面向目标的应用程序，它集成了推理模型、可操作工具和治理编排层。简短版本是"LM在循环中使用工具以实现目标"</p>
+                </div>
+                <h3>核心问题</h3>
+                <div class="card">
+                    <p><strong>问题：</strong>这个系统实际上是如何工作的？智能体从收到请求到交付结果的时刻做了什么？</p>
+                </div>
+                <div class="success">
+                    <p><strong>核心循环：</strong>在核心，智能体在一个连续、循环的过程中运行以实现其目标。虽然这个循环可能变得非常复杂，但它可以分解为五个基本步骤</p>
+                </div>
+                <div class="info">
+                    <p><strong>本质：</strong>智能体是一个致力于上下文窗口策展艺术的系统。它是一个无情的循环：组装上下文、提示模型、观察结果，然后为下一步重新组装上下文</p>
+                </div>
+            </div>
+
+            <!-- Slide 9: 五步循环 -->
+            <div class="slide" data-slide="9">
+                <h1>五步循环<span class="english-title">The 5-Step Loop</span></h1>
+                <div class="box">
+                    <p><strong>概述：</strong>智能体操作循环可以分解为五个基本步骤</p>
+                </div>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>1️⃣ Get the Mission</h3>
+                        <p><strong>获取任务：</strong></p>
+                        <ul>
+                            <li>过程由特定的、高级目标启动</li>
+                            <li>由用户提供</li>
+                            <li>或由自动化触发</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>2️⃣ Scan the Scene</h3>
+                        <p><strong>扫描场景：</strong></p>
+                        <ul>
+                            <li>智能体感知其环境以收集上下文</li>
+                            <li>访问可用资源</li>
+                            <li>了解用户请求</li>
+                            <li>检查记忆和工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>3️⃣ Think It Through</h3>
+                        <p><strong>思考：</strong></p>
+                        <ul>
+                            <li>智能体的核心"思考"循环</li>
+                            <li>分析任务与场景</li>
+                            <li>制定计划</li>
+                            <li>推理链</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>4️⃣ Take Action</h3>
+                        <p><strong>采取行动：</strong></p>
+                        <ul>
+                            <li>编排层执行计划的第一步</li>
+                            <li>选择并调用适当的工具</li>
+                            <li>调用API、运行代码或查询数据库</li>
+                            <li>智能体对世界采取行动</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>5️⃣ Observe and Iterate</h3>
+                        <p><strong>观察和迭代：</strong></p>
+                        <ul>
+                            <li>智能体观察其行动的结果</li>
+                            <li>新信息添加到智能体的上下文或"记忆"</li>
+                            <li>循环重复</li>
+                            <li>返回步骤3</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: 客户支持智能体示例 -->
+            <div class="slide" data-slide="10">
+                <h1>示例：客户支持智能体<span class="english-title">Example: Customer Support Agent</span></h1>
+                <div class="box">
+                    <p><strong>场景：</strong>想象一个用户问："我的订单#12345在哪里？"</p>
+                </div>
+                <h3>智能体的执行过程</h3>
+                <div class="card">
+                    <p><strong>思考阶段：</strong>智能体首先进入其"思考"阶段以制定完整策略</p>
+                    <ul>
+                        <li><strong>识别：</strong>必须在内部数据库中找到订单以确认其存在并获取详细信息</li>
+                        <li><strong>跟踪：</strong>从这些详细信息中，提取承运商的跟踪号码。然后查询外部承运商API以获取实时状态</li>
+                        <li><strong>报告：</strong>将收集的信息综合成清晰、有帮助的响应给用户</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>执行：</strong>有了这个多步骤计划，智能体开始执行。调用find_order("12345")工具，观察结果（包括跟踪号码"ZYX987"），然后调用get_shipping_status("ZYX987")工具，观察新结果："Out for Delivery"</p>
+                </div>
+                <div class="info">
+                    <p><strong>最终响应：</strong>"您的订单#12345是'Out for Delivery'！"</p>
+                </div>
+            </div>
+
+            <!-- Slide 11: 智能体系统分类 -->
+            <div class="slide" data-slide="11">
+                <h1>智能体系统分类<span class="english-title">A Taxonomy of Agentic Systems</span></h1>
+                <div class="box">
+                    <p><strong>分类的重要性：</strong>理解5步操作循环只是谜题的第一部分。第二部分是认识到这个循环可以扩展复杂性以创建不同类别的智能体</p>
+                </div>
+                <h3>关键决策</h3>
+                <div class="card">
+                    <p><strong>架构师或产品领导者的关键初始决策：</strong>确定构建什么类型的智能体</p>
+                </div>
+                <div class="success">
+                    <p><strong>分类方法：</strong>我们可以将智能体系统分为几个广泛的级别，每个级别都建立在前一个级别的能力之上</p>
+                </div>
+                <div class="info">
+                    <p><strong>级别：</strong>Level 0到Level 4，每个级别代表智能体能力的不同复杂度和自主性水平</p>
+                </div>
+            </div>
+
+            <!-- Slide 12: Level 0 - 核心推理系统 -->
+            <div class="slide" data-slide="12">
+                <h1>Level 0：核心推理系统<span class="english-title">Level 0: The Core Reasoning System</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>在我们拥有智能体之前，我们必须从"大脑"的最基本形式开始：推理引擎本身</p>
+                </div>
+                <h3>Level 0的特点</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>✅ 优势</h3>
+                        <p><strong>能力：</strong></p>
+                        <ul>
+                            <li>语言模型（LM）独立运行</li>
+                            <li>仅基于其大量预训练知识响应</li>
+                            <li>没有工具、记忆或与实时环境的交互</li>
+                            <li>可以解释既定概念</li>
+                            <li>深入规划如何解决问题</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>❌ 局限性</h3>
+                        <p><strong>限制：</strong></p>
+                        <ul>
+                            <li>完全缺乏实时意识</li>
+                            <li>功能上对其训练数据之外的任何事件或事实都是"盲目"的</li>
+                            <li>无法回答训练数据收集后发生的具体现实世界事件</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>示例：</strong>它可以解释职业棒球的规则和纽约洋基队的完整历史。但如果你问："昨晚洋基队比赛的最终比分是多少？"，它将无法回答</p>
+                </div>
+            </div>
+
+            <!-- Slide 13: Level 1 - 连接的问题解决者 -->
+            <div class="slide" data-slide="13">
+                <h1>Level 1：连接的问题解决者<span class="english-title">Level 1: The Connected Problem-Solver</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>在这个级别，推理引擎通过连接和利用外部工具——我们架构的"手"组件——成为一个功能智能体</p>
+                </div>
+                <h3>Level 1的能力</h3>
+                <div class="card">
+                    <p><strong>突破：</strong>智能体的问题解决不再局限于其静态、预训练的知识。使用5步循环，智能体现在可以回答我们之前的问题</p>
+                </div>
+                <div class="success">
+                    <p><strong>示例：</strong>给定"任务"："昨晚洋基队比赛的最终比分是多少？"，其"思考"步骤认识到这是实时数据需求。其"行动"步骤然后调用工具，如带有适当日期和搜索词的Google Search API。它"观察"搜索结果（例如，"洋基队5-3获胜"），并将该事实综合成最终答案</p>
+                </div>
+                <div class="info">
+                    <p><strong>核心能力：</strong>与世界交互的基本能力——无论是使用搜索工具获取比分、金融API获取实时股票价格，还是通过检索增强生成（RAG）查询数据库——是Level 1智能体的核心能力</p>
+                </div>
+            </div>
+
+            <!-- Slide 14: Level 2 - 战略问题解决者 -->
+            <div class="slide" data-slide="14">
+                <h1>Level 2：战略问题解决者<span class="english-title">Level 2: The Strategic Problem-Solver</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>Level 2标志着能力的重大扩展，从执行简单任务转向战略性地规划复杂、多部分目标</p>
+                </div>
+                <h3>关键技能：上下文工程</h3>
+                <div class="card">
+                    <p><strong>上下文工程：</strong>智能体主动选择、包装和管理其计划每个步骤的最相关信息的能力</p>
+                </div>
+                <div class="success">
+                    <p><strong>重要性：</strong>智能体的准确性取决于专注、高质量的上下文。上下文工程策展模型的有限注意力，以防止过载并确保高效性能</p>
+                </div>
+                <div class="info">
+                    <p><strong>示例：</strong>任务："在我的办公室（1600 Amphitheatre Parkway, Mountain View）和客户办公室（1 Market St, San Francisco）之间找到一个好的咖啡店"</p>
+                </div>
+                <div class="warning">
+                    <p><strong>战略规划还允许主动协助</strong>，例如，一个智能体阅读长航班确认电子邮件，工程关键上下文（航班号码、日期），并通过将其添加到日历来行动</p>
+                </div>
+            </div>
+
+            <!-- Slide 15: Level 3 - 协作多智能体系统 -->
+            <div class="slide" data-slide="15">
+                <h1>Level 3：协作多智能体系统<span class="english-title">Level 3: The Collaborative Multi-Agent System</span></h1>
+                <div class="box">
+                    <p><strong>范式转变：</strong>在最高级别，范式完全转变。我们远离构建单一的、全能的"超级智能体"，转向"专家团队"协同工作，一个直接镜像人类组织的模型</p>
+                </div>
+                <h3>系统优势</h3>
+                <div class="card">
+                    <p><strong>集体力量：</strong>系统的集体力量在于这种劳动分工</p>
+                </div>
+                <div class="success">
+                    <p><strong>核心概念：</strong>在这里，智能体将其他智能体视为工具。想象一个"项目经理"智能体收到"任务"："推出我们新的'Solaris'耳机"</p>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>👥 团队协作</h3>
+                        <ul>
+                            <li>委托给MarketResearchAgent</li>
+                            <li>委托给MarketingAgent</li>
+                            <li>委托给WebDevAgent</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 目标</h3>
+                        <ul>
+                            <li>分析竞争对手定价</li>
+                            <li>起草新闻稿</li>
+                            <li>生成产品页面HTML</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>前沿：</strong>这种协作模型代表了从头到尾自动化整个、复杂业务工作流程的前沿</p>
+                </div>
+            </div>
+
+            <!-- Slide 16: Level 4 - 自我进化系统 -->
+            <div class="slide" data-slide="16">
+                <h1>Level 4：自我进化系统<span class="english-title">Level 4: The Self-Evolving System</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>Level 4代表了从委托到自主创造和适应的深刻飞跃。在这个级别，智能体系统可以识别其自身能力中的差距，并动态创建新工具甚至新智能体来填补它们</p>
+                </div>
+                <h3>自主进化</h3>
+                <div class="card">
+                    <p><strong>转变：</strong>从使用固定资源集到主动扩展它们</p>
+                </div>
+                <div class="success">
+                    <p><strong>示例：</strong>"项目经理"智能体，负责'Solaris'推出，可能意识到它需要监控社交媒体情绪，但其团队上不存在这样的工具或智能体</p>
+                </div>
+                <div class="info">
+                    <p><strong>过程：</strong></p>
+                    <ul>
+                        <li><strong>思考（元推理）：</strong>"我必须跟踪'Solaris'的社交媒体热度，但我缺乏这种能力"</li>
+                        <li><strong>行动（自主创建）：</strong>调用高级AgentCreator工具，创建一个新的SentimentAnalysisAgent</li>
+                        <li><strong>观察：</strong>新的、专门的智能体被创建、测试并即时添加到团队中</li>
+                    </ul>
+                </div>
+                <div class="warning">
+                    <p><strong>意义：</strong>这种自主性，系统可以动态扩展其自身能力，将智能体团队转变为真正的学习和进化组织</p>
+                </div>
+            </div>
+
+            <!-- Slide 17: 核心智能体架构 -->
+            <div class="slide" data-slide="17">
+                <h1>核心智能体架构<span class="english-title">Core Agent Architecture</span></h1>
+                <div class="box">
+                    <p><strong>概述：</strong>我们知道智能体做什么以及它如何扩展。但我们实际上如何构建它？从概念到代码的转变在于其三个核心组件的特定架构设计</p>
+                </div>
+                <h3>三个核心组件</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🧠 Model</h3>
+                        <p><strong>模型（大脑）：</strong></p>
+                        <ul>
+                            <li>LM是智能体的推理核心</li>
+                            <li>选择是关键架构决策</li>
+                            <li>决定认知能力、运营成本和速度</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🖐️ Tools</h3>
+                        <p><strong>工具（手）：</strong></p>
+                        <ul>
+                            <li>工具是将推理连接到现实的手</li>
+                            <li>允许智能体超越静态训练数据</li>
+                            <li>检索实时信息并在世界中采取行动</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔗 Orchestration Layer</h3>
+                        <p><strong>编排层（神经系统）：</strong></p>
+                        <ul>
+                            <li>连接模型和工具的中央神经系统</li>
+                            <li>运行"思考、行动、观察"循环的引擎</li>
+                            <li>管理智能体行为的状态机</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 18: 模型选择 -->
+            <div class="slide" data-slide="18">
+                <h1>模型：AI智能体的"大脑"<span class="english-title">Model: The "Brain" of your AI Agent</span></h1>
+                <div class="box">
+                    <p><strong>重要性：</strong>LM是智能体的推理核心，其选择是关键架构决策，决定智能体的认知能力、运营成本和速度</p>
+                </div>
+                <h3>常见错误</h3>
+                <div class="warning">
+                    <p><strong>错误方法：</strong>将此选择视为简单地选择具有最高基准分数的模型是通往失败的常见路径。智能体在生产环境中的成功很少由通用学术基准决定</p>
+                </div>
+                <div class="success">
+                    <p><strong>正确方法：</strong>现实世界的成功需要一个在智能体基础方面表现出色的模型：卓越的推理以导航复杂、多步骤的问题，以及可靠的工具使用以与世界交互</p>
+                </div>
+                <div class="info">
+                    <p><strong>最佳实践：</strong>从定义业务问题开始，然后根据直接映射到该结果的指标测试模型。"最佳"模型是在质量、速度和价格的最佳交叉点上为你的特定任务服务的模型</p>
+                </div>
+            </div>
+
+            <!-- Slide 19: 多模型策略 -->
+            <div class="slide" data-slide="19">
+                <h1>多模型策略<span class="english-title">Multi-Model Strategy</span></h1>
+                <div class="box">
+                    <p><strong>策略：</strong>你可能选择不止一个模型，一个"专家团队"。你不会用大锤砸坚果</p>
+                </div>
+                <h3>模型路由</h3>
+                <div class="card">
+                    <p><strong>示例：</strong>一个稳健的智能体架构可能使用像Gemini 2.5 Pro这样的前沿模型来进行初始规划和复杂推理的繁重工作，但随后智能地将更简单、高容量的任务——如分类用户意图或总结文本——路由到更快、更具成本效益的模型，如Gemini 2.5 Flash</p>
+                </div>
+                <div class="success">
+                    <p><strong>优势：</strong>模型路由可能是自动的或硬编码的，但它是优化性能和成本的关键策略</p>
+                </div>
+                <div class="info">
+                    <p><strong>多模态处理：</strong>同样的原则适用于处理不同的数据类型。虽然像Gemini live mode这样的原生多模态模型提供了处理图像和音频的简化路径，但另一种选择是使用专门的工具，如Cloud Vision API或Speech-to-Text API</p>
+                </div>
+            </div>
+
+            <!-- Slide 20: 工具类型 -->
+            <div class="slide" data-slide="20">
+                <h1>工具：AI智能体的"手"<span class="english-title">Tools: The "Hands" of your AI Agent</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>如果模型是智能体的大脑，工具是将推理连接到现实的手。它们允许智能体超越静态训练数据以检索实时信息并在世界中采取行动</p>
+                </div>
+                <h3>主要工具类型</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📚 Retrieving Information</h3>
+                        <p><strong>检索信息：</strong></p>
+                        <ul>
+                            <li>访问最新信息的能力</li>
+                            <li>RAG（检索增强生成）</li>
+                            <li>向量数据库或知识图谱</li>
+                            <li>NL2SQL工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Executing Actions</h3>
+                        <p><strong>执行操作：</strong></p>
+                        <ul>
+                            <li>从读取信息到主动做事</li>
+                            <li>包装现有API和代码函数</li>
+                            <li>发送电子邮件、安排会议</li>
+                            <li>编写和执行代码</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👤 Human Interaction</h3>
+                        <p><strong>人机交互：</strong></p>
+                        <ul>
+                            <li>Human in the Loop (HITL)工具</li>
+                            <li>暂停工作流程并请求确认</li>
+                            <li>从用户界面请求特定信息</li>
+                            <li>确保人在关键决策中参与</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 21: 函数调用 -->
+            <div class="slide" data-slide="21">
+                <h1>函数调用：将工具连接到智能体<span class="english-title">Function Calling: Connecting Tools to your Agent</span></h1>
+                <div class="box">
+                    <p><strong>要求：</strong>为了让智能体可靠地进行"函数调用"并使用工具，它需要清晰的指令、安全的连接和编排</p>
+                </div>
+                <h3>标准和协议</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📋 OpenAPI Specification</h3>
+                        <p><strong>OpenAPI规范：</strong></p>
+                        <ul>
+                            <li>长期标准</li>
+                            <li>提供结构化契约</li>
+                            <li>描述工具目的、必需参数和预期响应</li>
+                            <li>让模型每次都生成正确的函数调用</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔗 Model Context Protocol (MCP)</h3>
+                        <p><strong>模型上下文协议：</strong></p>
+                        <ul>
+                            <li>开放标准</li>
+                            <li>更方便的工具发现和连接</li>
+                            <li>变得流行</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>原生工具：</strong>一些模型有原生工具，如带有原生Google Search的Gemini，其中函数调用作为LM调用本身的一部分发生</p>
+                </div>
+            </div>
+
+            <!-- Slide 22: 编排层 -->
+            <div class="slide" data-slide="22">
+                <h1>编排层<span class="english-title">The Orchestration Layer</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>如果模型是智能体的大脑，工具是它的手，编排层是连接它们的中央神经系统</p>
+                </div>
+                <h3>编排层的作用</h3>
+                <div class="card">
+                    <p><strong>核心功能：</strong></p>
+                    <ul>
+                        <li>运行"思考、行动、观察"循环的引擎</li>
+                        <li>管理智能体行为的状态机</li>
+                        <li>开发者精心制作的逻辑得以实现的地方</li>
+                        <li>决定模型何时应该推理</li>
+                        <li>决定哪个工具应该行动</li>
+                        <li>决定该行动的结果如何告知下一步</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>本质：</strong>这一层不仅仅是管道；它是整个智能体交响乐的指挥家</p>
+                </div>
+            </div>
+
+            <!-- Slide 23: 核心设计选择 -->
+            <div class="slide" data-slide="23">
+                <h1>核心设计选择<span class="english-title">Core Design Choices</span></h1>
+                <div class="box">
+                    <p><strong>第一个架构决策：</strong>确定智能体的自主程度。选择存在于一个光谱上</p>
+                </div>
+                <h3>自主程度光谱</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📋 Deterministic Workflows</h3>
+                        <p><strong>确定性工作流：</strong></p>
+                        <ul>
+                            <li>光谱的一端</li>
+                            <li>确定性、可预测的工作流</li>
+                            <li>将LM作为特定任务的工具调用</li>
+                            <li>一点AI来增强现有流程</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🤖 LM in the Driver's Seat</h3>
+                        <p><strong>LM在驾驶座上：</strong></p>
+                        <ul>
+                            <li>光谱的另一端</li>
+                            <li>LM在驾驶座上</li>
+                            <li>动态适应、规划和执行任务</li>
+                            <li>实现目标</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>实现方法：</strong>并行选择是实施方法。无代码构建器提供速度和可访问性。对于更复杂、任务关键型系统，代码优先框架（如Google的Agent Development Kit (ADK)）提供深度控制</p>
+                </div>
+            </div>
+
+            <!-- Slide 24: 生产级框架要求 -->
+            <div class="slide" data-slide="24">
+                <h1>生产级框架要求<span class="english-title">Production-Grade Framework Requirements</span></h1>
+                <div class="box">
+                    <p><strong>关键要求：</strong>无论采用何种方法，生产级框架都是必不可少的</p>
+                </div>
+                <h3>框架必须具备的特性</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔓 Open</h3>
+                        <p><strong>开放性：</strong></p>
+                        <ul>
+                            <li>允许插入任何模型或工具</li>
+                            <li>防止供应商锁定</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Precise Control</h3>
+                        <p><strong>精确控制：</strong></p>
+                        <ul>
+                            <li>启用混合方法</li>
+                            <li>LM的非确定性推理由硬编码业务规则管理</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👁️ Observability</h3>
+                        <p><strong>可观察性：</strong></p>
+                        <ul>
+                            <li>为可观察性而构建</li>
+                            <li>生成详细的跟踪和日志</li>
+                            <li>暴露整个推理轨迹</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔍 Debugging Support</h3>
+                        <p><strong>调试支持：</strong></p>
+                        <ul>
+                            <li>模型的内部独白</li>
+                            <li>它选择的工具</li>
+                            <li>它生成的参数</li>
+                            <li>它观察到的结果</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 25: 领域知识和人设 -->
+            <div class="slide" data-slide="25">
+                <h1>使用领域知识和人设进行指导<span class="english-title">Instruct with Domain Knowledge and Persona</span></h1>
+                <div class="box">
+                    <p><strong>最强大的杠杆：</strong>在这个框架内，开发者最强大的杠杆是用领域知识和独特的人设指导智能体</p>
+                </div>
+                <h3>系统提示</h3>
+                <div class="card">
+                    <p><strong>实现方式：</strong>这是通过系统提示或一组核心指令完成的。这不仅仅是一个简单的命令；它是智能体的宪法</p>
+                </div>
+                <div class="success">
+                    <p><strong>内容：</strong>在这里，你告诉它，"你是Acme Corp的有用客户支持智能体..."并提供约束、期望的输出模式、参与规则、特定的语气，以及关于何时以及为什么应该使用其工具的明确指导。指令中的几个示例场景通常非常有效</p>
+                </div>
+                <div class="info">
+                    <p><strong>重要性：</strong>系统提示定义了智能体的身份、行为和边界</p>
+                </div>
+            </div>
+
+            <!-- Slide 26: 上下文增强 -->
+            <div class="slide" data-slide="26">
+                <h1>使用上下文增强<span class="english-title">Augment with Context</span></h1>
+                <div class="box">
+                    <p><strong>智能体的"记忆"：</strong>智能体的"记忆"在运行时被编排到LM上下文窗口中</p>
+                </div>
+                <h3>记忆类型</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📝 Short-term Memory</h3>
+                        <p><strong>短期记忆：</strong></p>
+                        <ul>
+                            <li>智能体的活动"草稿板"</li>
+                            <li>维护当前对话的运行历史</li>
+                            <li>跟踪来自持续循环的（行动、观察）对序列</li>
+                            <li>提供模型决定下一步所需的直接上下文</li>
+                            <li>可以实现为状态、工件、会话或线程等抽象</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📚 Long-term Memory</h3>
+                        <p><strong>长期记忆：</strong></p>
+                        <ul>
+                            <li>跨会话提供持久性</li>
+                            <li>几乎总是实现为另一个专门的工具</li>
+                            <li>连接到向量数据库或搜索引擎的RAG系统</li>
+                            <li>允许智能体预取并主动查询其自己的历史</li>
+                            <li>"记住"用户偏好或类似任务的结果</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>个性化体验：</strong>为真正个性化和连续的体验</p>
+                </div>
+            </div>
+
+            <!-- Slide 27: 多智能体系统 -->
+            <div class="slide" data-slide="27">
+                <h1>多智能体系统和设计模式<span class="english-title">Multi-Agent Systems and Design Patterns</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>随着任务复杂性的增长，构建单一的、全能的"超级智能体"变得低效</p>
+                </div>
+                <h3>专家团队方法</h3>
+                <div class="card">
+                    <p><strong>更有效的解决方案：</strong>采用"专家团队"方法，这镜像了人类组织</p>
+                </div>
+                <div class="success">
+                    <p><strong>多智能体系统：</strong>复杂过程被分割成离散的子任务，每个子任务都分配给专门的、专注的AI智能体。这种劳动分工允许每个智能体更简单、更专注、更容易构建、测试和维护</p>
+                </div>
+                <div class="info">
+                    <p><strong>设计模式：</strong>架构师可以依赖经过验证的智能体设计模式，尽管智能体能力因此模式正在快速演变</p>
+                </div>
+            </div>
+
+            <!-- Slide 28: 智能体设计模式 -->
+            <div class="slide" data-slide="28">
+                <h1>智能体设计模式<span class="english-title">Agentic Design Patterns</span></h1>
+                <h3>关键模式</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🎯 Coordinator Pattern</h3>
+                        <p><strong>协调器模式：</strong></p>
+                        <ul>
+                            <li>对于动态或非线性任务至关重要</li>
+                            <li>引入"经理"智能体</li>
+                            <li>分析复杂请求</li>
+                            <li>分割主要任务</li>
+                            <li>智能地将每个子任务路由到适当的专家智能体</li>
+                            <li>聚合响应以制定最终、全面的答案</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📋 Sequential Pattern</h3>
+                        <p><strong>顺序模式：</strong></p>
+                        <ul>
+                            <li>更适合更线性工作流</li>
+                            <li>像数字装配线</li>
+                            <li>一个智能体的输出成为下一个的直接输入</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 Iterative Refinement Pattern</h3>
+                        <p><strong>迭代改进模式：</strong></p>
+                        <ul>
+                            <li>关注质量和安全</li>
+                            <li>创建反馈循环</li>
+                            <li>使用"生成器"智能体创建内容</li>
+                            <li>使用"评论家"智能体根据质量标准进行评估</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>👤 Human-in-the-Loop (HITL) Pattern</h3>
+                    <p><strong>人机循环模式：</strong>对于高风险任务至关重要，在工作流程中创建故意暂停，在智能体采取重大行动之前获得人的批准</p>
+                </div>
+            </div>
+
+            <!-- Slide 29: 智能体部署 -->
+            <div class="slide" data-slide="29">
+                <h1>智能体部署和服务<span class="english-title">Agent Deployment and Services</span></h1>
+                <div class="box">
+                    <p><strong>概述：</strong>在本地构建智能体后，您希望将其部署到服务器上，在那里它一直运行，其他人和智能体可以使用它</p>
+                </div>
+                <h3>部署要求</h3>
+                <div class="card">
+                    <p><strong>比喻：</strong>继续我们的比喻，部署和服务将是我们的智能体的身体和腿</p>
+                </div>
+                <div class="success">
+                    <p><strong>智能体所需的服务：</strong></p>
+                    <ul>
+                        <li>会话历史和记忆持久化</li>
+                        <li>监控、日志记录和管理</li>
+                        <li>决定记录什么</li>
+                        <li>为数据隐私、数据驻留和法规合规性采取的安全措施</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <p><strong>部署选项：</strong>智能体构建者可以依赖数十年的应用程序托管基础设施。有专门的、特定于智能体的部署选项，如Vertex AI Agent Engine，支持运行时和所有其他内容在一个平台上</p>
+                </div>
+            </div>
+
+            <!-- Slide 30: Agent Ops -->
+            <div class="slide" data-slide="30">
+                <h1>Agent Ops：处理不可预测性的结构化方法<span class="english-title">Agent Ops: A Structured Approach to the Unpredictable</span></h1>
+                <div class="box">
+                    <p><strong>新挑战：</strong>当您构建第一个智能体时，您将反复手动测试行为。添加功能时是否工作？修复错误时是否导致了不同的问题？</p>
+                </div>
+                <h3>范式转变</h3>
+                <div class="card">
+                    <p><strong>转变：</strong>从传统的、确定性软件到随机的、智能体系统的转变需要新的操作哲学</p>
+                </div>
+                <div class="warning">
+                    <p><strong>传统测试的局限性：</strong>传统软件单元测试可以简单地断言output == expected；但这在智能体的响应在设计上是概率性的情况下不起作用</p>
+                </div>
+                <div class="success">
+                    <p><strong>Agent Ops：</strong>Agent Ops是管理这种新现实的纪律、结构化方法。它是DevOps和MLOps的自然演变，专门用于构建、部署和治理AI智能体的独特挑战</p>
+                </div>
+            </div>
+
+            <!-- Slide 31: 衡量重要指标 -->
+            <div class="slide" data-slide="31">
+                <h1>衡量重要指标：像A/B实验一样装备成功<span class="english-title">Measure What Matters: Instrumenting Success Like an A/B Experiment</span></h1>
+                <div class="box">
+                    <p><strong>第一步：</strong>在改进智能体之前，您必须在业务上下文中定义"更好"意味着什么</p>
+                </div>
+                <h3>可观察性策略</h3>
+                <div class="card">
+                    <p><strong>方法：</strong>将可观察性策略框架化为A/B测试，并问自己：证明智能体正在交付价值的关键绩效指标（KPI）是什么？</p>
+                </div>
+                <div class="success">
+                    <p><strong>指标应该超越技术正确性：</strong></p>
+                    <ul>
+                        <li>目标完成率</li>
+                        <li>用户满意度分数</li>
+                        <li>任务延迟</li>
+                        <li>每次交互的运营成本</li>
+                        <li>对业务目标的影响（收入、转化或客户保留）</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <p><strong>自上而下的视图：</strong>将指导其余的测试，使您走上指标驱动开发的道路，并让您能够计算投资回报率</p>
+                </div>
+            </div>
+
+            <!-- Slide 32: 使用LM评估质量 -->
+            <div class="slide" data-slide="32">
+                <h1>质量而非通过/失败：使用LM评估器<span class="english-title">Quality Instead of Pass/Fail: Using a LM Judge</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>业务指标不能告诉您智能体是否正确行为。由于简单的通过/失败是不可能的，我们转向使用"LM作为评估器"来评估质量</p>
+                </div>
+                <h3>LM评估器</h3>
+                <div class="card">
+                    <p><strong>方法：</strong>这涉及使用强大的模型根据预定义的评分标准评估智能体的输出：它是否给出了正确的答案？响应是否基于事实？它是否遵循了指令？</p>
+                </div>
+                <div class="success">
+                    <p><strong>自动化评估：</strong>这种自动化评估，针对提示的黄金数据集运行，提供了一致的质量衡量</p>
+                </div>
+                <div class="info">
+                    <p><strong>评估数据集：</strong>创建评估数据集——包括理想（或"黄金"）问题和正确响应——可能是一个乏味的过程。要构建这些，您应该从智能体的现有生产或开发交互中采样场景</p>
+                </div>
+            </div>
+
+            <!-- Slide 33: 指标驱动开发 -->
+            <div class="slide" data-slide="33">
+                <h1>指标驱动开发：您的部署Go/No-Go<span class="english-title">Metrics-Driven Development: Your Go/No-Go for Deployment</span></h1>
+                <div class="box">
+                    <p><strong>流程：</strong>一旦您自动化了数十个评估场景并建立了可信的质量分数，您可以自信地测试对开发智能体的更改</p>
+                </div>
+                <h3>部署流程</h3>
+                <div class="card">
+                    <p><strong>简单流程：</strong>运行新版本对抗整个评估数据集，并直接将其分数与现有生产版本进行比较</p>
+                </div>
+                <div class="success">
+                    <p><strong>稳健系统：</strong>这个稳健系统消除了猜测，确保您对每次部署都有信心</p>
+                </div>
+                <div class="info">
+                    <p><strong>其他因素：</strong>虽然自动化评估至关重要，但不要忘记其他重要因素，如延迟、成本和任务成功率。为了最大安全，使用A/B部署缓慢推出新版本，并将这些真实世界生产指标与模拟分数进行比较</p>
+                </div>
+            </div>
+
+            <!-- Slide 34: 使用OpenTelemetry跟踪调试 -->
+            <div class="slide" data-slide="34">
+                <h1>使用OpenTelemetry跟踪调试：回答"为什么？"<span class="english-title">Debug with OpenTelemetry Traces: Answering "Why?"</span></h1>
+                <div class="box">
+                    <p><strong>调试需求：</strong>当您的指标下降或用户报告错误时，您需要理解"为什么"</p>
+                </div>
+                <h3>OpenTelemetry跟踪</h3>
+                <div class="card">
+                    <p><strong>定义：</strong>OpenTelemetry跟踪是智能体整个执行路径（轨迹）的高保真、逐步记录，允许您调试智能体的步骤</p>
+                </div>
+                <div class="success">
+                    <p><strong>跟踪提供：</strong></p>
+                    <ul>
+                        <li>发送到模型的确切提示</li>
+                        <li>模型的内部推理（如果可用）</li>
+                        <li>它选择调用的特定工具</li>
+                        <li>它为该工具生成的精确参数</li>
+                        <li>作为观察返回的原始数据</li>
+                    </ul>
+                </div>
+                <div class="info">
+                    <p><strong>平台支持：</strong>跟踪数据可以在Google Cloud Trace等平台中无缝收集，这些平台可以可视化和搜索大量跟踪，简化根本原因分析</p>
+                </div>
+            </div>
+
+            <!-- Slide 35: 珍惜人类反馈 -->
+            <div class="slide" data-slide="35">
+                <h1>珍惜人类反馈：指导您的自动化<span class="english-title">Cherish Human Feedback: Guiding Your Automation</span></h1>
+                <div class="box">
+                    <p><strong>价值：</strong>人类反馈不是需要处理的烦恼；它是您拥有的最有价值和数据丰富的资源，用于改进智能体</p>
+                </div>
+                <h3>反馈的价值</h3>
+                <div class="card">
+                    <p><strong>礼物：</strong>当用户提交错误报告或点击"向下"按钮时，他们给了您一份礼物：一个新的、现实世界的边缘案例，您的自动化评估场景错过了</p>
+                </div>
+                <div class="success">
+                    <p><strong>闭环：</strong>有效的Agent Ops流程通过捕获此反馈、复制问题并将该特定场景转换为评估数据集中的新、永久测试用例来"闭环"</p>
+                </div>
+                <div class="info">
+                    <p><strong>结果：</strong>这确保您不仅修复错误，而且使系统对整个类别的错误免疫，使其永远不会再发生</p>
+                </div>
+            </div>
+
+            <!-- Slide 36: 智能体互操作性 -->
+            <div class="slide" data-slide="36">
+                <h1>智能体互操作性<span class="english-title">Agent Interoperability</span></h1>
+                <div class="box">
+                    <p><strong>概述：</strong>一旦您构建了高质量智能体，您希望能够将它们与用户和其他智能体互连</p>
+                </div>
+                <h3>互操作性的三个方面</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>👤 Agents and Humans</h3>
+                        <p><strong>智能体与人类：</strong></p>
+                        <ul>
+                            <li>最常见的智能体-人类交互形式</li>
+                            <li>通过用户界面</li>
+                            <li>聊天机器人</li>
+                            <li>结构化数据（JSON）</li>
+                            <li>Human in the Loop (HITL)</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🤖 Agents and Agents</h3>
+                        <p><strong>智能体与智能体：</strong></p>
+                        <ul>
+                            <li>智能体必须彼此连接</li>
+                            <li>发现和通信挑战</li>
+                            <li>Agent2Agent (A2A)协议</li>
+                            <li>任务导向架构</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💰 Agents and Money</h3>
+                        <p><strong>智能体与金钱：</strong></p>
+                        <ul>
+                            <li>购买或销售任务</li>
+                            <li>谈判或促进交易</li>
+                            <li>授权、真实性和问责制</li>
+                            <li>Agent Payments Protocol (AP2)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 37: 智能体与人类交互 -->
+            <div class="slide" data-slide="37">
+                <h1>智能体与人类<span class="english-title">Agents and Humans</span></h1>
+                <div class="box">
+                    <p><strong>用户界面：</strong>最常见的智能体-人类交互形式是通过用户界面</p>
+                </div>
+                <h3>交互类型</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>💬 Chatbot</h3>
+                        <p><strong>聊天机器人：</strong></p>
+                        <ul>
+                            <li>最简单的形式</li>
+                            <li>用户输入请求</li>
+                            <li>智能体作为后端服务处理</li>
+                            <li>返回文本块</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 Structured Data</h3>
+                        <p><strong>结构化数据：</strong></p>
+                        <ul>
+                            <li>更高级的智能体</li>
+                            <li>提供结构化数据，如JSON</li>
+                            <li>支持丰富、动态的前端体验</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>Computer Use：</strong>计算机使用是LM控制用户界面的工具类别，通常有人类交互和监督。启用了计算机使用的智能体可以决定下一个最佳操作是导航到新页面、突出显示特定按钮或用相关信息预填充表单</p>
+                </div>
+            </div>
+
+            <!-- Slide 38: Gemini Live API -->
+            <div class="slide" data-slide="38">
+                <h1>Gemini Live API：实时多模态通信<span class="english-title">Gemini Live API: Real-time Multimodal Communication</span></h1>
+                <div class="box">
+                    <p><strong>突破：</strong>高级智能体正在打破文本障碍，进入与"实时模式"的实时、多模态通信，创造更自然、类似人类的连接</p>
+                </div>
+                <h3>Gemini Live API的能力</h3>
+                <div class="card">
+                    <p><strong>双向流式传输：</strong></p>
+                    <ul>
+                        <li>允许用户与智能体交谈并中断它</li>
+                        <li>就像他们在自然对话中一样</li>
+                        <li>访问设备的摄像头和麦克风</li>
+                        <li>智能体可以看到用户所看到的</li>
+                        <li>听到用户所说的</li>
+                        <li>以模仿人类对话的延迟用生成的语音响应</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>用例：</strong>这开启了大量用例，从技术人员在修理设备时获得免提指导，到购物者获得实时风格建议。它使智能体成为更直观和可访问的合作伙伴</p>
+                </div>
+            </div>
+
+            <!-- Slide 39: 智能体与智能体 -->
+            <div class="slide" data-slide="39">
+                <h1>智能体与智能体<span class="english-title">Agents and Agents</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>就像智能体必须与人类连接一样，它们也必须彼此连接</p>
+                </div>
+                <h3>核心挑战</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔍 Discovery</h3>
+                        <p><strong>发现：</strong></p>
+                        <ul>
+                            <li>我的智能体如何找到其他智能体</li>
+                            <li>知道它们能做什么？</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💬 Communication</h3>
+                        <p><strong>通信：</strong></p>
+                        <ul>
+                            <li>我们如何确保它们说相同的语言？</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>Agent2Agent (A2A)协议：</strong>为解决这个问题而设计的开放标准。它充当智能体经济的通用握手。A2A允许任何智能体发布数字"名片"，称为Agent Card</p>
+                </div>
+                <div class="info">
+                    <p><strong>Agent Card：</strong>这个简单的JSON文件宣传智能体的能力、其网络端点和与其交互所需的安全凭据</p>
+                </div>
+            </div>
+
+            <!-- Slide 40: 智能体与金钱 -->
+            <div class="slide" data-slide="40">
+                <h1>智能体与金钱<span class="english-title">Agents and Money</span></h1>
+                <div class="box">
+                    <p><strong>新挑战：</strong>随着AI智能体为我们做更多任务，其中一些任务涉及购买或销售、谈判或促进交易</p>
+                </div>
+                <h3>信任危机</h3>
+                <div class="warning">
+                    <p><strong>问题：</strong>当前网络是为人类点击"购买"而构建的，责任在人类。如果自主智能体点击"购买"，它会产生信任危机——如果出了问题，谁负责？</p>
+                </div>
+                <div class="success">
+                    <p><strong>需求：</strong>这些是授权、真实性和问责制的复杂问题。为了解锁真正的智能体经济，我们需要允许智能体代表其用户安全可靠地进行交易的新标准</p>
+                </div>
+                <div class="info">
+                    <p><strong>关键协议：</strong>Agent Payments Protocol (AP2)和x402是为智能体经济铺平道路的两个关键协议</p>
+                </div>
+            </div>
+
+            <!-- Slide 41: 保护单个智能体 -->
+            <div class="slide" data-slide="41">
+                <h1>保护单个智能体：信任权衡<span class="english-title">Securing a Single Agent: The Trust Trade-Off</span></h1>
+                <div class="box">
+                    <p><strong>根本张力：</strong>当您创建第一个AI智能体时，您立即面临根本张力：效用与安全之间的权衡</p>
+                </div>
+                <h3>权衡</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>⚡ Utility</h3>
+                        <p><strong>效用：</strong></p>
+                        <ul>
+                            <li>使智能体有用</li>
+                            <li>必须给它权力</li>
+                            <li>自主决策的自主权</li>
+                            <li>执行操作的工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Security</h3>
+                        <p><strong>安全：</strong></p>
+                        <ul>
+                            <li>每一盎司权力都引入相应的风险</li>
+                            <li>流氓行为</li>
+                            <li>敏感数据泄露</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>挑战：</strong>您希望给智能体足够长的绳子来完成工作，但也足够短以防止它跑进交通，特别是当交通涉及不可逆转的操作或您公司的私人数据时</p>
+                </div>
+            </div>
+
+            <!-- Slide 42: 深度防御方法 -->
+            <div class="slide" data-slide="42">
+                <h1>深度防御方法<span class="english-title">Defense-in-Depth Approach</span></h1>
+                <div class="box">
+                    <p><strong>最佳实践：</strong>要管理这一点，您不能仅依赖AI模型的判断，因为它可能被提示注入等技术操纵</p>
+                </div>
+                <h3>混合、深度防御方法</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🛡️ First Layer</h3>
+                        <p><strong>第一层：</strong></p>
+                        <ul>
+                            <li>传统的、确定性护栏</li>
+                            <li>一组硬编码规则</li>
+                            <li>在模型推理之外充当安全扼杀点</li>
+                            <li>策略引擎</li>
+                            <li>提供可预测、可审计的硬限制</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🤖 Second Layer</h3>
+                        <p><strong>第二层：</strong></p>
+                        <ul>
+                            <li>基于推理的防御</li>
+                            <li>使用AI帮助保护AI</li>
+                            <li>训练模型更具弹性</li>
+                            <li>使用较小的、专门的"守卫模型"</li>
+                            <li>在执行前检查智能体的提议计划</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>结果：</strong>这种混合模型，结合代码的刚性确定性与AI的上下文感知，为即使是单个智能体创建了稳健的安全姿态</p>
+                </div>
+            </div>
+
+            <!-- Slide 43: 智能体身份 -->
+            <div class="slide" data-slide="43">
+                <h1>智能体身份：一类新的主体<span class="english-title">Agent Identity: A New Class of Principal</span></h1>
+                <div class="box">
+                    <p><strong>新类别：</strong>在传统安全模型中，有使用OAuth或SSO的人类用户，以及使用IAM或服务账户的服务。智能体添加了第3类主体</p>
+                </div>
+                <h3>智能体作为自主行动者</h3>
+                <div class="card">
+                    <p><strong>定义：</strong>智能体不仅仅是一段代码；它是一个自主行动者，一类新的主体，需要其自己的可验证身份</p>
+                </div>
+                <div class="success">
+                    <p><strong>数字护照：</strong>就像员工被发ID徽章一样，平台上的每个智能体都必须被颁发安全的、可验证的"数字护照"</p>
+                </div>
+                <div class="info">
+                    <p><strong>独特身份：</strong>此智能体身份与调用它的用户身份和构建它的开发人员身份不同。这是企业中我们必须如何处理身份和访问管理（IAM）的根本转变</p>
+                </div>
+            </div>
+
+            <!-- Slide 44: 身份验证和访问控制 -->
+            <div class="slide" data-slide="44">
+                <h1>身份验证和访问控制<span class="english-title">Authentication and Access Control</span></h1>
+                <div class="box">
+                    <p><strong>基础：</strong>验证每个身份并拥有所有身份的访问控制是智能体安全的基石</p>
+                </div>
+                <h3>最小权限原则</h3>
+                <div class="card">
+                    <p><strong>授权：</strong>一旦智能体具有加密可验证的身份（通常使用SPIFFE等标准），它可以被授予其自己的特定、最小权限权限</p>
+                </div>
+                <div class="success">
+                    <p><strong>示例：</strong>SalesAgent被授予CRM的读/写访问权限，而HRonboardingAgent被明确拒绝。这种细粒度控制至关重要。它确保即使单个智能体被泄露或行为异常，潜在爆炸半径也被包含</p>
+                </div>
+                <div class="info">
+                    <p><strong>重要性：</strong>没有智能体身份构造，智能体无法代表人类以有限的委托权限工作</p>
+                </div>
+            </div>
+
+            <!-- Slide 45: 策略限制访问 -->
+            <div class="slide" data-slide="45">
+                <h1>策略限制访问<span class="english-title">Policies to Constrain Access</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>策略是授权（AuthZ）的一种形式，与身份验证（AuthN）不同</p>
+                </div>
+                <h3>策略的作用</h3>
+                <div class="card">
+                    <p><strong>限制能力：</strong>通常，策略限制主体的能力；例如，"营销中的用户只能访问这27个API端点，不能执行DELETE命令"</p>
+                </div>
+                <div class="success">
+                    <p><strong>应用于智能体：</strong>随着我们开发智能体，我们需要对智能体、其工具、其他内部智能体、它们可以共享的上下文以及远程智能体应用权限</p>
+                </div>
+                <div class="info">
+                    <p><strong>推荐方法：</strong>应用最小权限原则，同时保持上下文相关性。如果您将所有API、数据、工具和智能体添加到您的系统，那么您必须将访问限制为仅完成其工作所需的能力子集</p>
+                </div>
+            </div>
+
+            <!-- Slide 46: 保护ADK智能体 -->
+            <div class="slide" data-slide="46">
+                <h1>保护ADK智能体<span class="english-title">Securing an ADK Agent</span></h1>
+                <div class="box">
+                    <p><strong>实践练习：</strong>在建立了身份和策略的核心原则后，使用Agent Development Kit (ADK)构建的智能体的安全成为通过代码和配置应用这些概念的实际练习</p>
+                </div>
+                <h3>安全层</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🔐 Identity</h3>
+                        <p><strong>身份：</strong></p>
+                        <ul>
+                            <li>用户账户（例如OAuth）</li>
+                            <li>服务账户（运行代码）</li>
+                            <li>智能体身份（使用委托权限）</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ Policies</h3>
+                        <p><strong>策略：</strong></p>
+                        <ul>
+                            <li>建立策略以限制对服务的访问</li>
+                            <li>通常在API治理层完成</li>
+                            <li>支持MCP和A2A服务的治理</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Guardrails</h3>
+                        <p><strong>护栏：</strong></p>
+                        <ul>
+                            <li>在工具、模型和子智能体中构建护栏</li>
+                            <li>强制执行策略</li>
+                            <li>工具自己的逻辑将拒绝执行不安全或违反策略的操作</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 47: 动态安全 -->
+            <div class="slide" data-slide="47">
+                <h1>使用ADK进行动态安全<span class="english-title">Dynamic Security with ADK</span></h1>
+                <div class="box">
+                    <p><strong>动态检查：</strong>对于可以适应智能体运行时行为的更动态安全，ADK提供回调和插件</p>
+                </div>
+                <h3>安全机制</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔍 Callbacks</h3>
+                        <p><strong>回调：</strong></p>
+                        <ul>
+                            <li>before_tool_callback</li>
+                            <li>在工具运行前检查参数</li>
+                            <li>根据智能体当前状态验证</li>
+                            <li>防止错位行动</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔌 Plugins</h3>
+                        <p><strong>插件：</strong></p>
+                        <ul>
+                            <li>构建更可重用的策略</li>
+                            <li>"Gemini as Judge"模式</li>
+                            <li>使用快速、廉价的模型</li>
+                            <li>实时筛选用户输入和智能体输出</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>Model Armor：</strong>对于更喜欢完全管理的、企业级解决方案的组织，Model Armor可以作为可选服务集成。它充当专门的安全层，筛选提示和响应以应对广泛的威胁</p>
+                </div>
+            </div>
+
+            <!-- Slide 48: 扩展到企业级舰队 -->
+            <div class="slide" data-slide="48">
+                <h1>从单个智能体扩展到企业级舰队<span class="english-title">Scaling Up from a Single Agent to an Enterprise Fleet</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>单个AI智能体的生产成功是一个胜利。扩展到数百个是一个架构挑战</p>
+                </div>
+                <h3>复杂性管理</h3>
+                <div class="card">
+                    <p><strong>规模效应：</strong>如果您构建一两个智能体，您的担忧主要是关于安全性。如果您构建许多智能体，您必须设计系统来处理更多</p>
+                </div>
+                <div class="warning">
+                    <p><strong>智能体蔓延：</strong>就像API蔓延一样，当智能体和工具在组织中激增时，它们创建了一个新的、复杂的交互、数据流和潜在安全漏洞网络</p>
+                </div>
+                <div class="success">
+                    <p><strong>治理层：</strong>管理这种复杂性需要一个更高阶的治理层，集成所有身份和策略，并将报告到中央控制平面</p>
+                </div>
+            </div>
+
+            <!-- Slide 49: 安全和隐私 -->
+            <div class="slide" data-slide="49">
+                <h1>安全和隐私：加强智能体前沿<span class="english-title">Security and Privacy: Hardening the Agentic Frontier</span></h1>
+                <div class="box">
+                    <p><strong>企业级要求：</strong>企业级平台必须解决生成式AI固有的独特安全和隐私挑战，即使只运行单个智能体</p>
+                </div>
+                <h3>新攻击向量</h3>
+                <div class="card">
+                    <p><strong>智能体作为攻击向量：</strong>智能体本身成为新的攻击向量。恶意行为者可以尝试提示注入劫持智能体的指令，或数据中毒破坏其用于训练或RAG的信息</p>
+                </div>
+                <div class="success">
+                    <p><strong>深度防御策略：</strong>稳健平台提供深度防御策略来缓解这些风险。它从数据开始，确保企业的专有信息永远不会用于训练基础模型，并通过VPC Service Controls等控制进行保护</p>
+                </div>
+                <div class="info">
+                    <p><strong>输入和输出过滤：</strong>需要输入和输出过滤，充当提示和响应的防火墙</p>
+                </div>
+            </div>
+
+            <!-- Slide 50: 智能体治理 -->
+            <div class="slide" data-slide="50">
+                <h1>智能体治理：控制平面而非蔓延<span class="english-title">Agent Governance: A Control Plane instead of Sprawl</span></h1>
+                <div class="box">
+                    <p><strong>智能体蔓延：</strong>随着智能体及其工具在组织中激增，它们创建了一个新的、复杂的交互和潜在漏洞网络，这通常被称为"智能体蔓延"</p>
+                </div>
+                <h3>中央网关方法</h3>
+                <div class="card">
+                    <p><strong>控制平面：</strong>管理这需要超越保护单个智能体，实施更高阶的架构方法：一个中央网关，作为所有智能体活动的控制平面</p>
+                </div>
+                <div class="success">
+                    <p><strong>比喻：</strong>想象一个熙熙攘攘的大都市，有数千辆自动驾驶汽车——用户、智能体和工具——都在有目的地移动。没有交通灯、车牌和中央控制系统，混乱将统治</p>
+                </div>
+                <div class="info">
+                    <p><strong>网关方法：</strong>网关方法创建该控制系统，建立所有智能体流量的强制性入口点</p>
+                </div>
+            </div>
+
+            <!-- Slide 51: 控制平面的功能 -->
+            <div class="slide" data-slide="51">
+                <h1>控制平面功能<span class="english-title">Control Plane Functions</span></h1>
+                <div class="box">
+                    <p><strong>关键交叉点：</strong>通过处于这个关键交叉点，组织可以检查、路由、监控和管理每个交互</p>
+                </div>
+                <h3>两个主要、相互关联的功能</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🛡️ Runtime Policy Enforcement</h3>
+                        <p><strong>运行时策略执行：</strong></p>
+                        <ul>
+                            <li>充当实施安全的架构扼杀点</li>
+                            <li>处理身份验证（"我知道这个参与者是谁吗？"）</li>
+                            <li>授权（"他们有权限这样做吗？"）</li>
+                            <li>提供可观察性的"单一窗格"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📋 Centralized Governance</h3>
+                        <p><strong>集中治理：</strong></p>
+                        <ul>
+                            <li>需要真实来源</li>
+                            <li>中央注册表——智能体和工具的企业应用商店</li>
+                            <li>允许开发人员发现和重用现有资产</li>
+                            <li>启用正式生命周期</li>
+                            <li>创建细粒度策略</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>结果：</strong>通过结合运行时网关与中央治理注册表，组织将混乱蔓延的风险转变为管理的、安全的和高效的生态系统</p>
+                </div>
+            </div>
+
+            <!-- Slide 52: 成本和可靠性 -->
+            <div class="slide" data-slide="52">
+                <h1>成本和可靠性：基础设施基础<span class="english-title">Cost and Reliability: The Infrastructure Foundation</span></h1>
+                <div class="box">
+                    <p><strong>最终要求：</strong>企业级智能体必须既可靠又具有成本效益</p>
+                </div>
+                <h3>基础设施要求</h3>
+                <div class="card">
+                    <p><strong>平衡：</strong>经常失败或提供缓慢结果的智能体具有负ROI。相反，成本过高的智能体无法扩展以满足业务需求</p>
+                </div>
+                <div class="success">
+                    <p><strong>基础设施设计：</strong>底层基础设施必须设计为管理这种权衡，安全并符合监管和数据主权合规</p>
+                </div>
+                <div class="info">
+                    <p><strong>可扩展性选项：</strong>在某些情况下，您需要的功能是零扩展，当您对特定智能体或子功能有不规则流量时。对于任务关键、延迟敏感的工作负载，平台必须提供专用、保证的容量</p>
+                </div>
+            </div>
+
+            <!-- Slide 53: 智能体如何学习和进化 -->
+            <div class="slide" data-slide="53">
+                <h1>智能体如何学习和进化<span class="english-title">How Agents Evolve and Learn</span></h1>
+                <div class="box">
+                    <p><strong>动态环境：</strong>部署在现实世界中的智能体在动态环境中运行，其中策略、技术和数据格式不断变化</p>
+                </div>
+                <h3>适应的必要性</h3>
+                <div class="card">
+                    <p><strong>老化问题：</strong>没有适应能力，智能体的性能会随着时间的推移而退化——一个通常被称为"老化"的过程——导致效用和信任的丧失</p>
+                </div>
+                <div class="warning">
+                    <p><strong>手动更新的挑战：</strong>手动更新大量智能体以跟上这些变化既不经济又缓慢。更可扩展的解决方案是设计能够自主学习和进化的智能体，在工作时提高其质量，只需最少的工程工作</p>
+                </div>
+                <div class="success">
+                    <p><strong>自主进化：</strong>更可扩展的解决方案是设计能够自主学习和进化的智能体，在工作时提高其质量，只需最少的工程工作</p>
+                </div>
+            </div>
+
+            <!-- Slide 54: 学习过程 -->
+            <div class="slide" data-slide="54">
+                <h1>智能体如何学习和自我进化<span class="english-title">How Agents Learn and Self Evolve</span></h1>
+                <div class="box">
+                    <p><strong>学习过程：</strong>就像人类一样，智能体从经验和外部信号中学习</p>
+                </div>
+                <h3>学习信息来源</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📊 Runtime Experience</h3>
+                        <p><strong>运行时经验：</strong></p>
+                        <ul>
+                            <li>从运行时工件学习</li>
+                            <li>会话日志、跟踪和记忆</li>
+                            <li>捕获成功、失败、工具交互和决策轨迹</li>
+                            <li>关键是Human-in-the-Loop (HITL)反馈</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📚 External Signals</h3>
+                        <p><strong>外部信号：</strong></p>
+                        <ul>
+                            <li>学习也由新的外部文档驱动</li>
+                            <li>更新的企业策略</li>
+                            <li>公共监管指南</li>
+                            <li>来自其他智能体的批评</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>适应性技术：</strong>最成功的适应技术分为两类：增强上下文工程和工具优化与创建</p>
+                </div>
+            </div>
+
+            <!-- Slide 55: 适应性技术 -->
+            <div class="slide" data-slide="55">
+                <h1>适应性技术<span class="english-title">Adaptation Techniques</span></h1>
+                <h3>两类主要技术</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🎯 Enhanced Context Engineering</h3>
+                        <p><strong>增强上下文工程：</strong></p>
+                        <ul>
+                            <li>系统持续优化其提示</li>
+                            <li>优化少样本示例</li>
+                            <li>优化从记忆中检索的信息</li>
+                            <li>优化为每个任务提供给LM的上下文</li>
+                            <li>增加成功的可能性</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Tool Optimization and Creation</h3>
+                        <p><strong>工具优化和创建：</strong></p>
+                        <ul>
+                            <li>智能体的推理可以识别其能力中的差距</li>
+                            <li>采取行动填补它们</li>
+                            <li>获得对新工具的访问权限</li>
+                            <li>即时创建新工具（例如Python脚本）</li>
+                            <li>修改现有工具（例如更新API模式）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>其他优化技术：</strong>动态重新配置多智能体设计模式或使用来自人类反馈的强化学习（RLHF）是活跃的研究领域</p>
+                </div>
+            </div>
+
+            <!-- Slide 56: 学习新合规指南示例 -->
+            <div class="slide" data-slide="56">
+                <h1>示例：学习新合规指南<span class="english-title">Example: Learning New Compliance Guidelines</span></h1>
+                <div class="box">
+                    <p><strong>场景：</strong>考虑在金融或生命科学等高度监管行业运营的企业智能体。其任务是生成必须遵守隐私和监管规则（例如GDPR）的报告</p>
+                </div>
+                <h3>多智能体工作流</h3>
+                <div class="card">
+                    <p><strong>实现：</strong>这可以使用多智能体工作流实现：</p>
+                    <ul>
+                        <li><strong>Querying Agent：</strong>检索响应于用户请求的原始数据</li>
+                        <li><strong>Reporting Agent：</strong>将这些数据综合成草稿报告</li>
+                        <li><strong>Critiquing Agent：</strong>用已知的合规指南审查报告。如果遇到歧义或需要最终签署，则升级到人类领域专家</li>
+                        <li><strong>Learning Agent：</strong>观察整个交互，特别注意来自人类专家的纠正反馈</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>泛化：</strong>然后，它将此反馈泛化为新的、可重用的指南（例如，评论智能体的更新规则或报告智能体的优化上下文）</p>
+                </div>
+            </div>
+
+            <!-- Slide 57: 模拟和Agent Gym -->
+            <div class="slide" data-slide="57">
+                <h1>模拟和Agent Gym - 下一前沿<span class="english-title">Simulation and Agent Gym - the next frontier</span></h1>
+                <div class="box">
+                    <p><strong>新方法：</strong>我们提出的设计模式可以归类为在线学习，其中智能体需要使用它们被工程化的资源和设计模式进行学习</p>
+                </div>
+                <h3>Agent Gym的关键属性</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🚫 Not in Execution Path</h3>
+                        <p><strong>不在执行路径中：</strong></p>
+                        <ul>
+                            <li>独立于生产平台</li>
+                            <li>可以有任何LM模型的帮助</li>
+                            <li>离线工具、云应用等</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎮 Simulation Environment</h3>
+                        <p><strong>模拟环境：</strong></p>
+                        <ul>
+                            <li>提供模拟环境</li>
+                            <li>智能体可以在新数据上"锻炼"</li>
+                            <li>学习</li>
+                            <li>非常适合"试错"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 Synthetic Data Generators</h3>
+                        <p><strong>合成数据生成器：</strong></p>
+                        <ul>
+                            <li>调用高级合成数据生成器</li>
+                            <li>指导模拟尽可能真实</li>
+                            <li>压力测试智能体</li>
+                            <li>包括高级技术，如红队、动态评估和评论智能体家族</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 58: Agent Gym的更多属性 -->
+            <div class="slide" data-slide="58">
+                <h1>Agent Gym：高级属性<span class="english-title">Agent Gym: Advanced Attributes</span></h1>
+                <h3>更多关键属性</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔧 Flexible Arsenal</h3>
+                        <p><strong>灵活的武器库：</strong></p>
+                        <ul>
+                            <li>优化工具的武器库不是固定的</li>
+                            <li>可以采用新工具</li>
+                            <li>通过开放协议如MCP或A2A</li>
+                            <li>或在更高级的设置中</li>
+                            <li>学习新概念并围绕它们制作工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👥 Human Fabric Connection</h3>
+                        <p><strong>人类结构连接：</strong></p>
+                        <ul>
+                            <li>Agent Gym甚至可能无法克服某些边缘情况</li>
+                            <li>由于企业中众所周知的"部落知识"问题</li>
+                            <li>Agent Gym能够连接到领域专家的人类结构</li>
+                            <li>就正确的结果集与他们协商</li>
+                            <li>指导下一组优化</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>意义：</strong>Agent Gym代表了智能体优化和进化的下一前沿，提供了专门的、离线的平台，用于高级工具和能力</p>
+                </div>
+            </div>
+
+            <!-- Slide 59: 高级智能体示例 -->
+            <div class="slide" data-slide="59">
+                <h1>高级智能体示例<span class="english-title">Examples of Advanced Agents</span></h1>
+                <div class="box">
+                    <p><strong>概述：</strong>让我们看看高级智能体系统的几个实际例子</p>
+                </div>
+                <h3>示例智能体</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔬 Google Co-Scientist</h3>
+                        <p><strong>Google Co-Scientist：</strong></p>
+                        <ul>
+                            <li>虚拟研究合作者</li>
+                            <li>加速科学发现</li>
+                            <li>系统探索复杂问题空间</li>
+                            <li>生成和评估新颖假设</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🧬 AlphaEvolve Agent</h3>
+                        <p><strong>AlphaEvolve Agent：</strong></p>
+                        <ul>
+                            <li>发现和优化算法</li>
+                            <li>数学和计算机科学中的复杂问题</li>
+                            <li>结合创意代码生成</li>
+                            <li>自动化评估系统</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 60: Google Co-Scientist -->
+            <div class="slide" data-slide="60">
+                <h1>Google Co-Scientist<span class="english-title">Google Co-Scientist</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>Co-Scientist是一个高级AI智能体，旨在作为虚拟研究合作者，通过系统探索复杂问题空间来加速科学发现</p>
+                </div>
+                <h3>Co-Scientist的能力</h3>
+                <div class="card">
+                    <p><strong>功能：</strong></p>
+                    <ul>
+                        <li>允许研究人员定义目标</li>
+                        <li>将智能体置于指定的公共和专有知识源中</li>
+                        <li>生成和评估新颖假设的景观</li>
+                        <li>生成整个智能体生态系统</li>
+                        <li>彼此协作</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>设计系统：</strong>将系统视为研究项目经理。AI首先采用广泛的研究目标并创建详细的项目计划。然后，"主管"智能体充当经理，将任务委托给专业智能体团队并分配计算能力等资源</p>
+                </div>
+            </div>
+
+            <!-- Slide 61: AlphaEvolve Agent -->
+            <div class="slide" data-slide="61">
+                <h1>AlphaEvolve Agent<span class="english-title">AlphaEvolve Agent</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>AlphaEvolve是一个AI智能体，发现和优化数学和计算机科学中复杂问题的算法</p>
+                </div>
+                <h3>工作原理</h3>
+                <div class="card">
+                    <p><strong>进化过程：</strong>AlphaEvolve通过结合Gemini语言模型的创意代码生成与自动化评估系统来工作。它使用进化过程：AI生成潜在解决方案，评估器对它们进行评分，最有前途的想法被用作下一代代码的灵感</p>
+                </div>
+                <div class="success">
+                    <p><strong>突破：</strong>这种方法已经导致了重大突破，包括：提高Google数据中心的效率、芯片设计和AI训练；发现更快的矩阵乘法算法；找到开放数学问题的新解决方案</p>
+                </div>
+                <div class="info">
+                    <p><strong>优势：</strong>AlphaEvolve在验证解决方案的质量远比首先找到它更容易的问题上表现出色</p>
+                </div>
+            </div>
+
+            <!-- Slide 62: 人机协作 -->
+            <div class="slide" data-slide="62">
+                <h1>人机协作<span class="english-title">Human-AI Collaboration</span></h1>
+                <div class="box">
+                    <p><strong>深度伙伴关系：</strong>AlphaEvolve旨在实现人类与AI之间的深度、迭代伙伴关系</p>
+                </div>
+                <h3>协作方式</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>👁️ Transparent Solutions</h3>
+                        <p><strong>透明解决方案：</strong></p>
+                        <ul>
+                            <li>AI生成解决方案为人类可读代码</li>
+                            <li>这种透明度允许用户理解逻辑</li>
+                            <li>获得见解</li>
+                            <li>信任结果</li>
+                            <li>直接修改代码以满足其需求</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Expert Guidance</h3>
+                        <p><strong>专家指导：</strong></p>
+                        <ul>
+                            <li>人类专业知识对于定义问题至关重要</li>
+                            <li>用户通过完善评估指标指导AI</li>
+                            <li>引导探索</li>
+                            <li>防止系统利用问题定义中的意外漏洞</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>结果：</strong>这种交互循环确保最终解决方案既强大又实用。智能体的结果是代码的持续改进，不断改进人类指定的指标</p>
+                </div>
+            </div>
+
+            <!-- Slide 63: 结论 -->
+            <div class="slide" data-slide="63">
+                <h1>结论<span class="english-title">Conclusion</span></h1>
+                <div class="box">
+                    <p><strong>范式转变：</strong>生成式AI智能体标志着关键演变，将人工智能从用于内容创建的被动工具转变为问题解决的主动、自主合作伙伴</p>
+                </div>
+                <h3>核心贡献</h3>
+                <div class="card">
+                    <p><strong>本文档提供了：</strong></p>
+                    <ul>
+                        <li>理解和构建这些系统的正式框架</li>
+                        <li>超越概念验证</li>
+                        <li>建立可靠、生产级架构</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>三个基本组件：</strong>我们将智能体解构为其三个基本组件：推理模型（"大脑"）、可操作工具（"手"）和治理编排层（"神经系统"）。正是这些部分的无缝集成，在连续的"思考、行动、观察"循环中运行，解锁了智能体的真正潜力</p>
+                </div>
+                <div class="info">
+                    <p><strong>分类系统：</strong>通过分类智能体系统——从Level 1连接的问题解决者到Level 3协作多智能体系统——架构师和产品领导者现在可以战略性地确定其野心范围，以匹配手头任务的复杂性</p>
+                </div>
+            </div>
+
+            <!-- Slide 64: 开发者范式转变 -->
+            <div class="slide" data-slide="64">
+                <h1>开发者范式转变<span class="english-title">Paradigm Shift in Development</span></h1>
+                <div class="box">
+                    <p><strong>核心挑战：</strong>中心挑战和机会在于新的开发者范式。我们不再是简单地"砌砖工人"定义显式逻辑；我们是"架构师"和"导演"，必须引导、约束和调试自主实体</p>
+                </div>
+                <h3>灵活性的双刃剑</h3>
+                <div class="card">
+                    <p><strong>挑战：</strong>使LM如此强大的灵活性也是其不可靠性的来源。因此，成功不仅仅在于初始提示，而在于应用于整个系统的工程严谨性：在稳健的工具契约、有弹性的错误处理、复杂的上下文管理和全面评估中</p>
+                </div>
+                <div class="success">
+                    <p><strong>指导原则：</strong>这里概述的原则和架构模式作为基础蓝图。它们是导航这个新软件前沿的路标，使我们能够构建不仅仅是"工作流自动化"，而是我们团队的真正协作、有能力和适应能力的新成员</p>
+                </div>
+                <div class="info">
+                    <p><strong>未来：</strong>随着这项技术的成熟，这种纪律、架构方法将是充分利用智能体AI力量的决定因素</p>
+                </div>
+            </div>
+
+            <!-- Slide 65: 结束页 -->
+            <div class="slide" data-slide="65">
+                <div class="slide-content">
+                    <h1>智能体介绍<span class="english-title">Introduction to Agents</span></h1>
+                    <div class="box">
+                        <p><strong>作者：</strong>Alan Blount, Antonio Gulli, Shubham Saboo, Michael Zimmermann, 和 Vladimir Vuskovic</p>
+                        <p><strong>发布日期：</strong>2025年11月</p>
+                    </div>
+                    <div class="figure">
+                        <div style="font-size: 15vh; margin: 4vh 0;">🤖</div>
+                        <p class="figure-caption">从预测AI到自主智能体</p>
+                    </div>
+                    <div class="three-columns">
+                        <div class="card">
+                            <h3>🧠 Model</h3>
+                            <p>推理模型（大脑）</p>
+                        </div>
+                        <div class="card">
+                            <h3>🖐️ Tools</h3>
+                            <p>可操作工具（手）</p>
+                        </div>
+                        <div class="card">
+                            <h3>🔗 Orchestration</h3>
+                            <p>编排层（神经系统）</p>
+                        </div>
+                    </div>
+                    <p style="text-align: center; font-size: 2.5vh; color: #666; margin-top: 3vh;"><strong>感谢您的阅读！</strong></p>
+                    <p style="text-align: center; font-size: 2vh;">Introduction to Agents</p>
+                    <p style="text-align: center; font-size: 2vh;">智能体介绍</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="changeSlide(-1)">上一页</button>
+            <div class="page-info">
+                <span id="currentPage">1</span> / <span id="totalPages">65</span>
+            </div>
+            <button id="tocBtn" onclick="toggleTOC()">目录</button>
+            <button id="exportBtn" onclick="exportAllSlides()">导出</button>
+            <button id="nextBtn" onclick="changeSlide(1)">下一页</button>
+        </div>
+
+        <div class="slide-progress" id="slideProgress"></div>
+    </div>
+
+    <div class="toc-overlay" id="tocOverlay" onclick="toggleTOC()"></div>
+    <div class="toc-panel" id="tocPanel">
+        <button class="close-toc" onclick="toggleTOC()">×</button>
+        <h2>目录</h2>
+        <ul id="tocList">
+            <!-- TOC items will be generated by JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const slides = document.querySelectorAll('.slide');
+        const totalPages = slides.length;
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.getElementById('currentPage').textContent = currentSlide;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalPages;
+
+            const progress = ((currentSlide - 1) / (totalPages - 1)) * 100;
+            document.getElementById('slideProgress').style.width = progress + '%';
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 1) currentSlide = 1;
+            if (currentSlide > totalPages) currentSlide = totalPages;
+            updateSlide();
+        }
+
+        function goToSlide(slideNumber) {
+            currentSlide = slideNumber;
+            updateSlide();
+            toggleTOC();
+        }
+
+        function toggleTOC() {
+            const panel = document.getElementById('tocPanel');
+            const overlay = document.getElementById('tocOverlay');
+            panel.classList.toggle('open');
+            overlay.style.display = panel.classList.contains('open') ? 'block' : 'none';
+        }
+
+        function generateTOC() {
+            const tocList = document.getElementById('tocList');
+            slides.forEach((slide, index) => {
+                const h1 = slide.querySelector('h1');
+                if (h1) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = '#';
+                    // 创建临时元素来获取只包含中文的标题
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = h1.innerHTML;
+                    const englishTitle = tempDiv.querySelector('.english-title');
+                    if (englishTitle) {
+                        englishTitle.remove();
+                    }
+                    a.textContent = tempDiv.textContent.trim();
+                    a.onclick = (e) => {
+                        e.preventDefault();
+                        goToSlide(index + 1);
+                    };
+                    li.appendChild(a);
+                    tocList.appendChild(li);
+                }
+            });
+        }
+
+        async function exportAllSlides() {
+            const exportBtn = document.getElementById('exportBtn');
+            exportBtn.disabled = true;
+            exportBtn.textContent = '导出中...';
+
+            document.body.classList.add('exporting');
+
+            // 首先获取每张幻灯片的实际尺寸
+            const slideSizes = [];
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                slide.classList.add('active');
+                
+                // 获取幻灯片的实际尺寸
+                const rect = slide.getBoundingClientRect();
+                slideSizes.push({
+                    width: rect.width,
+                    height: rect.height
+                });
+                
+                if (i !== currentSlide - 1) {
+                    slide.classList.remove('active');
+                }
+            }
+
+            // 恢复当前幻灯片
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            // 计算每张幻灯片的缩放后宽度（固定高度768）
+            const slideHeight = 768;
+            const scaledSizes = slideSizes.map(size => {
+                const ratio = size.width / size.height;
+                const scaledWidth = slideHeight * ratio;
+                return scaledWidth;
+            });
+
+            // 使用最大的宽度作为canvas宽度
+            const canvasWidth = Math.max(...scaledSizes);
+            const totalHeight = slides.length * slideHeight;
+
+            // 创建canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvasWidth;
+            canvas.height = totalHeight;
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 逐个渲染幻灯片
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                slide.classList.add('active');
+
+                try {
+                    const slideCanvas = await html2canvas(slide, {
+                        scale: 1,
+                        useCORS: true,
+                        logging: false
+                    });
+
+                    const scaledWidth = scaledSizes[i];
+                    // 居中绘制
+                    const x = (canvasWidth - scaledWidth) / 2;
+                    ctx.drawImage(slideCanvas, x, i * slideHeight, scaledWidth, slideHeight);
+                } catch (error) {
+                    console.error('Error capturing slide:', error);
+                }
+
+                if (i !== currentSlide - 1) {
+                    slide.classList.remove('active');
+                }
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.body.classList.remove('exporting');
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'Introduction_to_Agents_Slides.png';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                exportBtn.disabled = false;
+                exportBtn.textContent = '导出';
+            });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+                e.preventDefault();
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+                e.preventDefault();
+                changeSlide(-1);
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(1);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalPages);
+            }
+        });
+
+        // Initialize
+        document.getElementById('totalPages').textContent = totalPages;
+        generateTOC();
+        updateSlide();
+    </script>
+</body>
+</html>

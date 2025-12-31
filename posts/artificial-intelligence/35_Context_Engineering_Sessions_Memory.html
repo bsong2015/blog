@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Context Engineering: Sessions, Memory - 上下文工程:会话与记忆</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 3vh 5vw;
+            background: white;
+            display: none;
+            overflow-y: auto;
+            box-shadow: 0 1vh 4vh rgba(0,0,0,0.3);
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in-out;
+            justify-content: flex-start;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-right: 1vw;
+            justify-content: center;
+            align-items: stretch;
+            margin-top: 1vh;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 0.5vw;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        body.exporting .slide.active {
+            animation: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(1vh);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: 4.5vh;
+            color: #667eea;
+            margin-bottom: 2vh;
+            border-bottom: 0.4vh solid #667eea;
+            padding-bottom: 1vh;
+            line-height: 1.2;
+            flex-shrink: 0;
+        }
+
+        .slide h1 .english-title {
+            display: block;
+            font-size: 0.6em;
+            color: #999;
+            font-weight: 400;
+            margin-top: 1vh;
+            font-style: italic;
+        }
+
+        .slide h2 {
+            font-size: 3.5vh;
+            color: #764ba2;
+            margin: 2vh 0 1.5vh 0;
+            border-left: 0.8vh solid #764ba2;
+            padding-left: 1.5vw;
+            line-height: 1.2;
+        }
+
+        .slide h3 {
+            font-size: 2.8vh;
+            color: #555;
+            margin: 2vh 0 1.2vh 0;
+            line-height: 1.3;
+        }
+
+        .slide h4 {
+            font-size: 2.4vh;
+            color: #666;
+            margin: 1.5vh 0 1vh 0;
+        }
+
+        .slide p {
+            font-size: 2.1vh;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 1.5vh;
+        }
+
+        .slide ul, .slide ol {
+            margin: 1.5vh 0 1.5vh 3vw;
+            font-size: 2.1vh;
+            line-height: 1.6;
+        }
+
+        .slide li {
+            margin-bottom: 0.8vh;
+        }
+
+        .slide strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .slide em {
+            color: #764ba2;
+            font-style: italic;
+        }
+
+        .slide .highlight {
+            background: linear-gradient(120deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 0.2vh 0.8vw;
+            border-radius: 4px;
+        }
+
+        .slide .box {
+            background: #f8f9fa;
+            border-left: 0.6vh solid #667eea;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .warning {
+            background: #fff3cd;
+            border-left: 0.6vh solid #ffc107;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .success {
+            background: #d4edda;
+            border-left: 0.6vh solid #28a745;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .info {
+            background: #d1ecf1;
+            border-left: 0.6vh solid #17a2b8;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2vh 0;
+            font-size: 1.8vh;
+        }
+
+        .slide th, .slide td {
+            border: 0.2vh solid #ddd;
+            padding: 0.8vh 0.8vw;
+            text-align: left;
+        }
+
+        .slide th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .slide tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .slide tr:hover {
+            background: #e9ecef;
+        }
+
+        .slide pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2vh 2vw;
+            border-radius: 1vh;
+            overflow-x: auto;
+            margin: 2vh 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.6vh;
+            line-height: 1.5;
+        }
+
+        .slide code {
+            background: #f4f4f4;
+            padding: 0.2vh 0.5vw;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        .slide pre code {
+            background: none;
+            padding: 0;
+            color: #f8f8f2;
+        }
+
+        .slide .figure {
+            text-align: center;
+            margin: 2.5vh 0;
+            padding: 2vh 2vw;
+            background: #f8f9fa;
+            border-radius: 1vh;
+        }
+
+        .slide .figure-caption {
+            font-size: 1.6vh;
+            color: #666;
+            margin-top: 1vh;
+            font-style: italic;
+        }
+
+        .slide .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vh 3vw;
+            margin: 2vh 0;
+        }
+
+        .slide .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2vh 2vw;
+            margin: 2vh 0;
+        }
+
+        .slide .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2vh 2vw;
+            border-radius: 1.5vh;
+            box-shadow: 0 0.8vh 1.5vh rgba(0,0,0,0.1);
+        }
+
+        .slide .card h3 {
+            color: white;
+            margin-top: 0;
+            font-size: 2.4vh;
+        }
+
+        .slide .card p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.8vh;
+        }
+
+        .slide .card strong {
+            color: white;
+        }
+
+        .slide .level-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8vh 1.5vw;
+            border-radius: 3vh;
+            font-size: 1.8vh;
+            font-weight: 600;
+            margin-bottom: 1.5vh;
+        }
+
+        .controls {
+            background: white;
+            padding: 2vh 3vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -0.5vh 2vh rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.5vh 2.5vw;
+            border-radius: 4vh;
+            cursor: pointer;
+            font-size: 2.2vh;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0.5vh 2vh rgba(102, 126, 234, 0.4);
+        }
+
+        .controls button:hover {
+            transform: translateY(-0.3vh);
+            box-shadow: 0 0.8vh 2.5vh rgba(102, 126, 234, 0.6);
+        }
+
+        .controls button:active {
+            transform: translateY(0);
+        }
+
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .controls .page-info {
+            font-size: 2.4vh;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .controls .page-info span {
+            color: #667eea;
+        }
+
+        .slide-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 0.6vh;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .toc-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1.5vh 2.5vw;
+            border-radius: 4vh;
+            cursor: pointer;
+            font-size: 2.2vh;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toc-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -1vh 0 3vh rgba(0,0,0,0.2);
+            padding: 4vh 2vw;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toc-panel.open {
+            right: 0;
+        }
+
+        .toc-panel h2 {
+            color: #667eea;
+            margin-bottom: 3vh;
+            font-size: 3.5vh;
+            border: none;
+            padding: 0;
+        }
+
+        .toc-panel ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-panel li {
+            margin-bottom: 1vh;
+        }
+
+        .toc-panel a {
+            color: #333;
+            text-decoration: none;
+            font-size: 2.2vh;
+            display: block;
+            padding: 1.2vh 1vw;
+            border-radius: 1vh;
+            transition: all 0.3s ease;
+        }
+
+        .toc-panel a:hover {
+            background: #f8f9fa;
+            color: #667eea;
+            padding-left: 1.5vw;
+        }
+
+        .toc-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .close-toc {
+            position: absolute;
+            top: 2vh;
+            right: 1vw;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 5vh;
+            height: 5vh;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 3vh;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-footer {
+            margin-top: 3vh;
+            padding-top: 2vh;
+            border-top: 0.3vh solid #f0f0f0;
+            font-size: 1.8vh;
+            color: #999;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 3vh 5vw;
+            }
+
+            .slide h1 { font-size: 4.5vh; }
+            .slide h2 { font-size: 3.5vh; }
+            .slide h3 { font-size: 2.8vh; }
+            .slide p, .slide ul, .slide ol { font-size: 2.2vh; }
+
+            .controls {
+                padding: 1.5vh 3vw;
+                gap: 1vh;
+            }
+
+            .controls button {
+                padding: 1.2vh 3vw;
+                font-size: 1.8vh;
+            }
+
+            .toc-panel {
+                width: 85%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .controls,
+            .toc-panel,
+            .toc-overlay {
+                display: none;
+            }
+
+            .slide {
+                position: relative;
+                page-break-after: always;
+                display: block;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="slides-container" id="slidesContainer">
+            <!-- Slide 1: 封面 -->
+            <div class="slide active" data-slide="1">
+                <div class="slide-content">
+                    <h1>上下文工程：会话、记忆<span class="english-title">Context Engineering: Sessions, Memory</span></h1>
+                    <h2>上下文工程:会话与记忆</h2>
+                    <div class="box">
+                        <p><strong>作者：</strong>Kimberly Milam 和 Antonio Gulli</p>
+                        <p><strong>发布日期：</strong>2025年11月</p>
+                    </div>
+                    <div class="figure">
+                        <div style="font-size: 15vh; margin: 4vh 0;">🧠</div>
+                        <p class="figure-caption">构建有状态、智能的LLM智能体</p>
+                    </div>
+                    <p style="text-align: center; font-size: 3vh; color: #666;">探索会话和记忆在构建有状态、智能LLM智能体中的关键作用</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: 目录 -->
+            <div class="slide" data-slide="2">
+                <div class="slide-content">
+                    <h1>目录</h1>
+                    <div class="two-columns">
+                        <div>
+                            <h3>第一部分:基础概念</h3>
+                            <ul>
+                                <li>Introduction - 介绍</li>
+                                <li>Context Engineering - 上下文工程</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>第二部分:会话管理</h3>
+                            <ul>
+                                <li>Sessions - 会话</li>
+                                <li>跨框架差异</li>
+                                <li>多智能体系统</li>
+                                <li>生产环境考虑</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="two-columns">
+                        <div>
+                            <h3>第三部分:记忆系统</h3>
+                            <ul>
+                                <li>Memory - 记忆</li>
+                                <li>记忆类型</li>
+                                <li>记忆生成</li>
+                                <li>记忆检索</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>第四部分:评估与部署</h3>
+                            <ul>
+                                <li>Testing and Evaluation - 测试与评估</li>
+                                <li>Production Considerations - 生产环境考虑</li>
+                                <li>Privacy and Security - 隐私与安全</li>
+                                <li>Conclusion - 结论</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 介绍 -->
+            <div class="slide" data-slide="3">
+                <div class="slide-content">
+                    <h1>介绍<span class="english-title">Introduction</span></h1>
+                    <div class="box">
+                        <p><strong>核心目标：</strong>探索会话(Sessions)和记忆(Memory)在构建有状态、智能LLM智能体中的关键作用</p>
+                    </div>
+                    <h3>关键概念</h3>
+                    <div class="two-columns">
+                        <div class="card">
+                            <h3>📋 Context Engineering</h3>
+                            <p><strong>上下文工程：</strong>在LLM的上下文窗口中动态组装和管理信息的过程，以实现有状态、智能的智能体</p>
+                        </div>
+                        <div class="card">
+                            <h3>💬 Sessions</h3>
+                            <p><strong>会话：</strong>包含整个对话的容器，保存对话的按时间顺序的历史记录和智能体的工作记忆</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 Memory</h3>
+                        <p><strong>记忆：</strong>长期持久化的机制，捕获和整合跨多个会话的关键信息，为LLM智能体提供连续和个性化的体验</p>
+                    </div>
+                    <div class="info">
+                        <p><strong>核心理念：</strong>有状态和个性化的AI从上下文工程开始</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: 上下文工程 -->
+            <div class="slide" data-slide="4">
+                <h1>上下文工程<span class="english-title">Context Engineering</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>动态组装和管理LLM上下文窗口中的信息，使智能体能够记住、学习和个性化交互</p>
+                </div>
+                <h3>从Prompt Engineering到Context Engineering</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📝 Prompt Engineering</h3>
+                        <p><strong>提示工程：</strong></p>
+                        <ul>
+                            <li>专注于制作最优的系统指令</li>
+                            <li>通常是静态的</li>
+                            <li>关注单个提示</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Context Engineering</h3>
+                        <p><strong>上下文工程：</strong></p>
+                        <ul>
+                            <li>处理整个负载</li>
+                            <li>基于用户、对话历史和外部数据动态构建</li>
+                            <li>战略性选择、总结和注入信息</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>类比：</strong>上下文工程就像智能体的"mise en place"（备料过程）——厨师在烹饪前收集和准备所有食材的关键步骤</p>
+                </div>
+            </div>
+
+            <!-- Slide 5: 上下文组件 -->
+            <div class="slide" data-slide="5">
+                <h1>上下文组件<span class="english-title">Context Components</span></h1>
+                <p>上下文工程组装一个复杂的负载，包含多种组件：</p>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🎯 指导推理的上下文</h3>
+                        <ul>
+                            <li><strong>System Instructions：</strong>定义智能体角色、能力和约束的高级指令</li>
+                            <li><strong>Tool Definitions：</strong>智能体可用于与外部世界交互的API或函数的架构</li>
+                            <li><strong>Few-Shot Examples：</strong>通过上下文学习指导模型推理过程的精选示例</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 证据与事实数据</h3>
+                        <ul>
+                            <li><strong>Long-Term Memory：</strong>跨多个会话收集的关于用户或主题的持久化知识</li>
+                            <li><strong>External Knowledge：</strong>从数据库或文档检索的信息，通常使用RAG</li>
+                            <li><strong>Tool Outputs：</strong>工具返回的数据或结果</li>
+                            <li><strong>Sub-Agent Outputs：</strong>被委派特定子任务的专业智能体返回的结论或结果</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💬 即时对话信息</h3>
+                        <ul>
+                            <li><strong>Conversation History：</strong>当前交互的逐轮记录</li>
+                            <li><strong>State / Scratchpad：</strong>智能体用于即时推理过程的临时、进行中的信息或计算</li>
+                            <li><strong>User's Prompt：</strong>需要解决的即时查询</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: 上下文管理流程 -->
+            <div class="slide" data-slide="6">
+                <h1>上下文管理流程<span class="english-title">Context Management Flow</span></h1>
+                <div class="figure">
+                    <div style="display: flex; justify-content: space-around; align-items: center; margin: 40px 0; flex-wrap: wrap;">
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 18px; text-align: center;">1. Fetch Context</h3>
+                            <p style="font-size: 13px; text-align: center;">获取上下文<br/>检索用户记忆、RAG文档和最近的对话事件</p>
+                        </div>
+                        <div style="font-size: 40px;">→</div>
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 18px; text-align: center;">2. Prepare Context</h3>
+                            <p style="font-size: 13px; text-align: center;">准备上下文<br/>动态构建完整的LLM调用提示</p>
+                        </div>
+                        <div style="font-size: 40px;">→</div>
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 18px; text-align: center;">3. Invoke LLM</h3>
+                            <p style="font-size: 13px; text-align: center;">调用LLM和工具<br/>迭代调用直到生成最终响应</p>
+                        </div>
+                        <div style="font-size: 40px;">→</div>
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 18px; text-align: center;">4. Upload Context</h3>
+                            <p style="font-size: 13px; text-align: center;">上传上下文<br/>将新信息上传到持久化存储</p>
+                        </div>
+                    </div>
+                    <p class="figure-caption">图1：智能体的上下文管理流程</p>
+                </div>
+                <div class="info">
+                    <p><strong>关键点：</strong>这个循环在智能体操作循环的每一轮对话中持续进行，确保智能体始终拥有最相关的上下文</p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Sessions - 会话 -->
+            <div class="slide" data-slide="7">
+                <h1>会话<span class="english-title">Sessions</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>封装单个连续对话的即时对话历史和工作记忆的基础元素</p>
+                </div>
+                <h3>会话的核心组件</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📜 Events（事件）</h3>
+                        <p><strong>对话历史：</strong>对话的构建块</p>
+                        <ul>
+                            <li><strong>User Input：</strong>用户消息（文本、音频、图像等）</li>
+                            <li><strong>Agent Response：</strong>智能体对用户的回复</li>
+                            <li><strong>Tool Call：</strong>智能体决定使用外部工具或API</li>
+                            <li><strong>Tool Output：</strong>工具调用返回的数据</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🗂️ State（状态）</h3>
+                        <p><strong>工作记忆：</strong>结构化的"工作记忆"或草稿板</p>
+                        <ul>
+                            <li>保存与当前对话相关的临时、结构化数据</li>
+                            <li>例如：购物车中的商品</li>
+                            <li>随着对话进行，智能体会追加新事件</li>
+                            <li>可能根据智能体中的逻辑改变状态</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>重要：</strong>生产智能体的执行环境通常是无状态的，因此对话历史必须保存到持久化存储以维持连续的用户体验</p>
+                </div>
+            </div>
+
+            <!-- Slide 8: 跨框架差异 -->
+            <div class="slide" data-slide="8">
+                <h1>跨框架差异<span class="english-title">Cross-Framework Differences</span></h1>
+                <p>虽然核心思想相似，但不同的智能体框架以不同的方式实现会话、事件和状态</p>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🔧 Agent Frameworks</h3>
+                        <p>智能体框架充当代码与LLM之间的通用翻译器</p>
+                        <ul>
+                            <li>维护LLM的对话历史和状态</li>
+                            <li>使用此上下文构建LLM请求</li>
+                            <li>解析并存储LLM响应</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 ADK（Agent Development Kit）</h3>
+                        <p>使用显式的<strong>Session</strong>对象</p>
+                        <ul>
+                            <li>包含<strong>Event</strong>对象列表</li>
+                            <li>包含单独的<strong>state</strong>对象</li>
+                            <li>Session就像文件柜，有一个文件夹用于对话历史，另一个用于工作记忆</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 LangGraph</h3>
+                        <p>没有正式的"session"对象</p>
+                        <ul>
+                            <li><strong>State就是Session</strong></li>
+                            <li>State保存对话历史（作为Message对象列表）和所有其他工作数据</li>
+                            <li>State是可变的，可以被转换</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>目标：</strong>最终目标是生成LLM可以理解的"request"。对于Gemini模型，这是<strong>List[Content]</strong></p>
+                </div>
+            </div>
+
+            <!-- Slide 9: 多智能体系统 -->
+            <div class="slide" data-slide="9">
+                <h1>多智能体系统的会话<span class="english-title">Sessions for Multi-Agent Systems</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>在多智能体系统中，多个智能体协作，必须共享信息</p>
+                </div>
+                <h3>两种主要方法</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔄 Shared Unified History</h3>
+                        <p><strong>共享统一历史：</strong></p>
+                        <ul>
+                            <li>所有智能体从同一个单一对话历史中读取和写入所有事件</li>
+                            <li>每个智能体的消息、工具调用和观察都按时间顺序追加到一个中央日志</li>
+                            <li>适用于紧密耦合、协作的任务</li>
+                            <li>需要单一事实来源</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📦 Separate Individual Histories</h3>
+                        <p><strong>独立个人历史：</strong></p>
+                        <ul>
+                            <li>每个智能体维护自己的私有对话历史</li>
+                            <li>所有内部过程（中间思维、工具使用、推理步骤）都保留在智能体的私有日志中</li>
+                            <li>通信仅通过显式消息进行</li>
+                            <li>智能体共享其最终输出，而非其过程</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>实现方式：</strong>独立历史通常通过<strong>Agent-as-a-Tool</strong>或使用<strong>Agent-to-Agent (A2A) Protocol</strong>实现</p>
+                </div>
+            </div>
+
+            <!-- Slide 10: 跨框架互操作性 -->
+            <div class="slide" data-slide="10">
+                <h1>跨多个智能体框架的互操作性<span class="english-title">Interoperability Across Multiple Agent Frameworks</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>框架的内部数据表示引入了关键的架构权衡</p>
+                </div>
+                <h3>问题分析</h3>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>❌ 当前问题</h3>
+                        <ul>
+                            <li>框架的内部数据表示使智能体与LLM解耦</li>
+                            <li>但也使其与使用其他智能体框架的智能体隔离</li>
+                            <li>Session的存储模型将数据库架构直接耦合到框架的内部对象</li>
+                            <li>创建刚性、相对不可移植的对话记录</li>
+                        </ul>
+                    </div>
+                    <div class="success">
+                        <h3>✅ 解决方案</h3>
+                        <p><strong>Memory（记忆）层：</strong></p>
+                        <ul>
+                            <li>将共享知识抽象为框架无关的数据层</li>
+                            <li>保存<strong>已处理</strong>的规范信息</li>
+                            <li>数据结构不耦合到任何单个框架的内部数据表示</li>
+                            <li>作为通用、公共数据层</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>关键洞察：</strong>Memory层允许异构智能体通过共享公共认知资源实现真正的协作智能，而无需自定义翻译器</p>
+                </div>
+            </div>
+
+            <!-- Slide 11: 生产环境考虑 -->
+            <div class="slide" data-slide="11">
+                <h1>会话的生产环境考虑<span class="english-title">Production Considerations for Sessions</span></h1>
+                <p>将智能体迁移到生产环境时，会话管理系统必须从简单日志演变为强大的企业级服务</p>
+                <h3>三个关键领域</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🔒 Security and Privacy</h3>
+                        <p><strong>安全与隐私：</strong></p>
+                        <ul>
+                            <li><strong>Strict Isolation：</strong>会话由单个用户拥有，必须强制执行严格隔离</li>
+                            <li><strong>PII Redaction：</strong>在会话数据写入存储之前编辑个人身份信息</li>
+                            <li>使用Model Armor等工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>✅ Data Integrity</h3>
+                        <p><strong>数据完整性：</strong></p>
+                        <ul>
+                            <li><strong>TTL Policy：</strong>实施生存时间策略自动删除非活动会话</li>
+                            <li><strong>Retention Policy：</strong>定义会话应保留多长时间</li>
+                            <li><strong>Deterministic Order：</strong>确保操作按确定性顺序追加到会话历史</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Performance</h3>
+                        <p><strong>性能与可扩展性：</strong></p>
+                        <ul>
+                            <li>会话数据在每次用户交互的"热路径"上</li>
+                            <li>读取和写入必须极快</li>
+                            <li>减少传输数据的大小</li>
+                            <li>过滤或压缩会话历史</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 12: 管理长上下文对话 -->
+            <div class="slide" data-slide="12">
+                <h1>管理长上下文对话<span class="english-title">Managing Long Context Conversation</span></h1>
+                <div class="box">
+                    <p><strong>挑战：</strong>随着对话扩展，对话的token使用量增加，导致成本、延迟和质量问题</p>
+                </div>
+                <h3>四个主要限制</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📏 Context Window Limits</h3>
+                        <p><strong>上下文窗口限制：</strong></p>
+                        <p>每个LLM都有一次可以处理的最大文本量。如果对话历史超过此限制，API调用将失败</p>
+                    </div>
+                    <div class="card">
+                        <h3>💰 API Costs</h3>
+                        <p><strong>API成本：</strong></p>
+                        <p>大多数LLM提供商根据发送和接收的token数量收费。更短的历史意味着更少的token和每轮更低的成本</p>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>⏱️ Latency</h3>
+                        <p><strong>延迟：</strong></p>
+                        <p>向模型发送更多文本需要更长时间处理，导致用户响应时间更慢。压缩使智能体感觉快速和响应灵敏</p>
+                    </div>
+                    <div class="card">
+                        <h3>📉 Quality</h3>
+                        <p><strong>质量：</strong></p>
+                        <p>随着token数量增加，由于上下文中的额外噪声和自回归错误，性能可能会变差</p>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>类比：</strong>管理长对话就像聪明的旅行者为长途旅行打包行李箱——成功的关键不在于你能带多少，而在于只带你需要的东西</p>
+                </div>
+            </div>
+
+            <!-- Slide 13: 压缩策略 -->
+            <div class="slide" data-slide="13">
+                <h1>压缩策略<span class="english-title">Compaction Strategies</span></h1>
+                <p>压缩策略缩小长对话历史，将对话压缩以适应模型的上下文窗口</p>
+                <h3>主要策略</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>1️⃣ Keep the Last N Turns</h3>
+                        <p><strong>保留最后N轮：</strong></p>
+                        <ul>
+                            <li>最简单的策略</li>
+                            <li>智能体只保留最近N轮对话（"滑动窗口"）</li>
+                            <li>丢弃所有更旧的内容</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>2️⃣ Token-Based Truncation</h3>
+                        <p><strong>基于Token的截断：</strong></p>
+                        <ul>
+                            <li>在将历史发送到模型之前，计算消息中的token</li>
+                            <li>从最近开始向后工作</li>
+                            <li>包含尽可能多的消息而不超过预定义的token限制</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>3️⃣ Recursive Summarization</h3>
+                        <p><strong>递归总结：</strong></p>
+                        <ul>
+                            <li>对话的较旧部分被AI生成的总结替换</li>
+                            <li>随着对话增长，智能体定期使用另一个LLM调用总结最旧的消息</li>
+                            <li>这个总结用作历史的压缩形式</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>重要：</strong>高级压缩策略应该在后台异步执行昂贵的操作（如递归总结）并持久化结果</p>
+                </div>
+            </div>
+
+            <!-- Slide 14: 触发机制 -->
+            <div class="slide" data-slide="14">
+                <h1>触发压缩<span class="english-title">Triggering Compaction</span></h1>
+                <p>智能体必须决定<strong>何时</strong>需要压缩</p>
+                <h3>触发机制类别</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📊 Count-Based Triggers</h3>
+                        <p><strong>基于计数的触发：</strong></p>
+                        <ul>
+                            <li><strong>Token大小或轮数阈值：</strong></li>
+                            <li>当对话超过某个预定义阈值时压缩对话</li>
+                            <li>这种方法通常"足够好"用于管理上下文长度</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⏰ Time-Based Triggers</h3>
+                        <p><strong>基于时间的触发：</strong></p>
+                        <ul>
+                            <li>不是由对话大小触发</li>
+                            <li>由缺乏活动触发</li>
+                            <li>如果用户停止交互一段时间（如15或30分钟），系统可以在后台运行压缩任务</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Event-Based Triggers</h3>
+                        <p><strong>基于事件的触发：</strong></p>
+                        <ul>
+                            <li><strong>语义/任务完成：</strong></li>
+                            <li>当智能体检测到特定任务、子目标或对话主题已完成时触发压缩</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>示例：</strong>可以使用ADK的EventsCompactionConfig在配置的轮数后触发基于LLM的总结</p>
+                </div>
+            </div>
+
+            <!-- Slide 15: Memory - 记忆 -->
+            <div class="slide" data-slide="15">
+                <h1>记忆<span class="english-title">Memory</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>从对话或数据源中提取的有意义信息的快照</p>
+                </div>
+                <h3>记忆与会话的关系</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📋 Sessions</h3>
+                        <p><strong>会话：</strong></p>
+                        <ul>
+                            <li>生成记忆的主要数据源</li>
+                            <li>临时工作台</li>
+                            <li>包含所有必要的工具、笔记和参考资料</li>
+                            <li>立即可访问但也是临时的</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 Memory</h3>
+                        <p><strong>记忆：</strong></p>
+                        <ul>
+                            <li>管理会话大小的关键策略</li>
+                        <li>有组织的文件柜</li>
+                            <li>只保存最关键、最终确定的文档</li>
+                            <li>跨会话持久化以提供连续和个性化的体验</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>类比：</strong>会话就像你在特定项目上使用的工作台，而记忆就像有组织的文件柜</p>
+                </div>
+            </div>
+
+            <!-- Slide 16: 记忆的关键能力 -->
+            <div class="slide" data-slide="16">
+                <h1>记忆的关键能力<span class="english-title">Key Capabilities of Memory</span></h1>
+                <p>强大的记忆系统将基本聊天机器人转变为真正智能的智能体</p>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🎨 Personalization</h3>
+                        <p><strong>个性化：</strong></p>
+                        <ul>
+                            <li>记住用户偏好、事实和过去的交互</li>
+                            <li>为未来响应量身定制</li>
+                            <li>例如：记住用户最喜欢的运动队或他们偏好的飞机座位</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📏 Context Window Management</h3>
+                        <p><strong>上下文窗口管理：</strong></p>
+                        <ul>
+                            <li>当对话变长时，完整历史可能超过LLM的上下文窗口</li>
+                            <li>记忆系统可以通过创建总结或提取关键事实来压缩此历史</li>
+                            <li>在不每轮发送数千token的情况下保留上下文</li>
+                            <li>降低成本和延迟</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔍 Data Mining and Insight</h3>
+                        <p><strong>数据挖掘和洞察：</strong></p>
+                        <ul>
+                            <li>通过分析跨多个用户的存储记忆（以聚合、保护隐私的方式）</li>
+                            <li>从噪声中提取洞察</li>
+                            <li>例如：零售聊天机器人可能识别许多用户正在询问特定产品的退货政策</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🚀 Agent Self-Improvement</h3>
+                        <p><strong>智能体自我改进：</strong></p>
+                        <ul>
+                            <li>智能体通过创建关于其自身性能的程序记忆来学习</li>
+                            <li>记录哪些策略、工具或推理路径导致成功结果</li>
+                            <li>使智能体能够建立有效解决方案的剧本</li>
+                            <li>随时间适应和改进其问题解决</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 17: 记忆生态系统 -->
+            <div class="slide" data-slide="17">
+                <h1>记忆生态系统<span class="english-title">Memory Ecosystem</span></h1>
+                <p>创建、存储和利用记忆是一个协作过程，每个组件都有独特的角色</p>
+                <div class="figure">
+                    <div style="display: flex; justify-content: space-around; align-items: center; margin: 30px 0; flex-wrap: wrap;">
+                        <div class="card" style="width: 18%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">1. User</h3>
+                            <p style="font-size: 12px; text-align: center;">提供记忆的原始源数据</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 18%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">2. Agent</h3>
+                            <p style="font-size: 12px; text-align: center;">配置决定记住什么和何时</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 18%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">3. Framework</h3>
+                            <p style="font-size: 12px; text-align: center;">提供记忆交互的结构和工具</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 18%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">4. Session Storage</h3>
+                            <p style="font-size: 12px; text-align: center;">存储会话的逐轮对话</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 18%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">5. Memory Manager</h3>
+                            <p style="font-size: 12px; text-align: center;">处理记忆的存储、检索和压缩</p>
+                        </div>
+                    </div>
+                    <p class="figure-caption">图2：会话、记忆和外部知识之间的信息流</p>
+                </div>
+                <div class="info">
+                    <p><strong>关键点：</strong>记忆管理器是一个主动系统，而不仅仅是被动的向量数据库。它的核心价值在于能够智能地提取、整合和策划记忆</p>
+                </div>
+            </div>
+
+            <!-- Slide 18: Memory vs RAG -->
+            <div class="slide" data-slide="18">
+                <h1>记忆 vs RAG<span class="english-title">Memory vs RAG</span></h1>
+                <p>记忆经常与另一个关键架构模式进行比较：检索增强生成（RAG）</p>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📚 RAG Engines</h3>
+                        <p><strong>检索增强生成引擎：</strong></p>
+                        <ul>
+                            <li><strong>主要目标：</strong>将外部、事实知识注入上下文</li>
+                            <li><strong>数据源：</strong>静态、预索引的外部知识库（PDF、wiki、文档、API）</li>
+                            <li><strong>隔离级别：</strong>通常共享。知识库通常是全局、只读资源</li>
+                            <li><strong>信息类型：</strong>静态、事实和权威</li>
+                            <li><strong>写入模式：</strong>批处理，通过离线管理操作触发</li>
+                            <li><strong>读取模式：</strong>几乎总是"作为工具"检索</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 Memory Managers</h3>
+                        <p><strong>记忆管理器：</strong></p>
+                        <ul>
+                            <li><strong>主要目标：</strong>创建个性化和有状态的体验</li>
+                            <li><strong>数据源：</strong>用户和智能体之间的对话</li>
+                            <li><strong>隔离级别：</strong>高度隔离。记忆几乎总是按用户范围限定</li>
+                            <li><strong>信息类型：</strong>动态和（通常）用户特定</li>
+                            <li><strong>写入模式：</strong>事件驱动处理，在某些节奏触发或作为工具触发</li>
+                            <li><strong>读取模式：</strong>作为工具检索或静态检索</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>类比：</strong>RAG是智能体的研究图书馆，而记忆管理器是其个人助理。一个真正智能的智能体需要两者</p>
+                </div>
+            </div>
+
+            <!-- Slide 19: 记忆类型 -->
+            <div class="slide" data-slide="19">
+                <h1>记忆类型<span class="english-title">Types of Memory</span></h1>
+                <p>智能体的记忆可以根据信息如何存储和如何捕获进行分类</p>
+                <h3>记忆结构</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📝 Content（内容）</h3>
+                        <p><strong>从源数据中提取的物质：</strong></p>
+                        <ul>
+                            <li><strong>Structured Memories：</strong>结构化记忆，以字典或JSON等通用格式存储</li>
+                            <li><strong>Unstructured Memories：</strong>非结构化记忆，捕获较长交互、事件或主题本质的自然语言描述</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🏷️ Metadata（元数据）</h3>
+                        <p><strong>提供关于记忆的上下文：</strong></p>
+                        <ul>
+                            <li>记忆的唯一标识符</li>
+                            <li>记忆"所有者"的标识符</li>
+                            <li>描述记忆内容或数据源的标签</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>信息类型</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>❓ Declarative Memory</h3>
+                        <p><strong>陈述性记忆（"知道什么"）：</strong></p>
+                        <ul>
+                            <li>智能体对事实、数字和事件的知识</li>
+                            <li>智能体可以明确陈述或"声明"的所有信息</li>
+                            <li>包括一般世界知识和特定用户事实</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Procedural Memory</h3>
+                        <p><strong>程序性记忆（"知道如何"）：</strong></p>
+                        <ul>
+                            <li>智能体对技能和工作流的知识</li>
+                            <li>通过隐式演示如何正确执行任务来指导智能体的行动</li>
+                            <li>帮助回答"如何"问题</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 20: 组织模式 -->
+            <div class="slide" data-slide="20">
+                <h1>组织模式<span class="english-title">Organization Patterns</span></h1>
+                <p>记忆管理器通常使用以下一种或多种模式来组织记忆</p>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📦 Collections</h3>
+                        <p><strong>集合模式：</strong></p>
+                        <ul>
+                            <li>将内容组织为单个用户的多个自包含、自然语言记忆</li>
+                            <li>每个记忆是一个独特的事件、总结或观察</li>
+                            <li>允许存储和搜索与特定目标或主题相关的较大、非结构化信息池</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👤 Structured User Profile</h3>
+                        <p><strong>结构化用户档案模式：</strong></p>
+                        <ul>
+                            <li>将记忆组织为一组关于用户的核心事实</li>
+                            <li>就像一张不断更新的联系人卡片</li>
+                            <li>设计用于快速查找基本、事实信息</li>
+                            <li>如姓名、偏好和账户详细信息</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📜 Rolling Summary</h3>
+                        <p><strong>滚动总结模式：</strong></p>
+                        <ul>
+                            <li>将所有信息整合到一个单一的、不断发展的记忆中</li>
+                            <li>代表整个用户-智能体关系的自然语言总结</li>
+                            <li>管理器不断更新这个主文档</li>
+                            <li>常用于压缩长会话</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 21: 存储架构 -->
+            <div class="slide" data-slide="21">
+                <h1>存储架构<span class="english-title">Storage Architectures</span></h1>
+                <p>存储架构是决定智能体能够多快和多智能地检索记忆的关键决策</p>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🔍 Vector Databases</h3>
+                        <p><strong>向量数据库：</strong></p>
+                        <ul>
+                            <li>基于语义相似性而非精确关键字进行检索</li>
+                            <li>记忆被转换为嵌入向量</li>
+                            <li>数据库找到与用户查询概念最接近的匹配</li>
+                            <li>适用于检索非结构化、自然语言记忆</li>
+                            <li>擅长"原子事实"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🕸️ Knowledge Graphs</h3>
+                        <p><strong>知识图谱：</strong></p>
+                        <ul>
+                            <li>将记忆存储为实体网络及其关系</li>
+                            <li>检索涉及遍历此图以找到直接和间接连接</li>
+                            <li>允许智能体推理不同事实如何链接</li>
+                            <li>适用于结构化、关系查询</li>
+                            <li>擅长"知识三元组"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔀 Hybrid Approach</h3>
+                        <p><strong>混合方法：</strong></p>
+                        <ul>
+                            <li>用向量嵌入丰富知识图谱的结构化实体</li>
+                            <li>使系统能够同时执行关系和语义搜索</li>
+                            <li>提供图的结构化推理</li>
+                            <li>提供向量数据库的细致、概念搜索</li>
+                            <li>两全其美</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 22: 创建机制 -->
+            <div class="slide" data-slide="22">
+                <h1>创建机制<span class="english-title">Creation Mechanisms</span></h1>
+                <p>记忆还可以根据如何创建以及信息如何派生进行分类</p>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>💭 Explicit vs Implicit</h3>
+                        <p><strong>显式 vs 隐式：</strong></p>
+                        <ul>
+                            <li><strong>Explicit Memories：</strong>当用户给智能体直接命令记住某事时创建</li>
+                            <li><strong>Implicit Memories：</strong>当智能体在没有直接命令的情况下从对话中推断和提取信息时创建</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Internal vs External</h3>
+                        <p><strong>内部 vs 外部：</strong></p>
+                        <ul>
+                            <li><strong>Internal Memory：</strong>记忆管理直接内置在智能体框架中</li>
+                            <li><strong>External Memory：</strong>使用单独、专门的服务专用于记忆管理</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>记忆范围</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>👤 User-Level Scope</h3>
+                        <p><strong>用户级范围：</strong></p>
+                        <ul>
+                            <li>最常见的实现</li>
+                            <li>为每个个人创建连续、个性化的体验</li>
+                            <li>记忆绑定到特定用户ID</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💬 Session-Level Scope</h3>
+                        <p><strong>会话级范围：</strong></p>
+                        <ul>
+                            <li>用于压缩长对话</li>
+                            <li>创建从单个会话中提取的洞察的持久记录</li>
+                            <li>上下文隔离到该特定会话</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🌐 Application-Level Scope</h3>
+                        <p><strong>应用级范围：</strong></p>
+                        <ul>
+                            <li>应用程序所有用户都可访问的记忆</li>
+                            <li>用于提供共享上下文</li>
+                            <li>广播系统范围信息</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 23: 多模态记忆 -->
+            <div class="slide" data-slide="23">
+                <h1>多模态记忆<span class="english-title">Multimodal Memory</span></h1>
+                <p>描述智能体如何处理非文本信息（如图像、视频和音频）的关键概念</p>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📥 Memory from Multimodal Source</h3>
+                        <p><strong>来自多模态源的记忆：</strong></p>
+                        <ul>
+                            <li>最常见的实现</li>
+                            <li>智能体可以处理各种数据类型（文本、图像、音频）</li>
+                            <li>但它创建的记忆是从该源派生的<strong>文本洞察</strong></li>
+                            <li>例如：处理用户的语音备忘录以创建记忆</li>
+                            <li>不存储音频文件本身，而是转录音频并创建文本记忆</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🖼️ Memory with Multimodal Content</h3>
+                        <p><strong>具有多模态内容的记忆：</strong></p>
+                        <ul>
+                            <li>更高级的方法</li>
+                            <li>记忆本身包含非文本媒体</li>
+                            <li>智能体不仅描述内容，还直接存储内容</li>
+                            <li>例如：用户上传图像并说"记住这个设计作为我们的logo"</li>
+                            <li>智能体创建一个直接包含图像文件的记忆</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>当前趋势：</strong>大多数当代记忆管理器专注于处理多模态源，同时生成文本内容，因为生成和检索非结构化二进制数据需要专门的模型、算法和基础设施</p>
+                </div>
+            </div>
+
+            <!-- Slide 24: 记忆生成 -->
+            <div class="slide" data-slide="24">
+                <h1>记忆生成<span class="english-title">Memory Generation</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>自主地将原始对话数据转换为结构化、有意义的洞察</p>
+                </div>
+                <p>记忆生成是一个LLM驱动的ETL（提取、转换、加载）管道</p>
+                <h3>四个阶段</h3>
+                <div class="figure">
+                    <div style="display: flex; justify-content: space-around; align-items: center; margin: 30px 0; flex-wrap: wrap;">
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">1. Ingestion</h3>
+                            <p style="font-size: 12px; text-align: center;">摄入<br/>客户端提供原始数据源</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">2. Extraction</h3>
+                            <p style="font-size: 12px; text-align: center;">提取与过滤<br/>提取有意义内容</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">3. Consolidation</h3>
+                            <p style="font-size: 12px; text-align: center;">整合<br/>冲突解决和去重</p>
+                        </div>
+                        <div style="font-size: 30px;">→</div>
+                        <div class="card" style="width: 22%; margin-bottom: 10px;">
+                            <h3 style="font-size: 16px; text-align: center;">4. Storage</h3>
+                            <p style="font-size: 12px; text-align: center;">存储<br/>持久化到持久存储层</p>
+                        </div>
+                    </div>
+                    <p class="figure-caption">图3：记忆生成的高级算法</p>
+                </div>
+                <div class="success">
+                    <p><strong>核心优势：</strong>记忆管理器自动化此管道，提供将对话噪声转换为结构化知识的单一、连贯系统</p>
+                </div>
+            </div>
+
+            <!-- Slide 25: 记忆提取 -->
+            <div class="slide" data-slide="25">
+                <h1>记忆提取<span class="english-title">Memory Extraction</span></h1>
+                <div class="box">
+                    <p><strong>目标：</strong>回答基本问题："这次对话中的什么信息足够有意义，可以成为记忆？"</p>
+                </div>
+                <p>这不是简单总结；这是一个有针对性的、智能的过滤过程</p>
+                <h3>提取方法</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📋 Schema-Based</h3>
+                        <p><strong>基于架构：</strong></p>
+                        <ul>
+                            <li>LLM被赋予预定义的JSON架构或模板</li>
+                            <li>使用结构化输出等LLM功能</li>
+                            <li>LLM被指示使用对话中的相应信息构建JSON</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📝 Natural Language</h3>
+                        <p><strong>自然语言：</strong></p>
+                        <ul>
+                            <li>LLM由简单的自然语言主题定义引导</li>
+                            <li>定义"有意义"的含义</li>
+                            <li>提供一组主题定义</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Few-Shot Prompting</h3>
+                        <p><strong>少样本提示：</strong></p>
+                        <ul>
+                            <li>LLM被"展示"应该提取什么信息</li>
+                            <li>提示包括输入文本和理想的高保真记忆的几个示例</li>
+                            <li>LLM从示例中学习所需的提取模式</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>关键点：</strong>"有意义"不是一个普遍概念；它完全由智能体的目的和用例定义</p>
+                </div>
+            </div>
+
+            <!-- Slide 26: 记忆整合 -->
+            <div class="slide" data-slide="26">
+                <h1>记忆整合<span class="english-title">Memory Consolidation</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>将新信息整合到一个连贯、准确和不断发展的知识库中</p>
+                </div>
+                <h3>解决的基本问题</h3>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>⚠️ 问题1: 信息重复</h3>
+                        <p>用户可能在不同的对话中以多种方式提到相同的事实。简单的提取过程会创建两个冗余记忆</p>
+                    </div>
+                    <div class="warning">
+                        <h3>⚠️ 问题2: 冲突信息</h3>
+                        <p>用户的状态随时间变化。没有整合，智能体的记忆将包含相互矛盾的事实</p>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>⚠️ 问题3: 信息演进</h3>
+                        <p>一个简单的事实可以变得更细致。初始记忆可能会演变得更复杂的理解</p>
+                    </div>
+                    <div class="warning">
+                        <h3>⚠️ 问题4: 记忆相关性衰减</h3>
+                        <p>并非所有记忆永远有用。智能体必须主动修剪旧的、陈旧的或低置信度的记忆</p>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>主要操作：</strong>UPDATE（更新）、CREATE（创建）、DELETE/INVALIDATE（删除/作废）</p>
+                </div>
+            </div>
+
+            <!-- Slide 27: 记忆来源 -->
+            <div class="slide" data-slide="27">
+                <h1>记忆来源<span class="english-title">Memory Provenance</span></h1>
+                <p>可信度直接来自记忆的来源——其起源的详细记录和历史</p>
+                <h3>数据源类型</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🚀 Bootstrapped Data</h3>
+                        <p><strong>引导数据：</strong></p>
+                        <ul>
+                            <li>从内部系统预加载的信息</li>
+                            <li>如CRM</li>
+                            <li>高信任数据</li>
+                            <li>用于初始化用户记忆</li>
+                            <li>解决冷启动问题</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💬 User Input</h3>
+                        <p><strong>用户输入：</strong></p>
+                        <ul>
+                            <li>显式提供的数据（如表单，高信任）</li>
+                            <li>从对话中隐式提取的信息（通常不太可信）</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Tool Output</h3>
+                        <p><strong>工具输出：</strong></p>
+                        <ul>
+                            <li>从外部工具调用返回的数据</li>
+                            <li>不鼓励从工具输出生成记忆</li>
+                            <li>这些记忆往往是脆弱和陈旧的</li>
+                            <li>更适合短期缓存</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>关键点：</strong>这些细节对于两个原因至关重要：它们决定了每个源在记忆整合期间的权重，以及智能体在推理期间应该多大程度上依赖该记忆</p>
+                </div>
+            </div>
+
+            <!-- Slide 28: 触发记忆生成 -->
+            <div class="slide" data-slide="28">
+                <h1>触发记忆生成<span class="english-title">Triggering Memory Generation</span></h1>
+                <p>智能体必须决定何时应该尝试记忆生成。这是一个关键的架构选择</p>
+                <h3>触发策略</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📊 Session Completion</h3>
+                        <p><strong>会话完成：</strong></p>
+                        <ul>
+                            <li>在多轮会话结束时触发生成</li>
+                            <li>成本效益高</li>
+                            <li>但可能创建较低保真度的记忆</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔄 Turn Cadence</h3>
+                        <p><strong>轮次节奏：</strong></p>
+                        <ul>
+                            <li>在特定轮数后运行过程</li>
+                            <li>例如：每5轮</li>
+                            <li>平衡成本和保真度</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Real-Time</h3>
+                        <p><strong>实时：</strong></p>
+                        <ul>
+                            <li>在每一轮后生成记忆</li>
+                            <li>确保记忆高度详细和新鲜</li>
+                            <li>但成本最高</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>权衡：</strong>频繁生成确保记忆高度详细和新鲜，但成本最高。不频繁生成更具成本效益，但可能创建较低保真度的记忆</p>
+                </div>
+            </div>
+
+            <!-- Slide 29: Memory-as-a-Tool -->
+            <div class="slide" data-slide="29">
+                <h1>记忆作为工具<span class="english-title">Memory-as-a-Tool</span></h1>
+                <div class="box">
+                    <p><strong>更高级的方法：</strong>允许智能体自己决定何时创建记忆</p>
+                </div>
+                <p>在此模式中，记忆生成被公开为工具（如create_memory）</p>
+                <h3>工作流程</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔧 工具定义</h3>
+                        <p>工具定义应该定义什么类型的信息应该被认为是有意义的</p>
+                    </div>
+                    <div class="card">
+                        <h3>🤖 智能体决策</h3>
+                        <p>智能体可以分析对话并自主决定在识别出值得持久化的有意义信息时调用此工具</p>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>优势：</strong>这将识别"有意义信息"的责任从外部记忆管理器转移到智能体（以及你作为开发者）本身</p>
+                </div>
+                <div class="warning">
+                    <p><strong>注意：</strong>记忆生成是一个昂贵的操作，需要LLM调用和数据库写入。对于生产中的智能体，记忆生成应该几乎总是作为后台过程异步处理</p>
+                </div>
+            </div>
+
+            <!-- Slide 30: 记忆检索 -->
+            <div class="slide" data-slide="30">
+                <h1>记忆检索<span class="english-title">Memory Retrieval</span></h1>
+                <div class="box">
+                    <p><strong>目标：</strong>发现与当前对话最相关的记忆</p>
+                </div>
+                <h3>评分维度</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🎯 Relevance</h3>
+                        <p><strong>相关性（语义相似性）：</strong></p>
+                        <p>这个记忆在概念上与当前对话有多相关？</p>
+                    </div>
+                    <div class="card">
+                        <h3>⏰ Recency</h3>
+                        <p><strong>最近性（基于时间）：</strong></p>
+                        <p>这个记忆是最近创建的吗？</p>
+                    </div>
+                    <div class="card">
+                        <h3>⭐ Importance</h3>
+                        <p><strong>重要性（重要性）：</strong></p>
+                        <p>这个记忆整体有多关键？</p>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>最佳策略：</strong>混合方法，结合所有三个维度的分数。仅依赖基于向量的相关性是一个常见的陷阱</p>
+                </div>
+                <h3>检索时机</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔄 Proactive Retrieval</h3>
+                        <p><strong>主动检索：</strong></p>
+                        <ul>
+                            <li>在每轮开始时自动加载记忆</li>
+                            <li>确保上下文始终可用</li>
+                            <li>但对于不需要记忆访问的轮次引入不必要的延迟</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Reactive Retrieval</h3>
+                        <p><strong>反应式检索（Memory-as-a-Tool）：</strong></p>
+                        <ul>
+                            <li>智能体被赋予一个工具来查询其记忆</li>
+                            <li>自己决定何时检索上下文</li>
+                            <li>更高效和健壮</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 31: 推理中的记忆 -->
+            <div class="slide" data-slide="31">
+                <h1>推理中的记忆<span class="english-title">Inference with Memories</span></h1>
+                <p>一旦检索到相关记忆，最后一步是策略性地将它们放入模型的上下文窗口</p>
+                <h3>放置策略</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📋 System Instructions</h3>
+                        <p><strong>系统指令：</strong></p>
+                        <ul>
+                            <li>将记忆附加到系统指令</li>
+                            <li>保持对话历史干净</li>
+                            <li>给予记忆高权威</li>
+                            <li>理想用于稳定、"全局"信息</li>
+                            <li>如用户档案</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💬 Conversation History</h3>
+                        <p><strong>对话历史：</strong></p>
+                        <ul>
+                            <li>将检索到的记忆直接注入逐轮对话</li>
+                            <li>可以放置在完整对话历史之前</li>
+                            <li>或就在最新用户查询之前</li>
+                            <li>理想用于临时、情景记忆</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>风险：</strong>系统指令中存在"过度影响"的风险，对话历史中存在"对话注入"的风险</p>
+                </div>
+                <div class="success">
+                    <p><strong>最佳实践：</strong>混合策略通常最有效。使用系统提示作为稳定、全局的记忆，使用对话注入或记忆作为工具用于临时、情景的记忆</p>
+                </div>
+            </div>
+
+            <!-- Slide 32: 程序性记忆 -->
+            <div class="slide" data-slide="32">
+                <h1>程序性记忆<span class="english-title">Procedural Memories</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>改进智能体工作流和推理的机制</p>
+                </div>
+                <p>存储"如何"不是一个信息检索问题；它是一个<strong>推理增强</strong>问题</p>
+                <h3>程序性记忆生命周期</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📤 Extraction</h3>
+                        <p><strong>提取：</strong></p>
+                        <ul>
+                            <li>需要专门的提示</li>
+                            <li>从成功的交互中提取可重用的策略或"剧本"</li>
+                            <li>而不是仅仅捕获事实或有意义的信息</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔀 Consolidation</h3>
+                        <p><strong>整合：</strong></p>
+                        <ul>
+                            <li>策划工作流本身（"如何"）</li>
+                            <li>将新的成功方法与现有的"最佳实践"整合</li>
+                            <li>修补已知计划中的有缺陷步骤</li>
+                            <li>修剪过时或无效的程序</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔍 Retrieval</h3>
+                        <p><strong>检索：</strong></p>
+                        <ul>
+                            <li>目标不是检索数据来回答问题</li>
+                            <li>而是检索一个计划来指导智能体如何执行复杂任务</li>
+                            <li>程序性记忆可能具有与陈述性记忆不同的数据架构</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>与微调的区别：</strong>微调是相对缓慢、离线的训练过程，改变模型权重。程序性记忆通过动态注入正确的"剧本"到提示中提供快速、在线的适应</p>
+                </div>
+            </div>
+
+            <!-- Slide 33: 测试与评估 -->
+            <div class="slide" data-slide="33">
+                <h1>测试与评估<span class="english-title">Testing and Evaluation</span></h1>
+                <p>评估智能体的记忆是一个多层过程</p>
+                <h3>评估维度</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📊 Memory Generation Quality</h3>
+                        <p><strong>记忆生成质量：</strong></p>
+                        <ul>
+                            <li><strong>Precision：</strong>精确度，智能体创建的记忆中有多少是准确和相关的？</li>
+                            <li><strong>Recall：</strong>召回率，智能体从源中应该记住的所有相关事实中，它捕获了百分之多少？</li>
+                            <li><strong>F1-Score：</strong>精确度和召回率的调和平均值</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Memory Retrieval Performance</h3>
+                        <p><strong>记忆检索性能：</strong></p>
+                        <ul>
+                            <li><strong>Recall@K：</strong>当需要记忆时，正确的记忆是否在前K个检索结果中找到？</li>
+                            <li><strong>Latency：</strong>延迟，整个检索过程必须在严格的延迟预算内执行</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 End-to-End Task Success</h3>
+                        <p><strong>端到端任务成功：</strong></p>
+                        <ul>
+                            <li>记忆实际上是否帮助智能体更好地完成其工作？</li>
+                            <li>使用LLM"评判"比较智能体的最终输出与黄金答案</li>
+                            <li>评判确定智能体的答案是否准确</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>持续改进：</strong>评估不是一次性事件；它是持续改进的引擎。迭代过程涉及建立基线、分析失败、调整系统和重新评估</p>
+                </div>
+            </div>
+
+            <!-- Slide 34: 生产环境考虑 -->
+            <div class="slide" data-slide="34">
+                <h1>生产环境考虑<span class="english-title">Production Considerations</span></h1>
+                <p>将记忆启用的智能体从原型迁移到生产需要关注企业级架构关注点</p>
+                <h3>关键要求</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🏗️ Architecture</h3>
+                        <p><strong>架构：</strong></p>
+                        <ul>
+                            <li>解耦记忆处理与主应用程序逻辑</li>
+                            <li>事件驱动模式</li>
+                            <li>通过直接、非阻塞API调用实现</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📈 Scalability</h3>
+                        <p><strong>可扩展性：</strong></p>
+                        <ul>
+                            <li>处理高频事件而不失败</li>
+                            <li>防止死锁或竞争条件</li>
+                            <li>使用事务性数据库操作或乐观锁定</li>
+                            <li>强大的消息队列</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🌍 Resilience</h3>
+                        <p><strong>弹性：</strong></p>
+                        <ul>
+                            <li>对瞬态错误具有弹性</li>
+                            <li>使用指数退避的重试机制</li>
+                            <li>多区域复制</li>
+                            <li>全局一致的知识库</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>流程：</strong>1. 智能体推送数据 → 2. 记忆管理器在后台处理 → 3. 记忆被持久化 → 4. 智能体检索记忆</p>
+                </div>
+            </div>
+
+            <!-- Slide 35: 隐私和安全风险 -->
+            <div class="slide" data-slide="35">
+                <h1>隐私和安全风险<span class="english-title">Privacy and Security Risks</span></h1>
+                <p>记忆来源于并包含用户数据，因此需要严格的隐私和安全控制</p>
+                <h3>关键安全原则</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔒 Data Isolation</h3>
+                        <p><strong>数据隔离：</strong></p>
+                        <ul>
+                            <li><strong>Strict Isolation：</strong>严格隔离是档案的首要规则</li>
+                            <li>记忆必须在用户或租户级别严格隔离</li>
+                            <li>使用限制性访问控制列表（ACL）强制执行</li>
+                            <li>一个用户永远不能访问另一个用户的记忆</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ PII Redaction</h3>
+                        <p><strong>PII编辑：</strong></p>
+                        <ul>
+                            <li>在将任何文档归档之前，档案员执行关键的安全步骤</li>
+                            <li>仔细检查每一页以编辑敏感的个人身份信息（PII）</li>
+                            <li>确保在不产生责任的情况下保存知识</li>
+                            <li>使用Model Armor等工具</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>Memory Poisoning：</strong>档案员受过训练，可以发现并丢弃伪造或故意误导的文档——这是防止记忆中毒的保障。系统必须在将信息提交到长期记忆之前验证和清理信息</p>
+                </div>
+            </div>
+
+            <!-- Slide 36: 结论 -->
+            <div class="slide" data-slide="36">
+                <h1>结论<span class="english-title">Conclusion</span></h1>
+                <div class="box">
+                    <p><strong>核心要点：</strong>会话和记忆是构建有状态、智能LLM智能体的基础</p>
+                </div>
+                <h3>关键总结</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📋 Context Engineering</h3>
+                        <p><strong>上下文工程：</strong></p>
+                        <ul>
+                            <li>动态组装和管理LLM上下文窗口中的信息</li>
+                            <li>从静态提示工程演进到动态上下文工程</li>
+                            <li>像智能体的"mise en place"（备料过程）</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💬 Sessions</h3>
+                        <p><strong>会话：</strong></p>
+                        <ul>
+                            <li>封装单个连续对话的即时对话历史和工作记忆</li>
+                            <li>包含Events（事件）和State（状态）</li>
+                            <li>支持多智能体系统的不同架构模式</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🧠 Memory</h3>
+                        <p><strong>记忆：</strong></p>
+                        <ul>
+                            <li>长期持久化的机制</li>
+                            <li>捕获和整合跨多个会话的关键信息</li>
+                            <li>提供连续和个性化的体验</li>
+                            <li>与RAG不同，专注于用户特定上下文</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🚀 Production Ready</h3>
+                        <p><strong>生产就绪：</strong></p>
+                        <ul>
+                            <li>关注安全、隐私、数据完整性、性能和可扩展性</li>
+                            <li>异步处理记忆生成</li>
+                            <li>严格的用户隔离和PII编辑</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>最终目标：</strong>通过有效的上下文工程、会话管理和记忆系统，开发者可以创建更强大、个性化和持久的AI体验</p>
+                </div>
+            </div>
+
+            <!-- Slide 37: 谢谢 -->
+            <div class="slide" data-slide="37">
+                <div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+                    <div style="font-size: 120px; margin-bottom: 30px;">🙏</div>
+                    <h1 style="text-align: center; border-bottom: none; margin-bottom: 30px;">Thank You!</h1>
+                    <h2 style="text-align: center; border-left: none; padding-left: 0; margin-bottom: 20px;">谢谢！</h2>
+                    <p style="text-align: center; font-size: 18px; color: #666; max-width: 800px;">
+                        Context Engineering: Sessions, Memory<br/>
+                        上下文工程:会话与记忆
+                    </p>
+                    <div class="box" style="margin-top: 30px; text-align: center;">
+                        <p><strong>作者：</strong>Kimberly Milam 和 Antonio Gulli</p>
+                        <p><strong>发布日期：</strong>2025年11月</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="prevSlide()">上一页</button>
+            <div class="page-info">
+                <span id="currentPage">1</span> / <span id="totalPages">37</span>
+            </div>
+            <button id="nextBtn" onclick="nextSlide()">下一页</button>
+            <button id="tocBtn" onclick="toggleTOC()">目录</button>
+            <button id="exportBtn" onclick="exportAllSlides()">导出为图片</button>
+        </div>
+
+        <div class="slide-progress" id="slideProgress"></div>
+    </div>
+
+    <div class="toc-overlay" id="tocOverlay" onclick="toggleTOC()"></div>
+    <div class="toc-panel" id="tocPanel">
+        <button class="close-toc" onclick="toggleTOC()">×</button>
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#" onclick="goToSlide(1)">1. 封面</a></li>
+            <li><a href="#" onclick="goToSlide(2)">2. 目录</a></li>
+            <li><a href="#" onclick="goToSlide(3)">3. 介绍</a></li>
+            <li><a href="#" onclick="goToSlide(4)">4. 上下文工程</a></li>
+            <li><a href="#" onclick="goToSlide(5)">5. 上下文组件</a></li>
+            <li><a href="#" onclick="goToSlide(6)">6. 上下文管理流程</a></li>
+            <li><a href="#" onclick="goToSlide(7)">7. Sessions - 会话</a></li>
+            <li><a href="#" onclick="goToSlide(8)">8. 跨框架差异</a></li>
+            <li><a href="#" onclick="goToSlide(9)">9. 多智能体系统</a></li>
+            <li><a href="#" onclick="goToSlide(10)">10. 跨框架互操作性</a></li>
+            <li><a href="#" onclick="goToSlide(11)">11. 生产环境考虑</a></li>
+            <li><a href="#" onclick="goToSlide(12)">12. 管理长上下文对话</a></li>
+            <li><a href="#" onclick="goToSlide(13)">13. 压缩策略</a></li>
+            <li><a href="#" onclick="goToSlide(14)">14. 触发机制</a></li>
+            <li><a href="#" onclick="goToSlide(15)">15. Memory - 记忆</a></li>
+            <li><a href="#" onclick="goToSlide(16)">16. 记忆的关键能力</a></li>
+            <li><a href="#" onclick="goToSlide(17)">17. 记忆生态系统</a></li>
+            <li><a href="#" onclick="goToSlide(18)">18. Memory vs RAG</a></li>
+            <li><a href="#" onclick="goToSlide(19)">19. 记忆类型</a></li>
+            <li><a href="#" onclick="goToSlide(20)">20. 组织模式</a></li>
+            <li><a href="#" onclick="goToSlide(21)">21. 存储架构</a></li>
+            <li><a href="#" onclick="goToSlide(22)">22. 创建机制</a></li>
+            <li><a href="#" onclick="goToSlide(23)">23. 多模态记忆</a></li>
+            <li><a href="#" onclick="goToSlide(24)">24. 记忆生成</a></li>
+            <li><a href="#" onclick="goToSlide(25)">25. 记忆提取</a></li>
+            <li><a href="#" onclick="goToSlide(26)">26. 记忆整合</a></li>
+            <li><a href="#" onclick="goToSlide(27)">27. 记忆来源</a></li>
+            <li><a href="#" onclick="goToSlide(28)">28. 触发记忆生成</a></li>
+            <li><a href="#" onclick="goToSlide(29)">29. Memory-as-a-Tool</a></li>
+            <li><a href="#" onclick="goToSlide(30)">30. 记忆检索</a></li>
+            <li><a href="#" onclick="goToSlide(31)">31. 推理中的记忆</a></li>
+            <li><a href="#" onclick="goToSlide(32)">32. 程序性记忆</a></li>
+            <li><a href="#" onclick="goToSlide(33)">33. 测试与评估</a></li>
+            <li><a href="#" onclick="goToSlide(34)">34. 生产环境考虑</a></li>
+            <li><a href="#" onclick="goToSlide(35)">35. 隐私和安全风险</a></li>
+            <li><a href="#" onclick="goToSlide(36)">36. 结论</a></li>
+            <li><a href="#" onclick="goToSlide(37)">37. 谢谢</a></li>
+        </ul>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const slides = document.querySelectorAll('.slide');
+        const totalPages = slides.length;
+        const slideProgress = document.getElementById('slideProgress');
+
+        function updateSlide() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.getElementById('currentPage').textContent = currentSlide;
+            document.getElementById('prevBtn').disabled = currentSlide === 1;
+            document.getElementById('nextBtn').disabled = currentSlide === totalPages;
+
+            const progress = ((currentSlide - 1) / (totalPages - 1)) * 100;
+            slideProgress.style.width = progress + '%';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalPages) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(slideNum) {
+            currentSlide = slideNum;
+            updateSlide();
+            toggleTOC();
+        }
+
+        function toggleTOC() {
+            const tocPanel = document.getElementById('tocPanel');
+            const tocOverlay = document.getElementById('tocOverlay');
+            tocPanel.classList.toggle('open');
+            tocOverlay.classList.toggle('open');
+        }
+
+        async function exportAllSlides() {
+            const exportBtn = document.getElementById('exportBtn');
+            exportBtn.disabled = true;
+            exportBtn.textContent = '导出中...';
+
+            document.body.classList.add('exporting');
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 1920;
+            const totalHeight = slides.length * 1080;
+            canvas.height = totalHeight;
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                slide.classList.add('active');
+
+                try {
+                    const slideCanvas = await html2canvas(slide, {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false
+                    });
+
+                    ctx.drawImage(slideCanvas, 0, i * 1080, 1920, 1080);
+                } catch (error) {
+                    console.error('Error capturing slide:', error);
+                }
+
+                if (i !== currentSlide - 1) {
+                    slide.classList.remove('active');
+                }
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.body.classList.remove('exporting');
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'Context_Engineering_Sessions_Memory_Slides.png';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                exportBtn.disabled = false;
+                exportBtn.textContent = '导出为图片';
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(1);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalPages);
+            } else if (e.key === 'Escape') {
+                const tocPanel = document.getElementById('tocPanel');
+                if (tocPanel.classList.contains('open')) {
+                    toggleTOC();
+                }
+            }
+        });
+
+        updateSlide();
+    </script>
+</body>
+</html>

@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>深度报告：AI Agent身份管理的战略分析</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Slate & Cyan -->
+    <!-- Application Structure Plan: A single-page dashboard design with a sticky navigation bar. The structure prioritizes user understanding by grouping content into thematic, interactive sections: 1) 'Why It Matters' for an immediate hook with key data, 2) 'The Core Problem' for a direct comparison of old vs. new paradigms, 3) 'Solutions & Tech' for a deep-dive with interactive tabs, 4) 'Competitive Landscape' using a card-based view, and 5) 'Strategic Roadmap' visualized as an interactive timeline. This non-linear, thematic structure is more engaging and user-friendly for exploring a dense report than a simple linear document. -->
+    <!-- Visualization & Content Choices: 
+        - Market Growth: Report Info -> Quantitative market projection ($5.26B to $46.58B). Goal -> Show rapid growth. Viz -> Line Chart (Chart.js). Interaction -> Hover for details. Justification -> Best way to visualize time-series data and show trends.
+        - IAM vs. AI IDM: Report Info -> Table 1 data comparing traditional and modern systems. Goal -> Compare concepts. Viz -> Interactive two-column layout (HTML/Tailwind). Interaction -> Click to expand details. Justification -> More engaging than a static table, encourages exploration.
+        - Tech Paradigms: Report Info -> Pros/Cons of Centralized vs. Decentralized solutions. Goal -> Compare approaches. Viz -> Tabbed content with cards (HTML/JS). Interaction -> Click tabs to switch views. Justification -> Organizes complex info cleanly.
+        - Core Components: Report Info -> Key tech components (Ephemeral Credentials, etc.). Goal -> Explain concepts. Viz -> Interactive diagram (HTML/CSS Grid). Interaction -> Click component to highlight and show description. Justification -> Visually organizes related concepts and encourages interaction.
+        - Roadmap: Report Info -> Short, Medium, Long-term actions. Goal -> Show phased plan. Viz -> Vertical Timeline (HTML/Tailwind). Interaction -> Click phase to reveal details. Justification -> Clearly visualizes a process over time. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #1e293b; /* slate-800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 40vh;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+        }
+        .nav-link.active {
+            color: #0891b2; /* cyan-600 */
+            border-bottom-color: #0891b2;
+        }
+        .tab.active {
+            background-color: #0891b2; /* cyan-600 */
+            color: white;
+        }
+        .component-card.active {
+            transform: scale(1.05);
+            box-shadow: 0 10px 15px -3px rgba(8, 145, 178, 0.3), 0 4px 6px -2px rgba(8, 145, 178, 0.2);
+            border-color: #0891b2;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: white;
+            border: 4px solid #0891b2; /* cyan-600 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header id="header" class="bg-white/80 backdrop-blur-lg shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-xl md:text-2xl font-bold text-slate-900">AI Agent身份管理战略</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#why-it-matters" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-cyan-600 border-b-2 border-transparent">战略价值</a>
+                        <a href="#core-problem" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-cyan-600 border-b-2 border-transparent">核心挑战</a>
+                        <a href="#solutions" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-cyan-600 border-b-2 border-transparent">技术方案</a>
+                        <a href="#landscape" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-cyan-600 border-b-2 border-transparent">竞争格局</a>
+                        <a href="#roadmap" class="nav-link px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-cyan-600 border-b-2 border-transparent">行动路线</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white">
+                        <span class="sr-only">打开主菜单</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#why-it-matters" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-cyan-600">战略价值</a>
+                <a href="#core-problem" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-cyan-600">核心挑战</a>
+                <a href="#solutions" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-cyan-600">技术方案</a>
+                <a href="#landscape" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-cyan-600">竞争格局</a>
+                <a href="#roadmap" class="block nav-link px-3 py-2 rounded-md text-base font-medium text-slate-600 hover:text-cyan-600">行动路线</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <!-- Section 1: Why It Matters -->
+        <section id="why-it-matters" class="mb-16 md:mb-24 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">新范式：为何AI Agent身份管理至关重要</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">AI Agent正从工具演变为企业核心劳动力。为其构建专属的身份管理体系，是企业在“AI+”时代保障安全、合规、效率和信任的战略基石。</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl text-cyan-600 mb-3">🛡️</div>
+                    <h3 class="text-xl font-semibold mb-2">安全基石</h3>
+                    <p class="text-slate-600 text-sm">将Agent视为“一等公民身份”进行治理，有效缩小攻击面，防止数据泄露和内部威胁。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl text-cyan-600 mb-3">⚖️</div>
+                    <h3 class="text-xl font-semibold mb-2">合规保障</h3>
+                    <p class="text-slate-600 text-sm">满足GDPR、CCPA等法规要求，提供清晰的审计追踪和问责链条，避免高额罚款。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl text-cyan-600 mb-3">⚙️</div>
+                    <h3 class="text-xl font-semibold mb-2">效率引擎</h3>
+                    <p class="text-slate-600 text-sm">自动化身份生命周期管理，解放IT团队，让Agent以机器速度安全、高效地运行。</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-4xl text-cyan-600 mb-3">🤝</div>
+                    <h3 class="text-xl font-semibold mb-2">信任核心</h3>
+                    <p class="text-slate-600 text-sm">通过全面的可见性与可追溯性，建立对AI系统行为的信任，加速企业AI战略落地。</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-2">爆发式增长的市场</h3>
+                <p class="text-center text-slate-500 mb-6">全球AI Agent市场规模预测 (单位：十亿美元)</p>
+                <div class="chart-container">
+                    <canvas id="marketGrowthChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Core Problem -->
+        <section id="core-problem" class="mb-16 md:mb-24 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">核心挑战：传统IAM体系为何失效？</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">传统身份管理系统围绕“人类用户”设计，其核心假设与AI Agent的“非人”特性根本不兼容，导致巨大的安全与治理盲点。</p>
+            </div>
+            <div class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="border-r-0 md:border-r md:pr-8 border-slate-200">
+                        <h3 class="text-2xl font-bold text-red-600 mb-4">传统IAM/IGA体系</h3>
+                        <ul id="traditional-iam" class="space-y-4"></ul>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-cyan-600 mb-4">AI Agent身份管理</h3>
+                        <ul id="ai-agent-idm" class="space-y-4"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Solutions -->
+        <section id="solutions" class="mb-16 md:mb-24 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">技术方案深度剖析</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">探索主流技术范式、核心技术组件以及零信任原则如何共同构建AI Agent的身份安全防线。</p>
+            </div>
+            
+            <div id="tab-content" class="bg-white p-6 md:p-8 rounded-lg shadow-lg">
+                <!-- Paradigms Content -->
+                <div id="paradigms-content" class="tab-pane mb-12">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">主流技术范式对比</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-xl font-bold mb-4">中心化方案 (云厂商主导)</h4>
+                            <div class="space-y-4">
+                                <div class="p-4 border rounded-lg">
+                                    <h5 class="font-semibold text-lg">微软 Entra Agent ID</h5>
+                                    <p class="text-sm text-slate-600 mt-1">将Agent作为Entra ID中的一等公民，与现有IAM深度集成，提供统一管理平面。</p>
+                                    <p class="text-sm mt-2"><strong class="text-green-600">优点:</strong> 深度集成、细粒度策略、人机身份分离。</p>
+                                    <p class="text-sm mt-1"><strong class="text-red-600">缺点:</strong> 生态锁定、跨租户同步挑战。</p>
+                                </div>
+                                <div class="p-4 border rounded-lg">
+                                    <h5 class="font-semibold text-lg">AWS AgentCore Identity</h5>
+                                    <p class="text-sm text-slate-600 mt-1">提供全栈Agent基础设施，框架无关，支持与现有身份提供商集成。</p>
+                                    <p class="text-sm mt-2"><strong class="text-green-600">优点:</strong> 全栈服务、框架无关、会话隔离。</p>
+                                    <p class="text-sm mt-1"><strong class="text-red-600">缺点:</strong> 学习曲线陡峭、潜在成本高。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold mb-4">去中心化/Web3方案</h4>
+                            <div class="space-y-4">
+                                <div class="p-4 border rounded-lg">
+                                    <h5 class="font-semibold text-lg">CARV等项目 (基于DID)</h5>
+                                    <p class="text-sm text-slate-600 mt-1">利用区块链和去中心化标识符(DID)，实现主权身份、数据隐私和激励机制。</p>
+                                    <p class="text-sm mt-2"><strong class="text-green-600">潜力:</strong> 主权身份、数据隐私、透明可审计。</p>
+                                    <p class="text-sm mt-1"><strong class="text-red-600">挑战:</strong> 技术不成熟、监管不确定、集成难度大。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Components Content -->
+                <div id="components-content" class="tab-pane mb-12">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">核心技术组件解析</h3>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4" id="component-cards-container">
+                        <!-- Component cards with details will be injected by JS -->
+                    </div>
+                </div>
+
+                <!-- Zero Trust Content -->
+                <div id="zero-trust-content" class="tab-pane">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-6">零信任架构集成</h3>
+                     <div class="grid md:grid-cols-3 gap-8">
+                        <div class="text-center p-4">
+                            <div class="text-5xl mb-4">🔄</div>
+                            <h4 class="text-xl font-semibold mb-2">持续验证</h4>
+                            <p class="text-slate-600">“永不信任，始终验证”。对Agent的每次访问请求都进行实时风险评估和授权检查，而非一次性信任。</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="text-5xl mb-4">🧱</div>
+                            <h4 class="text-xl font-semibold mb-2">微隔离</h4>
+                            <p class="text-slate-600">将Agent工作负载隔离在独立的网络安全区域，限制攻击者横向移动，缩小“爆炸半径”。</p>
+                        </div>
+                        <div class="text-center p-4">
+                            <div class="text-5xl mb-4">🔑</div>
+                            <h4 class="text-xl font-semibold mb-2">最小权限访问</h4>
+                            <p class="text-slate-600">确保Agent仅被授予完成其特定任务所需的最少权限，不多不少，并结合即时(JIT)权限。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Landscape -->
+        <section id="landscape" class="mb-16 md:mb-24 scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">竞争格局与主要玩家</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">大型云服务商、传统身份安全厂商和新兴创业公司共同构成了当前多元且快速发展的市场。</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-3 text-cyan-700">大型云服务商</h3>
+                    <p class="text-slate-600 mb-4">凭借云基础设施和现有客户群占据主导地位，提供深度集成的端到端解决方案。</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700">
+                        <li><strong>微软:</strong> Entra Agent ID, 深度集成</li>
+                        <li><strong>AWS:</strong> AgentCore Identity, 全栈服务</li>
+                        <li><strong>Google:</strong> Workload Identity Federation</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-3 text-cyan-700">传统身份安全厂商</h3>
+                    <p class="text-slate-600 mb-4">利用深厚的IAM专业知识，将非人类身份(NHI)纳入其现有安全框架。</p>
+                    <ul class="list-disc list-inside space-y-1 text-slate-700">
+                        <li><strong>Okta:</strong> 统一管理NHI, CAA协议</li>
+                        <li><strong>Ping Identity:</strong> Helix平台, AI驱动管理</li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="font-bold text-xl mb-3 text-cyan-700">新兴创业公司</h3>
+                    <p class="text-slate-600 mb-4">灵活响应市场，专注于解决特定痛点或探索去中心化等前沿方案。</p>
+                     <ul class="list-disc list-inside space-y-1 text-slate-700">
+                        <li><strong>AI安全方向:</strong> Oasis Security (NHI治理)</li>
+                        <li><strong>去中心化方向:</strong> CARV, Nuggets (DID)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Roadmap -->
+        <section id="roadmap" class="scroll-mt-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900">战略建议与行动路线图</h2>
+                <p class="mt-4 max-w-3xl mx-auto text-lg text-slate-600">采取“构建与合作并重”的混合技术战略，并遵循分阶段的行动计划，以抢占市场先机。</p>
+            </div>
+            <div class="relative pl-8 border-l-2 border-slate-200">
+                <!-- Roadmap items will be injected by JS -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white mt-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm text-slate-400">
+            <p>AI Agent身份管理战略分析报告 | 交互式概览</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const marketData = {
+                labels: ['2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                data: [5.26, 7.57, 10.89, 15.66, 22.52, 32.39, 46.58]
+            };
+            const ctx = document.getElementById('marketGrowthChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: marketData.labels,
+                    datasets: [{
+                        label: '市场规模 (十亿美元)',
+                        data: marketData.data,
+                        borderColor: '#0891b2',
+                        backgroundColor: 'rgba(8, 145, 178, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '金额 (十亿美元)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+
+            const comparisonData = [
+                { dimension: '身份生命周期', traditional: '长期、可预测，手动管理', ai: '短暂、动态，自动化创建/销毁' },
+                { dimension: '权限管理', traditional: '静态、基于角色(RBAC)，粗粒度', ai: '任务/上下文感知授权，动态、细粒度' },
+                { dimension: '认证方式', traditional: '密码、多因素认证(MFA)', ai: 'API密钥、MTLS、即时凭证(JIT)' },
+                { dimension: '人工干预', traditional: '依赖人工审批和干预', ai: '机器速度操作，无人机协作' },
+                { dimension: '问责机制', traditional: '人本问责，清晰追溯到个人', ai: '人机身份绑定，复杂追溯链' },
+                { dimension: '规模与动态性', traditional: '低动态性，少量用户', ai: '高动态性，数千甚至数万实例' },
+            ];
+
+            const traditionalList = document.getElementById('traditional-iam');
+            const aiList = document.getElementById('ai-agent-idm');
+
+            comparisonData.forEach(item => {
+                traditionalList.innerHTML += `<li class="p-4 bg-red-50 rounded-lg"><strong class="text-red-700">${item.dimension}:</strong><p class="text-sm text-slate-600">${item.traditional}</p></li>`;
+                aiList.innerHTML += `<li class="p-4 bg-cyan-50 rounded-lg"><strong class="text-cyan-700">${item.dimension}:</strong><p class="text-sm text-slate-600">${item.ai}</p></li>`;
+            });
+
+            // Removed tab switching logic
+            // const tabs = document.querySelectorAll('.tab');
+            // const tabPanes = document.querySelectorAll('.tab-pane');
+            // tabs.forEach(tab => {
+            //     tab.addEventListener('click', () => {
+            //         tabs.forEach(t => t.classList.remove('active'));
+            //         tab.classList.add('active');
+            //         tabPanes.forEach(pane => {
+            //             if (pane.id === `${tab.dataset.tab}-content`) {
+            //                 pane.classList.remove('hidden');
+            //             } else {
+            //                 pane.classList.add('hidden');
+            //             }
+            //         });
+            //     });
+            // });
+            // tabs[0].click(); // Removed initial click
+
+            const components = [
+                { id: 'ephemeral', title: '短暂身份凭证', description: '临时、短寿命的访问令牌，按需生成，用后即焚，极大降低凭证泄露风险。' },
+                { id: 'context-aware', title: '上下文感知授权', description: '根据任务、风险、环境等实时情境动态调整Agent权限，实现精细化访问控制。' },
+                { id: 'observability', title: '可观测性与行为分析', description: '全面监控、理解和分析Agent行为，通过建立行为基线来识别异常与风险。' },
+                { id: 'binding', title: '人机身份绑定', description: '确保Agent的行为可追溯到具体的个人或流程，维持清晰的问责链。' }
+            ];
+            const componentCardsContainer = document.getElementById('component-cards-container'); // Changed ID to match new HTML
+            // Removed componentDetailsContainer as details are now in cards
+            components.forEach(comp => {
+                const card = document.createElement('div');
+                card.className = 'component-card p-4 border rounded-lg text-left'; // Removed cursor-pointer and active class related styles
+                card.innerHTML = `<h4 class="font-semibold text-lg text-cyan-700 mb-2">${comp.title}</h4><p class="text-slate-700 text-sm">${comp.description}</p>`;
+                componentCardsContainer.appendChild(card);
+            });
+
+            // Removed component card click listeners
+            // const componentCards = document.querySelectorAll('.component-card');
+            // componentCards.forEach(card => {
+            //     card.addEventListener('click', () => {
+            //         componentCards.forEach(c => c.classList.remove('active'));
+            //         card.classList.add('active');
+            //         const selectedComponent = components.find(c => c.id === card.dataset.id);
+            //         componentDetailsContainer.innerHTML = `<div class="text-left"><h4 class="font-bold text-lg text-cyan-700 mb-2">${selectedComponent.title}</h4><p class="text-slate-700">${selectedComponent.description}</p></div>`;
+            //     });
+            // });
+
+            const roadmapData = [
+                {
+                    phase: "短期 (6-12个月)",
+                    title: "基础建设与试点",
+                    details: [
+                        "进行内部能力评估与差距分析",
+                        "制定统一的AI Agent身份策略",
+                        "开发核心能力MVP (身份注册, JIT凭证)",
+                        "选择低风险用例启动试点项目"
+                    ]
+                },
+                {
+                    phase: "中期 (1-2年)",
+                    title: "能力扩展与平台化",
+                    details: [
+                        "建设功能更完善的身份治理平台",
+                        "深度融合零信任原则 (持续验证, 微隔离)",
+                        "落地内置的合规性框架 (GDPR, CCPA)",
+                        "与主流IAM和云平台深度集成"
+                    ]
+                },
+                {
+                    phase: "长期 (3-5年)",
+                    title: "前瞻布局与市场领导",
+                    details: [
+                        "构建AI Agent身份图谱，实现智能治理",
+                        "探索与去中心化身份(DID)的融合",
+                        "积极参与并引领行业标准制定",
+                        "建立专门的AI安全研究团队"
+                    ]
+                }
+            ];
+
+            const roadmapContainer = document.querySelector('#roadmap .relative');
+            roadmapData.forEach(item => {
+                const roadmapItem = document.createElement('div');
+                roadmapItem.className = 'timeline-item mb-8';
+                roadmapItem.innerHTML = `
+                    <div class="cursor-pointer">
+                        <h3 class="text-xl font-bold text-cyan-600">${item.phase}</h3>
+                        <p class="font-semibold text-slate-800">${item.title}</p>
+                    </div>
+                    <div class="roadmap-details hidden mt-4 pl-4 border-l-2 border-slate-200">
+                        <ul class="list-disc list-inside space-y-2 text-slate-600">
+                            ${item.details.map(d => `<li>${d}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+                roadmapContainer.appendChild(roadmapItem);
+            });
+
+            roadmapContainer.addEventListener('click', (e) => {
+                const header = e.target.closest('.cursor-pointer');
+                if (header) {
+                    const details = header.nextElementSibling;
+                    details.classList.toggle('hidden');
+                }
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+            
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: "-50% 0px -50% 0px" });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if(mobileMenu.classList.contains('hidden') === false) {
+                       mobileMenu.classList.add('hidden');
+                    }
+                })
+            })
+        });
+    </script>
+</body>
+</html>

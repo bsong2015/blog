@@ -1,0 +1,2274 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Quality - Agent质量</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slides-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 3vh 5vw;
+            background: white;
+            display: none;
+            overflow-y: auto;
+            box-shadow: 0 1vh 4vh rgba(0,0,0,0.3);
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: fadeIn 0.5s ease-in-out;
+            justify-content: flex-start;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-right: 1vw;
+            justify-content: center;
+            align-items: stretch;
+            margin-top: 1vh;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 0.5vw;
+        }
+
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 4px;
+        }
+
+        .slide::-webkit-scrollbar-thumb:hover {
+            background: #764ba2;
+        }
+
+        body.exporting .slide.active {
+            animation: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(1vh);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide h1 {
+            font-size: 4.5vh;
+            color: #667eea;
+            margin-bottom: 2vh;
+            border-bottom: 0.4vh solid #667eea;
+            padding-bottom: 1vh;
+            line-height: 1.2;
+            flex-shrink: 0;
+        }
+
+        .slide h1 .english-title {
+            display: block;
+            font-size: 0.6em;
+            color: #999;
+            font-weight: 400;
+            margin-top: 1vh;
+            font-style: italic;
+        }
+
+        .slide h2 {
+            font-size: 3.5vh;
+            color: #764ba2;
+            margin: 2vh 0 1.5vh 0;
+            border-left: 0.8vh solid #764ba2;
+            padding-left: 1.5vw;
+            line-height: 1.2;
+        }
+
+        .slide h3 {
+            font-size: 2.8vh;
+            color: #555;
+            margin: 2vh 0 1.2vh 0;
+            line-height: 1.3;
+        }
+
+        .slide h4 {
+            font-size: 2.4vh;
+            color: #666;
+            margin: 1.5vh 0 1vh 0;
+        }
+
+        .slide p {
+            font-size: 2.1vh;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 1.5vh;
+        }
+
+        .slide ul, .slide ol {
+            margin: 1.5vh 0 1.5vh 3vw;
+            font-size: 2.1vh;
+            line-height: 1.6;
+        }
+
+        .slide li {
+            margin-bottom: 0.8vh;
+        }
+
+        .slide strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .slide em {
+            color: #764ba2;
+            font-style: italic;
+        }
+
+        .slide .highlight {
+            background: linear-gradient(120deg, #ffeaa7 0%, #fdcb6e 100%);
+            padding: 0.2vh 0.8vw;
+            border-radius: 4px;
+        }
+
+        .slide .box {
+            background: #f8f9fa;
+            border-left: 0.6vh solid #667eea;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .warning {
+            background: #fff3cd;
+            border-left: 0.6vh solid #ffc107;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .success {
+            background: #d4edda;
+            border-left: 0.6vh solid #28a745;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide .info {
+            background: #d1ecf1;
+            border-left: 0.6vh solid #17a2b8;
+            padding: 2vh 2vw;
+            margin: 2vh 0;
+            border-radius: 0 1vh 1vh 0;
+        }
+
+        .slide table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2vh 0;
+            font-size: 1.8vh;
+        }
+
+        .slide th, .slide td {
+            border: 0.2vh solid #ddd;
+            padding: 0.8vh 0.8vw;
+            text-align: left;
+        }
+
+        .slide th {
+            background: #667eea;
+            color: white;
+            font-weight: 600;
+        }
+
+        .slide tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .slide tr:hover {
+            background: #e9ecef;
+        }
+
+        .slide pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2vh 2vw;
+            border-radius: 1vh;
+            overflow-x: auto;
+            margin: 2vh 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.6vh;
+            line-height: 1.5;
+        }
+
+        .slide code {
+            background: #f4f4f4;
+            padding: 0.2vh 0.5vw;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+
+        .slide pre code {
+            background: none;
+            padding: 0;
+            color: #f8f8f2;
+        }
+
+        .slide .figure {
+            text-align: center;
+            margin: 2.5vh 0;
+            padding: 2vh 2vw;
+            background: #f8f9fa;
+            border-radius: 1vh;
+        }
+
+        .slide .figure-caption {
+            font-size: 1.6vh;
+            color: #666;
+            margin-top: 1vh;
+            font-style: italic;
+        }
+
+        .slide .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2vh 3vw;
+            margin: 2vh 0;
+        }
+
+        .slide .three-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2vh 2vw;
+            margin: 2vh 0;
+        }
+
+        .slide .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2vh 2vw;
+            border-radius: 1.5vh;
+            box-shadow: 0 0.8vh 1.5vh rgba(0,0,0,0.1);
+        }
+
+        .slide .card h3 {
+            color: white;
+            margin-top: 0;
+            font-size: 2.4vh;
+        }
+
+        .slide .card p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.8vh;
+        }
+
+        .slide .card strong {
+            color: white;
+        }
+
+        .slide .level-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8vh 1.5vw;
+            border-radius: 3vh;
+            font-size: 1.8vh;
+            font-weight: 600;
+            margin-bottom: 1.5vh;
+        }
+
+        .controls {
+            background: white;
+            padding: 2vh 3vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -0.5vh 2vh rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        .controls button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 1.5vh 2.5vw;
+            border-radius: 4vh;
+            cursor: pointer;
+            font-size: 2.2vh;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 0.5vh 2vh rgba(102, 126, 234, 0.4);
+        }
+
+        .controls button:hover {
+            transform: translateY(-0.3vh);
+            box-shadow: 0 0.8vh 2.5vh rgba(102, 126, 234, 0.6);
+        }
+
+        .controls button:active {
+            transform: translateY(0);
+        }
+
+        .controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .controls .page-info {
+            font-size: 2.4vh;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .controls .page-info span {
+            color: #667eea;
+        }
+
+        .slide-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 0.6vh;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .toc-button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 1.5vh 2.5vw;
+            border-radius: 4vh;
+            cursor: pointer;
+            font-size: 2.2vh;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .toc-panel {
+            position: fixed;
+            top: 0;
+            right: -450px;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -1vh 0 3vh rgba(0,0,0,0.2);
+            padding: 4vh 2vw;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toc-panel.open {
+            right: 0;
+        }
+
+        .toc-panel h2 {
+            color: #667eea;
+            margin-bottom: 3vh;
+            font-size: 3.5vh;
+            border: none;
+            padding: 0;
+        }
+
+        .toc-panel ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .toc-panel li {
+            margin-bottom: 1vh;
+        }
+
+        .toc-panel a {
+            color: #333;
+            text-decoration: none;
+            font-size: 2.2vh;
+            display: block;
+            padding: 1.2vh 1vw;
+            border-radius: 1vh;
+            transition: all 0.3s ease;
+        }
+
+        .toc-panel a:hover {
+            background: #f8f9fa;
+            color: #667eea;
+            padding-left: 1.5vw;
+        }
+
+        .toc-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .close-toc {
+            position: absolute;
+            top: 2vh;
+            right: 1vw;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 5vh;
+            height: 5vh;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 3vh;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-footer {
+            margin-top: 3vh;
+            padding-top: 2vh;
+            border-top: 0.3vh solid #f0f0f0;
+            font-size: 1.8vh;
+            color: #999;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 3vh 5vw;
+            }
+
+            .slide h1 { font-size: 4.5vh; }
+            .slide h2 { font-size: 3.5vh; }
+            .slide h3 { font-size: 2.8vh; }
+            .slide p, .slide ul, .slide ol { font-size: 2.2vh; }
+
+            .controls {
+                padding: 1.5vh 3vw;
+                gap: 1vh;
+            }
+
+            .controls button {
+                padding: 1.2vh 3vw;
+                font-size: 1.8vh;
+            }
+
+            .toc-panel {
+                width: 85%;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .controls,
+            .toc-panel,
+            .toc-overlay {
+                display: none;
+            }
+
+            .slide {
+                position: relative;
+                page-break-after: always;
+                display: block;
+                box-shadow: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="slides-container" id="slidesContainer">
+            <!-- Slide 1: 封面 -->
+            <div class="slide active" data-slide="1">
+                <div class="slide-content">
+                    <h1>智能体质量<span class="english-title">Agent Quality</span></h1>
+                    <h2>Agent质量</h2>
+                    <div class="box">
+                        <p><strong>作者：</strong>Meltem Subasioglu, Turan Bulmus, 和 Wafae Bakkali</p>
+                        <p><strong>发布日期：</strong>2025年11月</p>
+                    </div>
+                    <div class="figure">
+                        <div style="font-size: 15vh; margin: 4vh 0;">🤖</div>
+                        <p class="figure-caption">在非确定性世界中构建值得信赖的AI智能体</p>
+                    </div>
+                    <p style="text-align: center; font-size: 3vh; color: #666;">探索AI智能体质量评估、可观测性和持续改进的完整框架</p>
+                </div>
+            </div>
+
+            <!-- Slide 2: 目录 -->
+            <div class="slide" data-slide="2">
+                <div class="slide-content">
+                    <h1>目录</h1>
+                    <div class="two-columns">
+                        <div>
+                            <h3>第一部分:基础概念</h3>
+                            <ul>
+                                <li>Introduction - 介绍</li>
+                                <li>How to Read This Whitepaper - 如何阅读本文档</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>第二部分:质量框架</h3>
+                            <ul>
+                                <li>Agent Quality in a Non-Deterministic World</li>
+                                <li>The Paradigm Shift - 范式转变</li>
+                                <li>The Pillars of Agent Quality - Agent质量的四大支柱</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="two-columns">
+                        <div>
+                            <h3>第三部分:评估与观测</h3>
+                            <ul>
+                                <li>The Art of Agent Evaluation - Agent评估的艺术</li>
+                                <li>Observability - 可观测性</li>
+                                <li>The Three Pillars of Observability</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>第四部分:结论</h3>
+                            <ul>
+                                <li>Conclusion - 结论</li>
+                                <li>The Agent Quality Flywheel</li>
+                                <li>Three Core Principles</li>
+                                <li>References - 参考文献</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: 介绍 -->
+            <div class="slide" data-slide="3">
+                <div class="slide-content">
+                    <h1>介绍<span class="english-title">Introduction</span></h1>
+                    <div class="box">
+                        <p><strong>核心目标：</strong>本文档作为实践指南,帮助架构师、工程师和产品领导者构建可靠、值得信赖的AI智能体</p>
+                    </div>
+                    <h3>三个核心信息</h3>
+                    <div class="three-columns">
+                        <div class="card">
+                            <h3>📋 The Trajectory is the Truth</h3>
+                            <p><strong>轨迹即真相：</strong></p>
+                            <ul>
+                                <li>必须超越仅评估最终输出</li>
+                                <li>真正的质量评估在于整个决策过程</li>
+                                <li>从验证转向验证与评估并重</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>👁️ Observability is the Foundation</h3>
+                            <p><strong>可观测性是基础：</strong></p>
+                            <ul>
+                                <li>无法评估你看不到的过程</li>
+                                <li>三大支柱:Logging、Tracing、Metrics</li>
+                                <li>捕获智能体"思维过程"的技术基础</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>🔄 Evaluation is a Continuous Loop</h3>
+                            <p><strong>评估是持续循环：</strong></p>
+                            <ul>
+                                <li>Agent Quality Flywheel</li>
+                                <li>混合方法:AI评估器+人工评估</li>
+                                <li>将数据转化为可操作的洞察</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="info">
+                        <p><strong>核心理念：</strong>AI的未来是智能体化的,其成功取决于质量</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: 如何阅读本文档 -->
+            <div class="slide" data-slide="4">
+                <h1>如何阅读本文档<span class="english-title">How to Read This Whitepaper</span></h1>
+                <p>本文档结构从"为什么"到"什么"再到"如何",根据你的角色选择重点章节</p>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>👥 For All Readers</h3>
+                        <p><strong>所有读者：</strong></p>
+                        <ul>
+                            <li>从<strong>Chapter 1</strong>开始</li>
+                            <li>了解核心问题</li>
+                            <li>理解传统QA为何失败</li>
+                            <li>学习四大支柱框架</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 For Product Managers, Data Scientists, QA Leaders</h3>
+                        <p><strong>产品经理、数据科学家、QA负责人：</strong></p>
+                        <ul>
+                            <li>重点阅读<strong>Chapter 2</strong></li>
+                            <li>学习"Outside-In"评估层次</li>
+                            <li>理解LLM-as-a-Judge范式</li>
+                            <li>掌握HITL评估的关键作用</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🔧 For Engineers, Architects, SREs</h3>
+                        <p><strong>工程师、架构师、SRE：</strong></p>
+                        <ul>
+                            <li>重点阅读<strong>Chapter 3</strong></li>
+                            <li>学习可观测性的三大支柱</li>
+                            <li>理解Monitoring vs Observability</li>
+                            <li>掌握Logs、Traces、Metrics工具</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 For Team Leads and Strategists</h3>
+                        <p><strong>团队负责人、战略师：</strong></p>
+                        <ul>
+                            <li>重点阅读<strong>Chapter 4</strong></li>
+                            <li>理解Agent Quality Flywheel</li>
+                            <li>学习三大核心原则</li>
+                            <li>掌握持续改进的运营手册</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: 非确定性世界中的Agent质量 -->
+            <div class="slide" data-slide="5">
+                <h1>非确定性世界中的智能体质量<span class="english-title">Agent Quality in a Non-Deterministic World</span></h1>
+                <div class="box">
+                    <p><strong>背景：</strong>AI世界正全速转型,从构建可预测的工具转向设计自主的智能体</p>
+                </div>
+                <h3>传统软件 vs AI智能体</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🚚 传统软件</h3>
+                        <p><strong>Delivery Truck（配送卡车）</strong></p>
+                        <ul>
+                            <li>遵循固定路线</li>
+                            <li>基本检查清单</li>
+                            <li>确定性行为</li>
+                            <li>"引擎启动了吗?"、"遵循固定路线了吗?"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🏎️ AI智能体</h3>
+                        <p><strong>Formula 1 Race Car（一级方程式赛车）</strong></p>
+                        <ul>
+                            <li>复杂自主系统</li>
+                            <li>动态判断</li>
+                            <li>需要持续遥测</li>
+                            <li>评估每个决策的质量</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>关键挑战：</strong>智能体的失败不是代码bug,而是判断缺陷。传统QA无法应对这种非确定性行为</p>
+                </div>
+            </div>
+
+            <!-- Slide 6: 为什么Agent质量需要新方法 -->
+            <div class="slide" data-slide="6">
+                <h1>为什么智能体质量需要新方法<span class="english-title">Why Agent Quality Demands a New Approach</span></h1>
+                <div class="box">
+                    <p><strong>传统软件验证：</strong>"我们正确地构建产品了吗?" - 验证逻辑是否符合固定规范</p>
+                </div>
+                <div class="box">
+                    <p><strong>现代AI评估：</strong>"我们构建了正确的产品吗?" - 评估质量、鲁棒性和可信度</p>
+                </div>
+                <h3>传统 vs AI失败模式</h3>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>❌ 传统软件失败</h3>
+                        <ul>
+                            <li>系统崩溃</li>
+                            <li>抛出NullPointerException</li>
+                            <li>返回明显错误的计算</li>
+                            <li>明显、确定性、可追踪</li>
+                            <li>可定位到特定逻辑错误</li>
+                        </ul>
+                    </div>
+                    <div class="warning">
+                        <h3>⚠️ AI智能体失败</h3>
+                        <ul>
+                            <li>质量细微退化</li>
+                            <li>系统继续运行</li>
+                            <li>API返回200 OK</li>
+                            <li>输出看似合理但完全错误</li>
+                            <li>无声地侵蚀信任</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>关键洞察：</strong>AI智能体的失败是隐蔽的、非确定性的,需要全新的质量保证方法</p>
+                </div>
+            </div>
+
+            <!-- Slide 7: Agent失败模式 -->
+            <div class="slide" data-slide="7">
+                <h1>Agent失败模式<span class="english-title">Agent Failure Modes</span></h1>
+                <div class="box">
+                    <p><strong>四种主要失败模式：</strong></p>
+                </div>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>1️⃣ Algorithmic Bias - 算法偏见</h3>
+                        <p><strong>定义：</strong>智能体操作化并可能放大训练数据中存在的系统性偏见</p>
+                        <ul>
+                            <li>导致不公平或歧视性结果</li>
+                            <li>示例：金融风控智能体过度惩罚基于邮编的贷款申请</li>
+                        </ul>
+                    </div>
+                    <div class="warning">
+                        <h3>2️⃣ Factual Hallucination - 事实幻觉</h3>
+                        <p><strong>定义：</strong>智能体生成听起来合理但事实错误或虚构的信息</p>
+                        <ul>
+                            <li>高度自信地输出错误内容</li>
+                            <li>示例：研究工具生成完全虚假的历史日期或地理位置</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>3️⃣ Performance & Concept Drift</h3>
+                        <p><strong>定义：</strong>智能体性能随时间退化</p>
+                        <ul>
+                            <li>真实世界数据("概念")变化导致原始训练过时</li>
+                            <li>示例：欺诈检测智能体无法识别新的攻击模式</li>
+                        </ul>
+                    </div>
+                    <div class="warning">
+                        <h3>4️⃣ Emergent Unintended Behaviors</h3>
+                        <p><strong>定义：</strong>智能体发展出新颖或未预料的策略</p>
+                        <ul>
+                            <li>可能低效、无益或具有剥削性</li>
+                            <li>示例：发现并利用系统规则漏洞,与其他bot进行"代理人战争"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: 范式转变 -->
+            <div class="slide" data-slide="8">
+                <h1>范式转变：从可预测代码到不可预测智能体<span class="english-title">The Paradigm Shift: From Predictable Code to Unpredictable Agents</span></h1>
+                <div class="box">
+                    <p><strong>核心挑战：</strong>从模型中心AI到系统中心AI的演进</p>
+                </div>
+                <h3>演进阶段</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>1. 传统机器学习</h3>
+                        <p><strong>Traditional Machine Learning</strong></p>
+                        <ul>
+                            <li>评估回归或分类模型</li>
+                            <li>统计指标:Precision、Recall、F1-Score、RMSE</li>
+                            <li>问题复杂但定义清晰</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>2. 被动LLM</h3>
+                        <p><strong>The Passive LLM</strong></p>
+                        <ul>
+                            <li>生成模型失去简单指标</li>
+                            <li>输出是概率性的</li>
+                            <li>依赖人工评估和模型对比</li>
+                            <li>文本输入、文本输出</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>3. LLM+RAG</h3>
+                        <p><strong>Retrieval-Augmented Generation</strong></p>
+                        <ul>
+                            <li>多组件管道</li>
+                            <li>失败可能在LLM或检索系统</li>
+                            <li>评估表面扩展到chunking、embeddings、retrievers</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>4. 主动AI智能体</h3>
+                        <p><strong>The Active AI Agent</strong></p>
+                        <ul>
+                            <li>LLM是复杂系统中的推理"大脑"</li>
+                            <li>三大核心能力打破评估模型</li>
+                            <li>规划与多步推理</li>
+                            <li>工具使用与函数调用</li>
+                            <li>记忆</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 9: 智能体的三大核心能力 -->
+            <div class="slide" data-slide="9">
+                <h1>主动智能体的三大核心能力<span class="english-title">Three Core Capabilities of Active Agents</span></h1>
+                <p>主动AI智能体的三大核心能力打破了传统的评估模型</p>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🎯 Planning and Multi-Step Reasoning</h3>
+                        <p><strong>规划与多步推理：</strong></p>
+                        <ul>
+                            <li>将复杂目标("计划我的旅行")分解为多个子任务</li>
+                            <li>创建轨迹(Thought → Action → Observation → Thought...)</li>
+                            <li>LLM的非确定性在每一步都复合</li>
+                            <li>步骤1的微小随机选择可能导致步骤4完全不同的推理路径</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Tool Use and Function Calling</h3>
+                        <p><strong>工具使用与函数调用：</strong></p>
+                        <ul>
+                            <li>通过API和外部工具与真实世界交互</li>
+                            <li>引入动态环境交互</li>
+                            <li>智能体的下一个行动完全取决于外部、不可控世界的状态</li>
+                            <li>代码解释器、搜索引擎、预订API</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 Memory</h3>
+                        <p><strong>记忆：</strong></p>
+                        <ul>
+                            <li>智能体维护状态</li>
+                            <li>短期"草稿板"记忆跟踪当前任务</li>
+                            <li>长期记忆允许智能体从过去交互中学习</li>
+                            <li>行为会演化,昨天有效的输入今天可能产生不同结果</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 10: 多智能体系统 -->
+            <div class="slide" data-slide="10">
+                <h1>多智能体系统<span class="english-title">Multi-Agent Systems</span></h1>
+                <div class="box">
+                    <p><strong>终极架构复杂性：</strong>多个主动智能体集成到共享环境中</p>
+                </div>
+                <h3>新的根本性挑战</h3>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>🌀 Emergent System Failures</h3>
+                        <p><strong>涌现系统失败：</strong></p>
+                        <ul>
+                            <li>系统成功取决于智能体间无脚本交互</li>
+                            <li>资源竞争、通信瓶颈、系统性死锁</li>
+                            <li>无法归因于单个智能体的失败</li>
+                            <li>需要评估系统级涌现现象</li>
+                        </ul>
+                    </div>
+                    <div class="warning">
+                        <h3>⚔️ Cooperative vs Competitive Evaluation</h3>
+                        <p><strong>合作 vs 竞争评估：</strong></p>
+                        <ul>
+                            <li><strong>合作MAS：</strong>（如供应链优化）成功是全局指标</li>
+                            <li><strong>竞争MAS：</strong>（如博弈论或拍卖系统）需要跟踪个体性能和市场稳定性</li>
+                            <li>目标函数本身可能变得模糊</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>关键结论：</strong>评估单元不再是模型,而是整个系统轨迹。智能体的涌现行为来自规划模块、工具、记忆和动态环境的复杂交互</p>
+                </div>
+            </div>
+
+            <!-- Slide 11: Agent质量的四大支柱 -->
+            <div class="slide" data-slide="11">
+                <h1>Agent质量的四大支柱<span class="english-title">The Pillars of Agent Quality</span></h1>
+                <div class="box">
+                    <p><strong>"Outside-In"方法：</strong>以用户为中心的指标和高层业务目标为锚点</p>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🎯 Effectiveness</h3>
+                        <p><strong>效果性（目标达成）：</strong></p>
+                        <ul>
+                            <li>智能体是否成功、准确地实现了用户的实际意图？</li>
+                            <li>连接以用户为中心的指标和业务KPI</li>
+                            <li>零售智能体：不仅是"找到产品",而是"驱动转化"</li>
+                            <li>数据分析智能体：不仅是"编写代码",而是"代码产生正确洞察"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Efficiency</h3>
+                        <p><strong>效率性（运营成本）：</strong></p>
+                        <ul>
+                            <li>智能体是否很好地解决了问题？</li>
+                            <li>即使成功,25步、5次失败工具调用、3次自我修正也是低质量</li>
+                            <li>消耗的资源：总token（成本）、实际时间（延迟）、轨迹复杂度（总步数）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🛡️ Robustness</h3>
+                        <p><strong>鲁棒性（可靠性）：</strong></p>
+                        <ul>
+                            <li>智能体如何处理逆境和真实世界的混乱？</li>
+                            <li>API超时、网站布局变化、数据缺失、用户提示模糊</li>
+                            <li>优雅失败：重试失败调用、请求澄清、报告无法完成的原因</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Safety & Alignment</h3>
+                        <p><strong>安全性与对齐（可信度）：</strong></p>
+                        <ul>
+                            <li>不可协商的门槛</li>
+                            <li>智能体是否在定义的道德边界和约束内运行？</li>
+                            <li>包括RAI指标（公平性、偏见）、安全（提示注入、数据泄露）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 12: 评估的艺术 -->
+            <div class="slide" data-slide="12">
+                <h1>智能体评估的艺术：评判过程<span class="english-title">The Art of Agent Evaluation: Judging the Process</span></h1>
+                <div class="box">
+                    <p><strong>从测试到评估：</strong></p>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📝 Traditional Testing</h3>
+                        <p><strong>传统测试：</strong></p>
+                        <ul>
+                            <li>确定性过程</li>
+                            <li>验证（Verification）</li>
+                            <li>问题："我们正确地构建产品了吗？"</li>
+                            <li>依据固定规范验证逻辑</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎨 Agent Evaluation</h3>
+                        <p><strong>Agent评估：</strong></p>
+                        <ul>
+                            <li>整体过程</li>
+                            <li>验证（Validation）</li>
+                            <li>问题："我们构建了正确的产品吗？"</li>
+                            <li>评估动态世界中智能体的整体质量、鲁棒性和用户价值</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>核心转变：</strong>必须从"测试"输出转向"评估"过程。判断智能体从初始意图到最终结果的整个决策轨迹</p>
+                </div>
+            </div>
+
+            <!-- Slide 13: "Outside-In"评估层次 -->
+            <div class="slide" data-slide="13">
+                <h1>"由外而内"评估层次<span class="english-title">The "Outside-In" Evaluation Hierarchy</span></h1>
+                <div class="box">
+                    <p><strong>战略框架：</strong>避免迷失在组件级指标的海洋中,评估必须是自上而下的战略过程</p>
+                </div>
+                <div class="figure">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 2vh; flex-wrap: wrap;">
+                        <div class="card" style="width: 35%; min-width: 250px;">
+                            <h3 style="font-size: 2.2vh; text-align: center;">Step 1: The Black Box</h3>
+                            <p style="font-size: 1.6vh; text-align: center;">黑盒视图<br/>端到端评估<br/>"智能体实现了用户目标吗？"</p>
+                        </div>
+                        <div style="font-size: 5vh;">↓</div>
+                        <div class="card" style="width: 35%; min-width: 250px;">
+                            <h3 style="font-size: 2.2vh; text-align: center;">Step 2: The Glass Box</h3>
+                            <p style="font-size: 1.6vh; text-align: center;">玻璃盒视图<br/>轨迹评估<br/>分析每个组件的执行轨迹</p>
+                        </div>
+                    </div>
+                    <p class="figure-caption">图："Outside-In"评估层次框架</p>
+                </div>
+                <div class="success">
+                    <p><strong>关键原则：</strong>首先评估最重要的指标 - 真实世界成功 - 然后深入分析技术细节</p>
+                </div>
+            </div>
+
+            <!-- Slide 14: 端到端评估（黑盒） -->
+            <div class="slide" data-slide="14">
+                <h1>"由外而内"视角：端到端评估<span class="english-title">The "Outside-In" View: End-to-End Evaluation</span></h1>
+                <div class="box">
+                    <p><strong>首要问题：</strong>"智能体是否有效实现了用户的目标？"</p>
+                </div>
+                <h3>黑盒评估指标</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>✅ Task Success Rate</h3>
+                        <p><strong>任务成功率：</strong></p>
+                        <ul>
+                            <li>最终输出是否正确、完整并解决了用户的实际问题？</li>
+                            <li>二元（或分级）评分</li>
+                            <li>示例：编码智能体的PR接受率、金融智能体的成功交易率、客服机器人的会话完成率</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>😊 User Satisfaction</h3>
+                        <p><strong>用户满意度：</strong></p>
+                        <ul>
+                            <li>直接用户反馈评分</li>
+                            <li>点赞/点踩</li>
+                            <li>客户满意度评分（CSAT）</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 Overall Quality</h3>
+                        <p><strong>整体质量：</strong></p>
+                        <ul>
+                            <li>定量目标的准确性或完整性</li>
+                            <li>示例：总结10篇文章时,是否总结了全部10篇？</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>评估流程：</strong>如果智能体在此阶段得分100%,工作可能完成。但在复杂系统中很少如此。当智能体产生有缺陷的最终输出、放弃任务或无法收敛时,黑盒视图告诉我们哪里出了问题</p>
+                </div>
+            </div>
+
+            <!-- Slide 15: 轨迹评估（玻璃盒） -->
+            <div class="slide" data-slide="15">
+                <h1>"由内而外"视角：轨迹评估<span class="english-title">The "Inside-Out" View: Trajectory Evaluation</span></h1>
+                <div class="box">
+                    <p><strong>玻璃盒视图：</strong>分析智能体的方法,系统评估其执行轨迹的每个组件</p>
+                </div>
+                <h3>轨迹评估的六个维度</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🧠 LLM Planning</h3>
+                        <p><strong>LLM规划（"思考"）：</strong></p>
+                        <ul>
+                            <li>LLM本身是问题吗？</li>
+                            <li>幻觉、无意义或离题响应</li>
+                            <li>上下文污染、重复输出循环</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Tool Usage</h3>
+                        <p><strong>工具使用（选择与参数化）：</strong></p>
+                        <ul>
+                            <li>调用错误的工具</li>
+                            <li>未调用必要的工具</li>
+                            <li>幻觉工具名称或参数</li>
+                            <li>提供缺失参数、错误数据类型或格式错误的JSON</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👁️ Tool Response Interpretation</h3>
+                        <p><strong>工具响应解释（"观察"）：</strong></p>
+                        <ul>
+                            <li>智能体必须理解结果</li>
+                            <li>错误解释数值数据</li>
+                            <li>未能从响应中提取关键实体</li>
+                            <li>未识别工具返回的错误状态</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 16: 轨迹评估（续） -->
+            <div class="slide" data-slide="16">
+                <h1>轨迹评估（续）<span class="english-title">Trajectory Evaluation (Continued)</span></h1>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📚 RAG Performance</h3>
+                        <p><strong>RAG性能：</strong></p>
+                        <ul>
+                            <li>检索不相关的文档</li>
+                            <li>获取过时或错误的信息</li>
+                            <li>LLM完全忽略检索的上下文并幻觉化答案</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚡ Trajectory Efficiency</h3>
+                        <p><strong>轨迹效率：</strong></p>
+                        <ul>
+                            <li>暴露低效的资源分配</li>
+                            <li>过多的API调用</li>
+                            <li>高延迟</li>
+                            <li>冗余努力</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ Robustness</h3>
+                        <p><strong>鲁棒性：</strong></p>
+                        <ul>
+                            <li>未处理的异常</li>
+                            <li>优雅失败能力</li>
+                            <li>错误恢复机制</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🤝 Multi-Agent Dynamics</h3>
+                    <p><strong>多智能体动态：</strong></p>
+                    <ul>
+                        <li>评估必须包括智能体间通信日志</li>
+                        <li>检查误解或通信循环</li>
+                        <li>确保智能体遵守定义的角色而不与其他智能体冲突</li>
+                    </ul>
+                </div>
+                <div class="success">
+                    <p><strong>诊断能力：</strong>通过分析轨迹,我们可以从"最终答案是错误的"（黑盒）移动到"最终答案是错误的,因为..."（玻璃盒）。这种诊断能力是Agent评估的整个目标</p>
+                </div>
+            </div>
+
+            <!-- Slide 17: 评估者 -->
+            <div class="slide" data-slide="17">
+                <h1>评估者：智能体评判的人员和内容<span class="english-title">The Evaluators: The Who and What of Agent Judgment</span></h1>
+                <div class="box">
+                    <p><strong>混合方法：</strong>自动化系统提供规模,但人工判断仍然是质量的关键仲裁者</p>
+                </div>
+                <h3>三种评估方法</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🤖 Automated Metrics</h3>
+                        <p><strong>自动化指标：</strong></p>
+                        <ul>
+                            <li>提供速度和可重复性</li>
+                            <li>适用于回归测试和基准测试</li>
+                            <li>示例：ROUGE、BLEU、BERTScore</li>
+                            <li>高效但浅层：捕获表面相似性,而非深层推理或用户价值</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 LLM-as-a-Judge</h3>
+                        <p><strong>LLM作为评估者：</strong></p>
+                        <ul>
+                            <li>使用强大的LLM评估另一个智能体的输出</li>
+                            <li>可扩展、快速、令人惊讶地细致</li>
+                            <li>特别适用于中间步骤（如智能体"思考"的质量）</li>
+                            <li>不替代人工判断,但使迭代评估过程可行</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👥 Human-in-the-Loop</h3>
+                        <p><strong>人工评估（HITL）：</strong></p>
+                        <ul>
+                            <li>捕获自动化系统错过的关键定性信号和细致判断</li>
+                            <li>领域专业知识</li>
+                            <li>解释细微差别</li>
+                            <li>创建"黄金集"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 18: 自动化指标 -->
+            <div class="slide" data-slide="18">
+                <h1>自动化指标<span class="english-title">Automated Metrics</span></h1>
+                <div class="box">
+                    <p><strong>特点：</strong>提供速度和可重复性,适用于回归测试和基准测试</p>
+                </div>
+                <h3>常用指标类型</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📝 String-based Similarity</h3>
+                        <p><strong>基于字符串的相似性：</strong></p>
+                        <ul>
+                            <li><strong>ROUGE：</strong>用于评估摘要质量</li>
+                            <li><strong>BLEU：</strong>用于评估机器翻译</li>
+                            <li>将生成文本与参考进行比较</li>
+                            <li>基于n-gram重叠</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔢 Embedding-based Similarity</h3>
+                        <p><strong>基于嵌入的相似性：</strong></p>
+                        <ul>
+                            <li><strong>BERTScore：</strong>基于BERT的评估</li>
+                            <li><strong>Cosine Similarity：</strong>余弦相似度</li>
+                            <li>测量语义接近度</li>
+                            <li>捕获深层语义相似性</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🎯 Task-specific Benchmarks</h3>
+                    <p><strong>任务特定基准：</strong></p>
+                    <ul>
+                        <li><strong>TruthfulQA：</strong>评估模型是否模仿人类虚假信息</li>
+                        <li>其他特定领域的评估数据集</li>
+                    </ul>
+                </div>
+                <div class="warning">
+                    <p><strong>局限性：</strong>指标高效但浅层,捕获表面相似性而非深层推理或用户价值。应作为趋势指标而非绝对质量衡量标准</p>
+                </div>
+            </div>
+
+            <!-- Slide 19: LLM-as-a-Judge范式 -->
+            <div class="slide" data-slide="19">
+                <h1>LLM作为评估者范式<span class="english-title">The LLM-as-a-Judge Paradigm</span></h1>
+                <div class="box">
+                    <p><strong>核心思想：</strong>使用我们正在评估的相同技术 - 使用强大的LLM评估另一个智能体的输出</p>
+                </div>
+                <h3>实施方法</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📋 输入给评估者LLM：</h3>
+                        <ul>
+                            <li>智能体的输出</li>
+                            <li>原始提示</li>
+                            <li>"黄金"答案或参考（如果存在）</li>
+                            <li>详细的评估标准</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 评估标准示例：</h3>
+                        <ul>
+                            <li>"在1-5分范围内评估此响应的有用性、正确性和安全性"</li>
+                            <li>"解释你的推理"</li>
+                            <li>评估中间步骤（如智能体"思考"的质量）</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>优势：</strong>可扩展、快速、令人惊讶地细致。使数据科学团队能够快速评估数千个场景的性能,使迭代评估过程可行</p>
+                </div>
+                <div class="info">
+                    <p><strong>最佳实践：</strong>优先使用成对比较而非单次评分以缓解偏差。运行两个不同智能体版本,生成"答案A"和"答案B",然后让LLM评估者选择更好的一个</p>
+                </div>
+            </div>
+
+            <!-- Slide 20: Agent-as-a-Judge -->
+            <div class="slide" data-slide="20">
+                <h1>智能体作为评估者<span class="english-title">Agent-as-a-Judge</span></h1>
+                <div class="box">
+                    <p><strong>新兴范式：</strong>使用一个智能体评估另一个智能体的完整执行轨迹</p>
+                </div>
+                <h3>与LLM-as-a-Judge的区别</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🎯 LLM-as-a-Judge</h3>
+                        <p><strong>仅评估输出：</strong></p>
+                        <ul>
+                            <li>对最终响应进行评分</li>
+                            <li>关注结果质量</li>
+                            <li>适用于端到端评估</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔍 Agent-as-a-Judge</h3>
+                        <p><strong>评估过程：</strong></p>
+                        <ul>
+                            <li>评估完整执行轨迹</li>
+                            <li>评估推理和行动</li>
+                            <li>适用于过程评估</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>关键评估维度</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📋 Plan Quality</h3>
+                        <p><strong>计划质量：</strong></p>
+                        <ul>
+                            <li>计划逻辑结构是否合理？</li>
+                            <li>是否可行？</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Tool Use</h3>
+                        <p><strong>工具使用：</strong></p>
+                        <ul>
+                            <li>是否选择了正确的工具？</li>
+                            <li>是否正确应用？</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🧠 Context Handling</h3>
+                        <p><strong>上下文处理：</strong></p>
+                        <ul>
+                            <li>智能体是否有效使用了先前的信息？</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>价值：</strong>特别适用于过程评估,失败通常来自有缺陷的中间步骤而非最终输出</p>
+                </div>
+            </div>
+
+            <!-- Slide 21: 人工评估（HITL） -->
+            <div class="slide" data-slide="21">
+                <h1>人在环路(HITL)评估<span class="english-title">Human-in-the-Loop (HITL) Evaluation</span></h1>
+                <div class="box">
+                    <p><strong>不可替代的价值：</strong>捕获自动化系统错过的关键定性信号和细致判断</p>
+                </div>
+                <h3>HITL的核心功能</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🎓 Domain Expertise</h3>
+                        <p><strong>领域专业知识：</strong></p>
+                        <ul>
+                            <li>对于专业智能体（医疗、法律、金融）</li>
+                            <li>利用领域专家评估事实正确性</li>
+                            <li>确保遵守特定行业标准</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎨 Interpreting Nuance</h3>
+                        <p><strong>解释细微差别：</strong></p>
+                        <ul>
+                            <li>判断定义高质量交互的微妙品质</li>
+                            <li>语气、创造力、用户意图</li>
+                            <li>复杂的伦理对齐</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🏆 Creating the "Golden Set"</h3>
+                        <p><strong>创建"黄金集"：</strong></p>
+                        <ul>
+                            <li>人工必须建立"黄金标准"基准</li>
+                            <li>策划全面的评估集</li>
+                            <li>定义成功目标</li>
+                            <li>构建健壮的测试用例套件</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>重要理念：</strong>人工评级不是提供完美的"客观基本事实"。对于高度主观的任务,完美的注释者间一致性很少见。HITL是建立人工校准基准的不可或缺的方法论</p>
+                </div>
+            </div>
+
+            <!-- Slide 22: 用户反馈和审查UI -->
+            <div class="slide" data-slide="22">
+                <h1>用户反馈和审核者界面<span class="english-title">User Feedback and Reviewer UI</span></h1>
+                <div class="box">
+                    <p><strong>实时反馈：</strong>每个交互都是有用性、清晰度和信任的信号</p>
+                </div>
+                <h3>反馈类型</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>👍 Qualitative Signals</h3>
+                        <p><strong>定性信号：</strong></p>
+                        <ul>
+                            <li>点赞/点踩</li>
+                            <li>快速滑块</li>
+                            <li>简短评论</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📊 Quantitative Metrics</h3>
+                        <p><strong>定量指标：</strong></p>
+                        <ul>
+                            <li>编码智能体的PR接受率</li>
+                            <li>旅行智能体的成功预订完成率</li>
+                            <li>产品内成功指标</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>最佳实践</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>⚡ Low-friction Feedback</h3>
+                        <p><strong>低摩擦反馈：</strong></p>
+                        <ul>
+                            <li>点赞/点踩</li>
+                            <li>快速滑块</li>
+                            <li>简短评论</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📋 Context-rich Review</h3>
+                        <p><strong>上下文丰富的审查：</strong></p>
+                        <ul>
+                            <li>反馈应与完整对话配对</li>
+                            <li>包括智能体的推理轨迹</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🖥️ Reviewer UI</h3>
+                        <p><strong>审查用户界面：</strong></p>
+                        <ul>
+                            <li>双面板界面</li>
+                            <li>左侧：对话</li>
+                            <li>右侧：推理步骤</li>
+                            <li>内联标签</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 23: 负责任AI与安全评估 -->
+            <div class="slide" data-slide="23">
+                <h1>超越性能：负责任AI(RAI)和安全评估<span class="english-title">Beyond Performance: Responsible AI (RAI) & Safety Evaluation</span></h1>
+                <div class="box">
+                    <p><strong>不可协商的门槛：</strong>一个100%有效但造成伤害的智能体是完全失败的</p>
+                </div>
+                <h3>安全评估的三个关键方面</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🔴 Systematic Red Teaming</h3>
+                        <p><strong>系统性红队测试：</strong></p>
+                        <ul>
+                            <li>主动尝试使用对抗性场景破坏智能体</li>
+                            <li>尝试生成仇恨言论</li>
+                            <li>揭示私人信息</li>
+                            <li>传播有害刻板印象</li>
+                            <li>诱导智能体进行恶意行动</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🛡️ Automated Filters & Human Review</h3>
+                        <p><strong>自动化过滤器与人工审查：</strong></p>
+                        <ul>
+                            <li>实施技术过滤器以捕获策略违规</li>
+                            <li>与人工审查相结合</li>
+                            <li>自动化单独可能无法捕获偏见或毒性的细微形式</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📜 Adherence to Guidelines</h3>
+                        <p><strong>遵守准则：</strong></p>
+                        <ul>
+                            <li>明确评估智能体输出</li>
+                            <li>对照预定义的道德准则和原则</li>
+                            <li>确保对齐</li>
+                            <li>防止意外后果</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>关键区别：</strong>性能指标告诉我们智能体<strong>能否</strong>完成工作,但安全评估告诉我们它<strong>是否应该</strong>完成工作</p>
+                </div>
+            </div>
+
+            <!-- Slide 24: 可观测性介绍 -->
+            <div class="slide" data-slide="24">
+                <h1>可观测性：洞察智能体内部思维<span class="english-title">Observability: Seeing Inside the Agent's Mind</span></h1>
+                <div class="box">
+                    <p><strong>从监控到可观测性：</strong>AI智能体是一种新型软件,它们不只是遵循指令,而是做出决策</p>
+                </div>
+                <h3>厨房类比</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>👨‍🍳 Traditional Software = Line Cook</h3>
+                        <p><strong>传统软件 = 快餐厨师</strong></p>
+                        <ul>
+                            <li>有层压的食谱卡</li>
+                            <li>步骤是刚性和确定性的</li>
+                            <li>烤面包30秒,烤汉堡90秒</li>
+                            <li><strong>监控</strong>是检查清单</li>
+                            <li>验证已知、可预测的过程</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👨‍🍳 AI Agent = Gourmet Chef</h3>
+                        <p><strong>AI智能体 = 美食大厨</strong></p>
+                        <ul>
+                            <li>给定目标（"创建惊人的甜点"）</li>
+                            <li>一篮子食材（用户提示、数据、可用工具）</li>
+                            <li>没有单一的正确食谱</li>
+                            <li><strong>可观测性</strong>是美食评论家的评判</li>
+                            <li>需要理解过程和推理</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>核心转变：</strong>从"智能体在运行吗？"转向"智能体在有效思考吗？"</p>
+                </div>
+            </div>
+
+            <!-- Slide 25: 可观测性的三大支柱 -->
+            <div class="slide" data-slide="25">
+                <h1>可观测性的三大支柱<span class="english-title">The Three Pillars of Observability</span></h1>
+                <div class="box">
+                    <p><strong>获取"思维过程"：</strong>我们不能直接读取智能体的思维,但可以分析它留下的证据</p>
+                </div>
+                <div class="figure">
+                    <div style="display: flex; justify-content: space-around; align-items: center; gap: 2vh; flex-wrap: wrap;">
+                        <div class="card" style="width: 25%; min-width: 200px;">
+                            <h3 style="font-size: 2.2vh; text-align: center;">📋 Logs</h3>
+                            <p style="font-size: 1.6vh; text-align: center;">日志<br/>智能体的日记<br/>原子事实记录</p>
+                        </div>
+                        <div class="card" style="width: 25%; min-width: 200px;">
+                            <h3 style="font-size: 2.2vh; text-align: center;">🔍 Traces</h3>
+                            <p style="font-size: 1.6vh; text-align: center;">追踪<br/>叙事线索<br/>连接因果关系</p>
+                        </div>
+                        <div class="card" style="width: 25%; min-width: 200px;">
+                            <h3 style="font-size: 2.2vh; text-align: center;">📊 Metrics</h3>
+                            <p style="font-size: 1.6vh; text-align: center;">指标<br/>健康报告<br/>聚合性能评分</p>
+                        </div>
+                    </div>
+                    <p class="figure-caption">图：可观测性的三大支柱</p>
+                </div>
+                <div class="info">
+                    <p><strong>协同工作：</strong>三大支柱协同工作,将原始数据转化为完整的图景,让我们从品尝最终菜肴转向批评整个烹饪表演</p>
+                </div>
+            </div>
+
+            <!-- Slide 26: 日志（支柱1） -->
+            <div class="slide" data-slide="26">
+                <h1>支柱1：日志记录 – 智能体的日记<span class="english-title">Pillar 1: Logging – The Agent's Diary</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>日志是可观测性的原子单位,是智能体日记中的时间戳条目</p>
+                </div>
+                <h3>什么是有效的日志？</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📝 Beyond print()</h3>
+                        <p><strong>超越print()：</strong></p>
+                        <ul>
+                            <li>使用结构化JSON格式</li>
+                            <li>Google Cloud Logging等托管服务</li>
+                            <li>存储、搜索和分析日志数据</li>
+                            <li>运行SQL查询以发现趋势</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔧 Best-in-Class Framework</h3>
+                        <p><strong>一流框架：</strong></p>
+                        <ul>
+                            <li>ADK基于Python标准logging模块</li>
+                            <li>配置所需细节级别</li>
+                            <li>生产环境：INFO消息</li>
+                            <li>开发环境：DEBUG消息</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>关键日志条目的组成部分</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📋 Core Information</h3>
+                        <p><strong>核心信息：</strong></p>
+                        <ul>
+                            <li>提示/响应对</li>
+                            <li>中间推理步骤</li>
+                            <li>结构化工具调用</li>
+                            <li>智能体内部状态变化</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚖️ The Tradeoff</h3>
+                        <p><strong>权衡：</strong></p>
+                        <ul>
+                            <li>Verbosity vs Performance</li>
+                            <li>详细DEBUG日志对开发有利</li>
+                            <li>生产环境中可能太嘈杂</li>
+                            <li>结构化日志允许高效过滤</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Applied Tip</h3>
+                        <p><strong>应用技巧：</strong></p>
+                        <ul>
+                            <li>在行动前记录智能体意图</li>
+                            <li>在行动后记录结果</li>
+                            <li>立即阐明失败尝试和故意不行动的区别</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 27: 追踪（支柱2） -->
+            <div class="slide" data-slide="27">
+                <h1>支柱2：追踪 – 跟随智能体的足迹<span class="english-title">Pillar 2: Tracing – Following the Agent's Footsteps</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>如果日志是日记条目,追踪就是将它们连接成连贯故事的叙事线索</p>
+                </div>
+                <h3>为什么追踪不可或缺？</h3>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>📄 Isolated Logs</h3>
+                        <p><strong>孤立日志：</strong></p>
+                        <ul>
+                            <li>ERROR: RAG搜索失败</li>
+                            <li>ERROR: LLM响应验证失败</li>
+                            <li>看到错误,但根本原因不清楚</li>
+                        </ul>
+                    </div>
+                    <div class="success">
+                        <h3>🔍 A Trace</h3>
+                        <p><strong>追踪：</strong></p>
+                        <ul>
+                            <li>用户查询 → RAG搜索（失败）→ 故障工具调用（接收空输入）→ LLM错误（被不良工具输出困惑）→ 错误最终答案</li>
+                            <li>揭示完整的因果链</li>
+                            <li>根本原因立即显而易见</li>
+                        </ul>
+                    </div>
+                </div>
+                <h3>Agent追踪的关键元素</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📋 Spans</h3>
+                        <p><strong>跨度：</strong></p>
+                        <ul>
+                            <li>追踪中的单个命名操作</li>
+                            <li>例如：llm_call、tool_execution</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🏷️ Attributes</h3>
+                        <p><strong>属性：</strong></p>
+                        <ul>
+                            <li>附加到每个跨度的丰富元数据</li>
+                            <li>prompt_id、latency_ms、token_count、user_id</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔗 Context Propagation</h3>
+                        <p><strong>上下文传播：</strong></p>
+                        <ul>
+                            <li>通过唯一trace_id链接跨度的"魔法"</li>
+                            <li>允许后端组装完整图景</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 28: 指标（支柱3） -->
+            <div class="slide" data-slide="28">
+                <h1>支柱3：指标 – 智能体的健康报告<span class="english-title">Pillar 3: Metrics – The Agent's Health Report</span></h1>
+                <div class="box">
+                    <p><strong>定义：</strong>指标是定量的、聚合的健康评分,提供对智能体整体性能的即时、一目了然的了解</p>
+                </div>
+                <h3>指标分类</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>📊 System Metrics</h3>
+                        <p><strong>系统指标：</strong></p>
+                        <ul>
+                            <li>直接可测量的运营健康</li>
+                            <li>从日志和追踪的属性计算</li>
+                            <li>智能体的生命体征：脉搏、温度、血压</li>
+                            <li>通过聚合函数（平均、求和、百分位数）计算</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎯 Quality Metrics</h3>
+                        <p><strong>质量指标：</strong></p>
+                        <ul>
+                            <li>更复杂、评估性的指标</li>
+                            <li>评估智能体推理和最终输出质量</li>
+                            <li>二阶指标</li>
+                            <li>在原始可观测性数据之上应用判断框架</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>关键洞察：</strong>指标不是新的数据源。它们是通过随时间聚合日志和追踪的数据得出的。它们回答的问题是"平均来说,性能进行得如何？"</p>
+                </div>
+            </div>
+
+            <!-- Slide 29: 系统指标 -->
+            <div class="slide" data-slide="29">
+                <h1>系统指标：生命体征<span class="english-title">System Metrics: The Vital Signs</span></h1>
+                <div class="box">
+                    <p><strong>系统指标：</strong>运营健康的基础定量衡量标准</p>
+                </div>
+                <h3>关键系统指标</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>⚡ Performance</h3>
+                        <p><strong>性能：</strong></p>
+                        <ul>
+                            <li><strong>Latency (P50/P99)：</strong>通过聚合追踪的duration_ms属性计算</li>
+                            <li>典型和最坏情况用户体验</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>💰 Cost</h3>
+                        <p><strong>成本：</strong></p>
+                        <ul>
+                            <li><strong>Tokens per Task：</strong>所有追踪中token_count属性的平均值</li>
+                            <li><strong>API Cost per Run：</strong>结合token计数和模型定价</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>✅ Effectiveness</h3>
+                        <p><strong>效果性：</strong></p>
+                        <ul>
+                            <li><strong>Task Completion Rate：</strong>成功到达指定"成功"跨度的追踪百分比</li>
+                            <li><strong>Tool Usage Frequency：</strong>每个工具作为跨度名称出现的次数</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>❌ Error Rate</h3>
+                    <p><strong>错误率：</strong>包含error=true属性的跨度的追踪百分比</p>
+                </div>
+                <div class="success">
+                    <p><strong>用途：</strong>这些指标对于运营、设置警报和管理智能体机队的成本和性能至关重要</p>
+                </div>
+            </div>
+
+            <!-- Slide 30: 质量指标 -->
+            <div class="slide" data-slide="30">
+                <h1>质量指标：评判决策制定<span class="english-title">Quality Metrics: Judging the Decision-Making</span></h1>
+                <div class="box">
+                    <p><strong>质量指标：</strong>评估智能体推理和最终输出质量的二阶指标</p>
+                </div>
+                <h3>关键质量指标</h3>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>✅ Correctness & Accuracy</h3>
+                        <p><strong>正确性与准确性：</strong></p>
+                        <ul>
+                            <li>智能体是否提供了事实正确的答案？</li>
+                            <li>如果它总结了文档,摘要是否忠实于源？</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>📋 Trajectory Adherence</h3>
+                        <p><strong>轨迹遵循度：</strong></p>
+                        <ul>
+                            <li>智能体是否遵循了预定路径或"理想配方"？</li>
+                            <li>是否按正确顺序调用了正确的工具？</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="two-columns">
+                    <div class="card">
+                        <h3>🛡️ Safety & Responsibility</h3>
+                        <p><strong>安全性与责任：</strong></p>
+                        <ul>
+                            <li>智能体的响应是否避免了有害、偏见或不当内容？</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>😊 Helpfulness & Relevance</h3>
+                        <p><strong>有用性与相关性：</strong></p>
+                        <ul>
+                            <li>智能体的最终响应是否真的对用户有帮助？</li>
+                            <li>是否与他们的查询相关？</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="warning">
+                    <p><strong>实施挑战：</strong>生成这些指标需要简单的数据库查询。通常涉及将智能体输出与"黄金"数据集进行比较,或使用复杂的LLM-as-a-Judge根据标准对响应进行评分</p>
+                </div>
+            </div>
+
+            <!-- Slide 31: 从原始数据到可操作的洞察 -->
+            <div class="slide" data-slide="31">
+                <h1>整合一切：从原始数据到可操作的洞察<span class="english-title">Putting It All Together: From Raw Data to Actionable Insights</span></h1>
+                <div class="box">
+                    <p><strong>实际组装：</strong>将可观测性数据转化为实时操作和洞察</p>
+                </div>
+                <h3>三个关键运营实践</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>📊 Dashboards & Alerting</h3>
+                        <p><strong>仪表板与警报：</strong></p>
+                        <ul>
+                            <li><strong>Operational Dashboards：</strong>系统健康（P99延迟、错误率、API成本、token消耗）</li>
+                            <li><strong>Quality Dashboards：</strong>智能体有效性（事实正确性、轨迹遵循度、有用性评分、幻觉率）</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔒 Security & PII</h3>
+                        <p><strong>安全与PII：</strong></p>
+                        <ul>
+                            <li>不可协商的生产运营方面</li>
+                            <li>用户输入包含PII</li>
+                            <li>健壮的PII清理机制</li>
+                            <li>集成到日志记录管道中</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>⚖️ Granularity vs Overhead</h3>
+                        <p><strong>粒度与开销：</strong></p>
+                        <ul>
+                            <li><strong>Dynamic Sampling：</strong>动态采样</li>
+                            <li>开发环境：高粒度日志（DEBUG级别）</li>
+                            <li>生产环境：较低默认日志级别（INFO）</li>
+                            <li>追踪10%的成功请求,100%的错误</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>最佳实践：</strong>战略平衡。为指标提供广泛的性能数据,同时仍捕获调试每个失败所需的丰富诊断细节</p>
+                </div>
+            </div>
+
+            <!-- Slide 32: 结论 -->
+            <div class="slide" data-slide="32">
+                <h1>结论：在自主世界中建立信任<span class="english-title">Conclusion: Building Trust in an Autonomous World</span></h1>
+                <div class="box">
+                    <p><strong>核心挑战：</strong>AI智能体的非确定性和自主性质打破了传统的软件质量模型</p>
+                </div>
+                <h3>我们的旅程</h3>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🎯 Four Pillars</h3>
+                        <p><strong>四大支柱：</strong></p>
+                        <ul>
+                            <li>Effectiveness</li>
+                            <li>Cost-Efficiency</li>
+                            <li>Safety</li>
+                            <li>User Trust</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👁️ Observability</h3>
+                        <p><strong>可观测性：</strong></p>
+                        <ul>
+                            <li>Logs</li>
+                            <li>Traces</li>
+                            <li>Metrics</li>
+                            <li>"眼睛和耳朵"</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🎨 Evaluation</h3>
+                        <p><strong>评估：</strong></p>
+                        <ul>
+                            <li>Outside-In框架</li>
+                            <li>LLM-as-a-Judge</li>
+                            <li>Human-in-the-Loop</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="success">
+                    <p><strong>下一步：</strong>将这些原则运营化。通过强大的CI/CD管道、安全的推出策略和可扩展的基础设施,在生产环境中成功运行经过评估的智能体</p>
+                </div>
+            </div>
+
+            <!-- Slide 33: Agent质量飞轮 -->
+            <div class="slide" data-slide="33">
+                <h1>智能体质量飞轮<span class="english-title">The Agent Quality Flywheel</span></h1>
+                <div class="box">
+                    <p><strong>核心理念：</strong>一个优秀的智能体不仅执行,它还会改进</p>
+                </div>
+                <div class="figure">
+                    <div style="display: flex; justify-content: center; align-items: center; gap: 1vh; flex-wrap: wrap;">
+                        <div class="card" style="width: 22%; min-width: 180px;">
+                            <h3 style="font-size: 1.8vh; text-align: center;">Step 1<br/>Define Quality<br/>定义质量</h3>
+                        </div>
+                        <div style="font-size: 3vh;">→</div>
+                        <div class="card" style="width: 22%; min-width: 180px;">
+                            <h3 style="font-size: 1.8vh; text-align: center;">Step 2<br/>Instrument for Visibility<br/>为可见性而装备</h3>
+                        </div>
+                        <div style="font-size: 3vh;">→</div>
+                        <div class="card" style="width: 22%; min-width: 180px;">
+                            <h3 style="font-size: 1.8vh; text-align: center;">Step 3<br/>Evaluate the Process<br/>评估过程</h3>
+                        </div>
+                        <div style="font-size: 3vh;">→</div>
+                        <div class="card" style="width: 22%; min-width: 180px;">
+                            <h3 style="font-size: 1.8vh; text-align: center;">Step 4<br/>Architect the Feedback Loop<br/>构建反馈循环</h3>
+                        </div>
+                    </div>
+                    <p class="figure-caption">图：Agent质量飞轮</p>
+                </div>
+                <div class="info">
+                    <p><strong>工作原理：</strong>就像启动一个巨大的重型飞轮。第一次推动是最难的。但结构化的评估实践提供了随后的、一致的推动。每次推动都增加动量,直到轮子以不可阻挡的力量旋转,创造质量和信任的良性循环</p>
+                </div>
+            </div>
+
+            <!-- Slide 34: 构建值得信赖的智能体的三大核心原则 -->
+            <div class="slide" data-slide="34">
+                <h1>构建可信智能体的三大核心原则<span class="english-title">Three Core Principles for Building Trustworthy Agents</span></h1>
+                <div class="box">
+                    <p><strong>如果你从本文档中只记住一件事,那就是这三个原则</strong></p>
+                </div>
+                <div class="three-columns">
+                    <div class="card">
+                        <h3>🏗️ Principle 1</h3>
+                        <p><strong>将评估视为架构支柱,而非最终步骤</strong></p>
+                        <ul>
+                            <li>不要构建智能体然后添加传感器</li>
+                            <li>从一开始就设计遥测端口</li>
+                            <li>可靠的智能体是"可评估设计"</li>
+                            <li>从第一行代码开始装备以发出日志和追踪</li>
+                            <li>质量是架构选择,而非最终QA阶段</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>🔍 Principle 2</h3>
+                        <p><strong>轨迹即真相</strong></p>
+                        <ul>
+                            <li>最终答案只是长故事的最后一句话</li>
+                            <li>智能体逻辑、安全性和效率的真正衡量在于其端到端"思维过程" - 轨迹</li>
+                            <li>这是过程评估</li>
+                            <li>只有通过深度可观测性实践才可能实现</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>👤 Principle 3</h3>
+                        <p><strong>人类是仲裁者</strong></p>
+                        <ul>
+                            <li>自动化是我们扩展的工具</li>
+                            <li>人性是我们真理的来源</li>
+                            <li>LLM-as-a-Judge和安全分类器至关重要</li>
+                            <li>"好"的基本定义、细致输出的验证、安全和公平性的最终判断必须锚定于人类价值观</li>
+                            <li>AI可以帮助评分测试,但人类编写标准并决定"A+"真正意味着什么</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 35: 未来是智能体化的 - 并且可靠 -->
+            <div class="slide" data-slide="35">
+                <h1>未来是智能体的 - 而且可靠的<span class="english-title">The Future is Agentic - and Reliable</span></h1>
+                <div class="box">
+                    <p><strong>我们正处于智能体时代的黎明</strong></p>
+                </div>
+                <h3>巨大的机遇</h3>
+                <div class="card">
+                    <p>创建能够推理、规划和行动的AI将是我们这个时代最具变革性的技术转变之一</p>
+                </div>
+                <h3>巨大的责任</h3>
+                <div class="card">
+                    <p>但伴随巨大力量而来的是构建值得我们信任的系统的深刻责任</p>
+                </div>
+                <h3>竞争优势</h3>
+                <div class="two-columns">
+                    <div class="warning">
+                        <h3>❌ 失败路径</h3>
+                        <ul>
+                            <li>继续将智能体质量视为事后考虑</li>
+                            <li>陷入承诺的演示和失败的部署循环</li>
+                        </ul>
+                    </div>
+                    <div class="success">
+                        <h3>✅ 成功路径</h3>
+                        <ul>
+                            <li>投资于这种严格的、架构集成的评估方法</li>
+                            <li>超越炒作,部署真正变革性的企业级AI系统</li>
+                            <li>掌握"评估工程" - 下一波AI的关键差异化因素</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="info">
+                    <p><strong>最终目标：</strong>不仅构建工作的智能体,而是构建值得信赖的智能体。这种信任不是希望或偶然的问题,它是在持续、全面和架构合理的评估的熔炉中锻造的</p>
+                </div>
+            </div>
+
+            <!-- Slide 36: 参考文献 -->
+            <div class="slide" data-slide="36">
+                <h1>参考文献<span class="english-title">References</span></h1>
+                <h3>学术论文、书籍和正式报告</h3>
+                <div class="box">
+                    <ul>
+                        <li><strong>Lewis et al. (2020)</strong> - Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</li>
+                        <li><strong>Lin et al. (2022)</strong> - TruthfulQA: Measuring how models mimic human falsehoods</li>
+                        <li><strong>Li et al. (2024)</strong> - From Generation to Judgment: Opportunities and Challenges of LLM-as-a-judge</li>
+                        <li><strong>Zhuge et al. (2024)</strong> - Agent-as-a-Judge: Evaluate Agents with Agents</li>
+                        <li><strong>Amodei et al. (2016)</strong> - Concrete Problems in AI Safety</li>
+                        <li><strong>NIST (2023)</strong> - AI Risk Management Framework (AI RMF 1.0)</li>
+                    </ul>
+                </div>
+                <h3>网络文章、博客文章和一般网页</h3>
+                <div class="box">
+                    <ul>
+                        <li>Bunnyshell - LLM-as-a-Judge: How AI Can Evaluate AI Faster and Smarter</li>
+                        <li>Coralogix - OpenTelemetry for AI: Tracing Prompts, Tools, and Inferences</li>
+                        <li>Dynatrace - What is OpenTelemetry?</li>
+                        <li>Galileo - Comprehensive Guide to LLM-as-a-Judge Evaluation</li>
+                        <li>IBM - What is LLM Observability?</li>
+                        <li>MIT Sloan - When AI Gets It Wrong: Addressing AI Hallucinations and Bias</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Slide 37: 致谢 -->
+            <div class="slide" data-slide="37">
+                <div class="slide-content">
+                    <h1>致谢<span class="english-title">Acknowledgements</span></h1>
+                    <div class="two-columns">
+                        <div class="card">
+                            <h3>📝 Content Contributors</h3>
+                            <p><strong>内容贡献者：</strong></p>
+                            <ul>
+                                <li>Hussain Chinoy</li>
+                                <li>Ale Fin</li>
+                                <li>Peter Grabowski</li>
+                                <li>Michelle Liu</li>
+                                <li>Anant Nawalgaria</li>
+                                <li>Kanchana Patlolla</li>
+                                <li>Steven Pecht</li>
+                                <li>Julia Wiesinger</li>
+                            </ul>
+                        </div>
+                        <div class="card">
+                            <h3>✏️ Curators and Editors</h3>
+                            <p><strong>策划人和编辑：</strong></p>
+                            <ul>
+                                <li>Anant Nawalgaria</li>
+                                <li>Kanchana Patlolla</li>
+                            </ul>
+                            <h3>🎨 Designer</h3>
+                            <p><strong>设计师：</strong></p>
+                            <ul>
+                                <li>Michael Lanning</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="figure">
+                        <div style="font-size: 15vh; margin: 4vh 0;">🎉</div>
+                        <p class="figure-caption">感谢所有为本文档做出贡献的人员</p>
+                    </div>
+                    <p style="text-align: center; font-size: 3vh; color: #666;">The future is agentic - and reliable<br/>未来是智能体化的 - 并且可靠</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn">← 上一页</button>
+            <div class="page-info">
+                <span id="currentSlide">1</span> / <span id="totalSlides">37</span>
+            </div>
+            <button id="nextBtn">下一页 →</button>
+            <button id="tocBtn">目录</button>
+            <button id="exportBtn">导出</button>
+        </div>
+        <div class="slide-progress" id="slideProgress"></div>
+    </div>
+
+    <div class="toc-overlay" id="tocOverlay"></div>
+    <div class="toc-panel" id="tocPanel">
+        <button class="close-toc" id="closeToc">×</button>
+        <h2>目录</h2>
+        <ul>
+            <li><a href="#" data-slide="1">封面</a></li>
+            <li><a href="#" data-slide="2">目录</a></li>
+            <li><a href="#" data-slide="3">介绍</a></li>
+            <li><a href="#" data-slide="4">如何阅读本文档</a></li>
+            <li><a href="#" data-slide="5">非确定性世界中的Agent质量</a></li>
+            <li><a href="#" data-slide="6">为什么Agent质量需要新方法</a></li>
+            <li><a href="#" data-slide="7">Agent失败模式</a></li>
+            <li><a href="#" data-slide="8">范式转变</a></li>
+            <li><a href="#" data-slide="9">智能体的三大核心能力</a></li>
+            <li><a href="#" data-slide="10">多智能体系统</a></li>
+            <li><a href="#" data-slide="11">Agent质量的四大支柱</a></li>
+            <li><a href="#" data-slide="12">评估的艺术</a></li>
+            <li><a href="#" data-slide="13">"Outside-In"评估层次</a></li>
+            <li><a href="#" data-slide="14">端到端评估（黑盒）</a></li>
+            <li><a href="#" data-slide="15">轨迹评估（玻璃盒）</a></li>
+            <li><a href="#" data-slide="16">轨迹评估（续）</a></li>
+            <li><a href="#" data-slide="17">评估者</a></li>
+            <li><a href="#" data-slide="18">自动化指标</a></li>
+            <li><a href="#" data-slide="19">LLM-as-a-Judge范式</a></li>
+            <li><a href="#" data-slide="20">Agent-as-a-Judge</a></li>
+            <li><a href="#" data-slide="21">人工评估（HITL）</a></li>
+            <li><a href="#" data-slide="22">用户反馈和审查UI</a></li>
+            <li><a href="#" data-slide="23">负责任AI与安全评估</a></li>
+            <li><a href="#" data-slide="24">可观测性介绍</a></li>
+            <li><a href="#" data-slide="25">可观测性的三大支柱</a></li>
+            <li><a href="#" data-slide="26">日志（支柱1）</a></li>
+            <li><a href="#" data-slide="27">追踪（支柱2）</a></li>
+            <li><a href="#" data-slide="28">指标（支柱3）</a></li>
+            <li><a href="#" data-slide="29">系统指标</a></li>
+            <li><a href="#" data-slide="30">质量指标</a></li>
+            <li><a href="#" data-slide="31">从原始数据到可操作的洞察</a></li>
+            <li><a href="#" data-slide="32">结论</a></li>
+            <li><a href="#" data-slide="33">Agent质量飞轮</a></li>
+            <li><a href="#" data-slide="34">构建值得信赖的智能体的三大核心原则</a></li>
+            <li><a href="#" data-slide="35">未来是智能体化的 - 并且可靠</a></li>
+            <li><a href="#" data-slide="36">参考文献</a></li>
+            <li><a href="#" data-slide="37">致谢</a></li>
+        </ul>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 37;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const tocBtn = document.getElementById('tocBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const currentSlideSpan = document.getElementById('currentSlide');
+        const totalSlidesSpan = document.getElementById('totalSlides');
+        const slideProgress = document.getElementById('slideProgress');
+        const tocPanel = document.getElementById('tocPanel');
+        const tocOverlay = document.getElementById('tocOverlay');
+        const closeToc = document.getElementById('closeToc');
+        const tocLinks = document.querySelectorAll('.toc-panel a');
+
+        totalSlidesSpan.textContent = totalSlides;
+
+        function showSlide(n) {
+            if (n < 1) n = 1;
+            if (n > totalSlides) n = totalSlides;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n - 1].classList.add('active');
+
+            currentSlide = n;
+            currentSlideSpan.textContent = currentSlide;
+            slideProgress.style.width = ((currentSlide / totalSlides) * 100) + '%';
+
+            prevBtn.disabled = currentSlide === 1;
+            nextBtn.disabled = currentSlide === totalSlides;
+        }
+
+        prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown') {
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        tocBtn.addEventListener('click', () => {
+            tocPanel.classList.add('open');
+            tocOverlay.style.display = 'block';
+        });
+
+        closeToc.addEventListener('click', () => {
+            tocPanel.classList.remove('open');
+            tocOverlay.style.display = 'none';
+        });
+
+        tocOverlay.addEventListener('click', () => {
+            tocPanel.classList.remove('open');
+            tocOverlay.style.display = 'none';
+        });
+
+        tocLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const slideNum = parseInt(link.getAttribute('data-slide'));
+                showSlide(slideNum);
+                tocPanel.classList.remove('open');
+                tocOverlay.style.display = 'none';
+            });
+        });
+
+        exportBtn.addEventListener('click', async () => {
+            document.body.classList.add('exporting');
+            exportBtn.disabled = true;
+            exportBtn.textContent = '导出中...';
+
+            // 首先获取每张幻灯片的实际尺寸
+            const slideSizes = [];
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                slide.classList.add('active');
+                
+                // 获取幻灯片的实际尺寸
+                const rect = slide.getBoundingClientRect();
+                slideSizes.push({
+                    width: rect.width,
+                    height: rect.height
+                });
+                
+                if (i !== currentSlide - 1) {
+                    slide.classList.remove('active');
+                }
+            }
+
+            // 恢复当前幻灯片
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            // 计算每张幻灯片的缩放后宽度（固定高度768）
+            const slideHeight = 768;
+            const scaledSizes = slideSizes.map(size => {
+                const ratio = size.width / size.height;
+                const scaledWidth = slideHeight * ratio;
+                return scaledWidth;
+            });
+
+            // 使用最大的宽度作为canvas宽度
+            const canvasWidth = Math.max(...scaledSizes);
+            const totalHeight = slides.length * slideHeight;
+
+            // 创建canvas
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvasWidth;
+            canvas.height = totalHeight;
+
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 逐个渲染幻灯片
+            for (let i = 0; i < slides.length; i++) {
+                const slide = slides[i];
+                slide.classList.add('active');
+
+                try {
+                    const slideCanvas = await html2canvas(slide, {
+                        scale: 1,
+                        useCORS: true,
+                        logging: false
+                    });
+
+                    const scaledWidth = scaledSizes[i];
+                    // 居中绘制
+                    const x = (canvasWidth - scaledWidth) / 2;
+                    ctx.drawImage(slideCanvas, x, i * slideHeight, scaledWidth, slideHeight);
+                } catch (error) {
+                    console.error('Error capturing slide:', error);
+                }
+
+                if (i !== currentSlide - 1) {
+                    slide.classList.remove('active');
+                }
+            }
+
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                if (index + 1 === currentSlide) {
+                    slide.classList.add('active');
+                }
+            });
+
+            document.body.classList.remove('exporting');
+
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'Agent_Quality_Slides.png';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+
+                exportBtn.disabled = false;
+                exportBtn.textContent = '导出';
+            });
+        });
+
+        showSlide(1);
+    </script>
+</body>
+</html>

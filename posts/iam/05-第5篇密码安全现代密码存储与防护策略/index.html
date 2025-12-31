@@ -57,7 +57,7 @@
 字典攻击： 使用常见单词、短语、数字组合等构成的“字典”，逐一哈希后与泄露的哈希值比对。 彩虹表攻击： 对大量常见密码预先计算哈希值，制作成巨大的查找表。一旦数据库泄露，攻击者可以直接查表找到密码。 3. 加盐（Salting）：为每个密码定制“指纹” 为了对抗字典攻击和彩虹表攻击，加盐（Salting） 技术应运而生。
 含义： “盐”（Salt）是一个随机生成的数据串。在哈希密码之前，将这个随机的“盐”与用户密码进行拼接，然后再进行哈希。
 工作原理：
-用户设置密码 P。 系统为该用户生成一个唯一且随机的 Salt 值。 系统计算 H = Hash(P + Salt)。 系统将 H 和 Salt 一同存储到数据库。请注意，Salt 是不需要保密的，它与哈希值一起公开存储。 用户登录时，提交密码 P'。 系统从数据库取出对应用户的 Salt 值。 系统计算 H' = Hash(P' + Salt)。 比对 H 和 H' 是否相同。 加盐的优势："><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-06-15T21:21:07+08:00"><meta property="article:modified_time" content="2025-06-15T21:21:07+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="第5篇：密码≠安全：现代密码存储与防护策略
+用户设置密码 P。 系统为该用户生成一个唯一且随机的 Salt 值。 系统计算 H = Hash(P + Salt)。 系统将 H 和 Salt 一同存储到数据库。请注意，Salt 是不需要保密的，它与哈希值一起公开存储。 用户登录时，提交密码 P'。 系统从数据库取出对应用户的 Salt 值。 系统计算 H' = Hash(P' + Salt)。 比对 H 和 H' 是否相同。 加盐的优势："><meta property="og:locale" content="zh-CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-06-15T21:21:07+08:00"><meta property="article:modified_time" content="2025-06-15T21:21:07+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="第5篇：密码≠安全：现代密码存储与防护策略
 在数字世界中，密码（Password）无疑是最普遍、最直观的身份认证方式。我们每天都在使用它们登录各种网站、应用和系统。然而，仅仅依靠密码来保障安全是远远不够的，甚至可以说，“密码”本身并不等同于“安全”。一旦密码被泄露或破解，攻击者便能轻而易举地冒充用户，造成无法估量的损失。
 本篇文章将深入探讨现代密码的存储和防护策略，揭示为什么简单的密码已经无法满足安全需求，以及如何通过哈希、加盐、Pepper、慢哈希算法和严格的密码策略来构建更坚固的密码防线。
 1. 为什么“密码≠安全”？——传统密码存储的缺陷

@@ -82,7 +82,7 @@ RAG（Retrieval-Augmented Generation，检索增强生成）无疑是技术圈�
 围绕这个机器人，我们需要建立一套“体检标准”。以下是三个最重要的核心指标：
 1. 忠实度 (Faithfulness): 答案是否完全基于我们提供的资料，没有胡编乱造？ 这衡量的是系统的“职业操守”。一个高忠实度的系统，意味着它的每一句话都能在给定的参考资料中找到依据。这是建立用户信任的基石。
 2. 答案相关性 (Answer Relevancy): 答案是否直接回应了用户的问题？ 这衡量的是系统的“沟通效率”。有时答案虽然内容正确，但却答非所问。高相关性的答案，应该是直击要害、切中主题的。
-3. 上下文相关性 (Contextual Relevancy): 我们检索到的资料，是不是真的和问题相关？ 这衡量的是系统“检索”这一步的质量，是诊断问题的关键。如果最终答案不佳，这个指标能帮助我们判断，问题是出在“找资料”的环节，还是“写答案”的环节。"><meta property="og:locale" content="zh"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-10-24T11:25:33+08:00"><meta property="article:modified_time" content="2025-10-24T11:25:33+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="从“玩具”到“利器”：一文读懂生产级RAG系统的进化之路
+3. 上下文相关性 (Contextual Relevancy): 我们检索到的资料，是不是真的和问题相关？ 这衡量的是系统“检索”这一步的质量，是诊断问题的关键。如果最终答案不佳，这个指标能帮助我们判断，问题是出在“找资料”的环节，还是“写答案”的环节。"><meta property="og:locale" content="zh-CN"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2025-10-24T11:25:33+08:00"><meta property="article:modified_time" content="2025-10-24T11:25:33+08:00"><meta name=twitter:card content="summary"><meta name=twitter:title content><meta name=twitter:description content="从“玩具”到“利器”：一文读懂生产级RAG系统的进化之路
 RAG（Retrieval-Augmented Generation，检索增强生成）无疑是技术圈最火热的词汇之一。当我们想让大语言模型（LLM）回答一些它“记忆”之外的、关于我们私有知识库的问题时，RAG几乎是大家公认的最佳方案。
 但一个普遍的误解是，认为RAG仅仅是“检索文档 + 生成答案”的简单两步。在实际项目中，一个如此基础的RAG系统，表现往往像一个“玩具”，离真正稳定、可靠的“生产力工具”还有很长的距离。
 今天，我想和大家分享关于如何构建生产级RAG系统，它就像一本“武功秘籍”，详细拆解了如何将一个基础RAG模型，一步步升级为驰骋在复杂业务场景中的“绝世高手”。
