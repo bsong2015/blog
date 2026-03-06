@@ -7,6 +7,10 @@ theme = ["PaperMod"]
 [params]
   defaultTheme = "auto"
   disableSpecial1stPost = true
+  
+  [params.author]
+    name = "万年水"
+    email = ""
 
 # 配置中文语言细节（可选但推荐）
 [languages.zh]
