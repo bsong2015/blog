@@ -1,5 +1,5 @@
 baseURL = 'https://bsong2015.github.io/blog/'
-languageCode = "zh-CN"          # 设置默认语言为简体中文
+locale = "zh-CN"                # 设置默认语言区域（Hugo v0.158.0+ 替代 languageCode）
 defaultContentLanguage = "zh"   # 内容默认语言标识（与多语言配置匹配）
 title = "万年水的博客"
 theme = ["PaperMod"]
@@ -14,14 +14,15 @@ theme = ["PaperMod"]
 
 # 配置中文语言细节（可选但推荐）
 [languages.zh]
-languageName = "中文"
+label = "中文"                  # Hugo v0.158.0+ 替代 languageName
 weight = 1                      # 权重，用于多语言排序
   
 [frontmatter]
   slug = ":filename"
 
 [security]
-  fileGetDir = "content/**"  # 显式允许中文路径
+  fileGetDir = "content/**"     # 显式允许中文路径
+  allowContent = ['text/html']  # 允许 HTML 内容文件
 
 # 前沿技术 (一级菜单)
 [[menu.main]]
