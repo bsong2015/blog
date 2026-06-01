@@ -13,49 +13,49 @@
 1.2 设计权衡：四种核心数据流模式
 连接器的工作模式定义了身份数据的流动方向和触发机制。在IAM/IDaaS的生态中，这可以被归纳为四种核心的数据流模式，它们是推（Push）和拉（Pull）两种机制在不同方向上的具体应用。
 
-  
-      
-          模式
-          数据流向
-          触发机制
-          实时性
-          典型场景
-      
-  
-  
-      
-          上游推送 (Upstream Push)
-          上游系统 (如HR) → IAM/IDaaS
-          事件驱动
-          高 (近实时)
-          HR系统（如Workday）支持事件通知，当员工入职或信息变更时，立即通过Webhook或专用API将变更推送给IAM平台。
-      
-      
-          下游推送 (Downstream Push)
-          IAM/IDaaS → 下游应用 (如SaaS)
-          事件驱动
-          高 (近实时)
-          IAM平台内用户状态变更（如创建、禁用），立即通过连接器（如SCIM）将变更推送到下游的Office 365、Salesforce等应用，实现自动开通/禁用账户。
-      
-      
-          上游拉取 (Upstream Pull)
-          上游系统 (如HR) ← IAM/IDaaS
-          批量/定时
-          低 (延迟)
-          IAM平台作为主动方，定期通过连接器连接到不支持事件推送的HR系统或数据库，拉取全量或增量的人员数据，进行对账和同步。
-      
-      
-          下游拉取 (Downstream Pull)
-          IAM/IDaaS ← 下游应用
-          批量/定时
-          低 (延迟)
-          遗留的或简单的下游应用作为主动方，定期通过API拉取IAM平台的用户数据，以更新其本地的用户缓存或数据库。
-      
-  
+	
+			
+					模式
+					数据流向
+					触发机制
+					实时性
+					典型场景
+			
+	
+	
+			
+					上游推送 (Upstream Push)
+					上游系统 (如HR) → IAM/IDaaS
+					事件驱动
+					高 (近实时)
+					HR系统（如Workday）支持事件通知，当员工入职或信息变更时，立即通过Webhook或专用API将变更推送给IAM平台。
+			
+			
+					下游推送 (Downstream Push)
+					IAM/IDaaS → 下游应用 (如SaaS)
+					事件驱动
+					高 (近实时)
+					IAM平台内用户状态变更（如创建、禁用），立即通过连接器（如SCIM）将变更推送到下游的Office 365、Salesforce等应用，实现自动开通/禁用账户。
+			
+			
+					上游拉取 (Upstream Pull)
+					上游系统 (如HR) ← IAM/IDaaS
+					批量/定时
+					低 (延迟)
+					IAM平台作为主动方，定期通过连接器连接到不支持事件推送的HR系统或数据库，拉取全量或增量的人员数据，进行对账和同步。
+			
+			
+					下游拉取 (Downstream Pull)
+					IAM/IDaaS ← 下游应用
+					批量/定时
+					低 (延迟)
+					遗留的或简单的下游应用作为主动方，定期通过API拉取IAM平台的用户数据，以更新其本地的用户缓存或数据库。
+			
+	
 
 
 [设计洞察]
-一个成熟的IAM/IDaaS平台必须能够灵活支持这全部四种模式，以适应异构的企业IT环境。"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC23%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%BF%9E%E6%8E%A5%E4%B8%87%E7%89%A9iam%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%BF%9E%E6%8E%A5%E5%99%A8connector%E6%9E%B6%E6%9E%84/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.527fbef9873650c2ff31f77137f2b7859b6b60b2d5a5a7fbe578c5d69afe423f.css integrity="sha256-Un+++Yc2UML/MfdxN/K3hZtrYLLVpaf75XjF1pr+Qj8=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC23%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%BF%9E%E6%8E%A5%E4%B8%87%E7%89%A9iam%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%BF%9E%E6%8E%A5%E5%99%A8connector%E6%9E%B6%E6%9E%84/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC23%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%BF%9E%E6%8E%A5%E4%B8%87%E7%89%A9iam%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%BF%9E%E6%8E%A5%E5%99%A8connector%E6%9E%B6%E6%9E%84/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第23篇：【架构篇】连接万物：IAM系统集成模式与连接器（Connector）架构 在探讨了IAM系统的核心模块与IDaaS的云原生特性后，我们触及了衡量一个身份平台价值的关键标准：集成（Integration）能力。一个孤立的IAM系统价值有限；一个能够与企业内外部应用、服务和数据源无缝对接的IAM系统，才能成为数字化转型的引擎。
+一个成熟的IAM/IDaaS平台必须能够灵活支持这全部四种模式，以适应异构的企业IT环境。"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC23%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%BF%9E%E6%8E%A5%E4%B8%87%E7%89%A9iam%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%BF%9E%E6%8E%A5%E5%99%A8connector%E6%9E%B6%E6%9E%84/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.e2150044138b2ceb38e301a2ea2c0dc6f2b81c4a6c43e7af4f2e9bdbb1c025cb.css integrity="sha256-4hUARBOLLOs44wGi6iwNxvK4HEpsQ+evTy6b27HAJcs=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC23%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%BF%9E%E6%8E%A5%E4%B8%87%E7%89%A9iam%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%BF%9E%E6%8E%A5%E5%99%A8connector%E6%9E%B6%E6%9E%84/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC23%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87%E8%BF%9E%E6%8E%A5%E4%B8%87%E7%89%A9iam%E7%B3%BB%E7%BB%9F%E9%9B%86%E6%88%90%E6%A8%A1%E5%BC%8F%E4%B8%8E%E8%BF%9E%E6%8E%A5%E5%99%A8connector%E6%9E%B6%E6%9E%84/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第23篇：【架构篇】连接万物：IAM系统集成模式与连接器（Connector）架构 在探讨了IAM系统的核心模块与IDaaS的云原生特性后，我们触及了衡量一个身份平台价值的关键标准：集成（Integration）能力。一个孤立的IAM系统价值有限；一个能够与企业内外部应用、服务和数据源无缝对接的IAM系统，才能成为数字化转型的引擎。
 这种集成能力，并非单一技术所能实现，而是由一套分层的架构模式所支撑。本文将深入剖析连接器（Connector）架构、事件驱动机制和Webhook设计，揭示它们如何协同工作，构建起IAM系统与外部世界进行身份数据交换的强大桥梁。
 1. 连接器（Connector）模式：标准化的集成基石 连接器（Connector）是IAM系统与外部系统进行身份数据同步的核心组件。它本质上是一个协议适配器和数据转换引擎，负责弥合IAM系统与异构世界之间的鸿沟。
 1.1 连接器的核心职责 协议适配： 将IAM内部统一的身份模型，转换为外部系统支持的特定协议，如SCIM、LDAP、SQL (JDBC)、SOAP、或各种专有REST API。 数据映射与转换： 处理不同系统间用户属性的命名和格式差异（例如，emailAddress vs. mail），并支持通过表达式或脚本进行复杂的数据转换。 生命周期管理执行： 承载用户生命周期事件（Joiner-Mover-Leaver）的最终执行逻辑，将“在IAM中禁用用户”的指令，翻译成“在目标应用中调用 POST /users/{id}/deactivate API”的具体操作。 错误处理与状态同步： 可靠地处理网络中断、目标系统故障等问题，实现重试机制，并维护每个身份在目标系统中的同步状态。 1.2 设计权衡：四种核心数据流模式 连接器的工作模式定义了身份数据的流动方向和触发机制。在IAM/IDaaS的生态中，这可以被归纳为四种核心的数据流模式，它们是推（Push）和拉（Pull）两种机制在不同方向上的具体应用。
@@ -74,45 +74,45 @@
 1.2 设计权衡：四种核心数据流模式
 连接器的工作模式定义了身份数据的流动方向和触发机制。在IAM/IDaaS的生态中，这可以被归纳为四种核心的数据流模式，它们是推（Push）和拉（Pull）两种机制在不同方向上的具体应用。
 
-  
-      
-          模式
-          数据流向
-          触发机制
-          实时性
-          典型场景
-      
-  
-  
-      
-          上游推送 (Upstream Push)
-          上游系统 (如HR) → IAM/IDaaS
-          事件驱动
-          高 (近实时)
-          HR系统（如Workday）支持事件通知，当员工入职或信息变更时，立即通过Webhook或专用API将变更推送给IAM平台。
-      
-      
-          下游推送 (Downstream Push)
-          IAM/IDaaS → 下游应用 (如SaaS)
-          事件驱动
-          高 (近实时)
-          IAM平台内用户状态变更（如创建、禁用），立即通过连接器（如SCIM）将变更推送到下游的Office 365、Salesforce等应用，实现自动开通/禁用账户。
-      
-      
-          上游拉取 (Upstream Pull)
-          上游系统 (如HR) ← IAM/IDaaS
-          批量/定时
-          低 (延迟)
-          IAM平台作为主动方，定期通过连接器连接到不支持事件推送的HR系统或数据库，拉取全量或增量的人员数据，进行对账和同步。
-      
-      
-          下游拉取 (Downstream Pull)
-          IAM/IDaaS ← 下游应用
-          批量/定时
-          低 (延迟)
-          遗留的或简单的下游应用作为主动方，定期通过API拉取IAM平台的用户数据，以更新其本地的用户缓存或数据库。
-      
-  
+	
+			
+					模式
+					数据流向
+					触发机制
+					实时性
+					典型场景
+			
+	
+	
+			
+					上游推送 (Upstream Push)
+					上游系统 (如HR) → IAM/IDaaS
+					事件驱动
+					高 (近实时)
+					HR系统（如Workday）支持事件通知，当员工入职或信息变更时，立即通过Webhook或专用API将变更推送给IAM平台。
+			
+			
+					下游推送 (Downstream Push)
+					IAM/IDaaS → 下游应用 (如SaaS)
+					事件驱动
+					高 (近实时)
+					IAM平台内用户状态变更（如创建、禁用），立即通过连接器（如SCIM）将变更推送到下游的Office 365、Salesforce等应用，实现自动开通/禁用账户。
+			
+			
+					上游拉取 (Upstream Pull)
+					上游系统 (如HR) ← IAM/IDaaS
+					批量/定时
+					低 (延迟)
+					IAM平台作为主动方，定期通过连接器连接到不支持事件推送的HR系统或数据库，拉取全量或增量的人员数据，进行对账和同步。
+			
+			
+					下游拉取 (Downstream Pull)
+					IAM/IDaaS ← 下游应用
+					批量/定时
+					低 (延迟)
+					遗留的或简单的下游应用作为主动方，定期通过API拉取IAM平台的用户数据，以更新其本地的用户缓存或数据库。
+			
+	
 
 
 [设计洞察]

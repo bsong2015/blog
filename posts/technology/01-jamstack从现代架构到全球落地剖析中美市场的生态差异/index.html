@@ -10,40 +10,40 @@ Markup (M): 网站的HTML在构建时 (Build Time) 就已预先生成。静态�
 
 这个流程与传统动态架构形成了鲜明对比：
 
-  
-      
-          特性
-          Jamstack
-          传统动态架构 (如LAMP/MEAN)
-      
-  
-  
-      
-          渲染时机
-          构建时 (Build Time)：部署前生成静态HTML
-          运行时 (Request Time)：每次请求都由服务器动态生成HTML
-      
-      
-          托管方式
-          全球CDN：无需应用服务器，边缘分发
-          中心化服务器：依赖Web服务器和数据库服务器
-      
-      
-          性能
-          极致：毫秒级首字节时间 (TTFB)
-          较慢：存在服务器处理和数据库查询延迟
-      
-      
-          安全性
-          极高：攻击面大幅缩小，无直接暴露的数据库
-          较低：服务器、数据库、插件均是潜在攻击点
-      
-      
-          扩展性
-          自动且廉价：CDN和无服务器函数按需伸缩
-          复杂且昂贵：需手动配置负载均衡和服务器集群
-      
-  
+	
+			
+					特性
+					Jamstack
+					传统动态架构 (如LAMP/MEAN)
+			
+	
+	
+			
+					渲染时机
+					构建时 (Build Time)：部署前生成静态HTML
+					运行时 (Request Time)：每次请求都由服务器动态生成HTML
+			
+			
+					托管方式
+					全球CDN：无需应用服务器，边缘分发
+					中心化服务器：依赖Web服务器和数据库服务器
+			
+			
+					性能
+					极致：毫秒级首字节时间 (TTFB)
+					较慢：存在服务器处理和数据库查询延迟
+			
+			
+					安全性
+					极高：攻击面大幅缩小，无直接暴露的数据库
+					较低：服务器、数据库、插件均是潜在攻击点
+			
+			
+					扩展性
+					自动且廉价：CDN和无服务器函数按需伸缩
+					复杂且昂贵：需手动配置负载均衡和服务器集群
+			
+	
 
 第二部分：Jamstack 的实践落地——构建可组合的企业级应用
 落地一个 Jamstack 项目，本质上是选择并组合一系列“最佳单点工具”(Best-of-Breed Tools) 的过程。一个典型的、功能完备的 Jamstack 应用栈如下：
@@ -61,7 +61,7 @@ Vercel / Netlify: 它们提供了与Git深度集成的自动化工作流。开�
 
 
 
-内容管理 (Headless CMS):"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/01-jamstack%E4%BB%8E%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E5%88%B0%E5%85%A8%E7%90%83%E8%90%BD%E5%9C%B0%E5%89%96%E6%9E%90%E4%B8%AD%E7%BE%8E%E5%B8%82%E5%9C%BA%E7%9A%84%E7%94%9F%E6%80%81%E5%B7%AE%E5%BC%82/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.527fbef9873650c2ff31f77137f2b7859b6b60b2d5a5a7fbe578c5d69afe423f.css integrity="sha256-Un+++Yc2UML/MfdxN/K3hZtrYLLVpaf75XjF1pr+Qj8=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/01-jamstack%E4%BB%8E%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E5%88%B0%E5%85%A8%E7%90%83%E8%90%BD%E5%9C%B0%E5%89%96%E6%9E%90%E4%B8%AD%E7%BE%8E%E5%B8%82%E5%9C%BA%E7%9A%84%E7%94%9F%E6%80%81%E5%B7%AE%E5%BC%82/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/01-jamstack%E4%BB%8E%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E5%88%B0%E5%85%A8%E7%90%83%E8%90%BD%E5%9C%B0%E5%89%96%E6%9E%90%E4%B8%AD%E7%BE%8E%E5%B8%82%E5%9C%BA%E7%9A%84%E7%94%9F%E6%80%81%E5%B7%AE%E5%BC%82/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="Jamstack：从现代架构到全球落地——剖析中美市场的生态差异 在追求极致性能、固若金汤的安全性和卓越开发者体验的浪潮中，现代Web开发范式正在经历一场深刻的变革。Jamstack，一个基于JavaScript、可复用的API和预构建Markup的架构理念，正处于这场变革的中心。它并非一种具体的技术，而是一种构建和交付Web应用的新方法，通过将动态渲染过程从“请求时”前移至“构建时”，从根本上重塑了我们对可扩展、高性价比应用的认知。
+内容管理 (Headless CMS):"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/technology/01-jamstack%E4%BB%8E%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E5%88%B0%E5%85%A8%E7%90%83%E8%90%BD%E5%9C%B0%E5%89%96%E6%9E%90%E4%B8%AD%E7%BE%8E%E5%B8%82%E5%9C%BA%E7%9A%84%E7%94%9F%E6%80%81%E5%B7%AE%E5%BC%82/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.e2150044138b2ceb38e301a2ea2c0dc6f2b81c4a6c43e7af4f2e9bdbb1c025cb.css integrity="sha256-4hUARBOLLOs44wGi6iwNxvK4HEpsQ+evTy6b27HAJcs=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/technology/01-jamstack%E4%BB%8E%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E5%88%B0%E5%85%A8%E7%90%83%E8%90%BD%E5%9C%B0%E5%89%96%E6%9E%90%E4%B8%AD%E7%BE%8E%E5%B8%82%E5%9C%BA%E7%9A%84%E7%94%9F%E6%80%81%E5%B7%AE%E5%BC%82/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/technology/01-jamstack%E4%BB%8E%E7%8E%B0%E4%BB%A3%E6%9E%B6%E6%9E%84%E5%88%B0%E5%85%A8%E7%90%83%E8%90%BD%E5%9C%B0%E5%89%96%E6%9E%90%E4%B8%AD%E7%BE%8E%E5%B8%82%E5%9C%BA%E7%9A%84%E7%94%9F%E6%80%81%E5%B7%AE%E5%BC%82/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="Jamstack：从现代架构到全球落地——剖析中美市场的生态差异 在追求极致性能、固若金汤的安全性和卓越开发者体验的浪潮中，现代Web开发范式正在经历一场深刻的变革。Jamstack，一个基于JavaScript、可复用的API和预构建Markup的架构理念，正处于这场变革的中心。它并非一种具体的技术，而是一种构建和交付Web应用的新方法，通过将动态渲染过程从“请求时”前移至“构建时”，从根本上重塑了我们对可扩展、高性价比应用的认知。
 本文将深入探讨 Jamstack 的核心架构，提供一套可行的落地实施方案，通过一个完整的实战演练剖析其工作流程，并着重分析其在全球两大技术生态——中国市场与西方市场——落地时所面临的巨大差异与挑战。
 第一部分：Jamstack 架构蓝图——回归本源，重塑未来 Jamstack 的核心在于解耦 (Decoupling)。它将前端用户界面与后端业务逻辑彻底分离，并通过API进行通信。
 JavaScript (J): 运行在客户端，负责处理所有动态功能和交互。无论是使用React、Vue等现代框架，还是原生JavaScript，它都是驱动用户体验的引擎。 APIs (A): 所有服务器端的复杂逻辑，如用户认证、数据库操作、支付处理等，都被抽象成可复用的API。这些API可以是自建的无服务器函数，也可以是专业的第三方SaaS服务。 Markup (M): 网站的HTML在构建时 (Build Time) 就已预先生成。静态站点生成器 (SSG) 如Next.js或Gatsby，会从无头CMS、Markdown文件或数据库中拉取内容，生成最终的静态文件。 这个流程与传统动态架构形成了鲜明对比：
@@ -80,40 +80,40 @@ Markup (M): 网站的HTML在构建时 (Build Time) 就已预先生成。静态�
 
 这个流程与传统动态架构形成了鲜明对比：
 
-  
-      
-          特性
-          Jamstack
-          传统动态架构 (如LAMP/MEAN)
-      
-  
-  
-      
-          渲染时机
-          构建时 (Build Time)：部署前生成静态HTML
-          运行时 (Request Time)：每次请求都由服务器动态生成HTML
-      
-      
-          托管方式
-          全球CDN：无需应用服务器，边缘分发
-          中心化服务器：依赖Web服务器和数据库服务器
-      
-      
-          性能
-          极致：毫秒级首字节时间 (TTFB)
-          较慢：存在服务器处理和数据库查询延迟
-      
-      
-          安全性
-          极高：攻击面大幅缩小，无直接暴露的数据库
-          较低：服务器、数据库、插件均是潜在攻击点
-      
-      
-          扩展性
-          自动且廉价：CDN和无服务器函数按需伸缩
-          复杂且昂贵：需手动配置负载均衡和服务器集群
-      
-  
+	
+			
+					特性
+					Jamstack
+					传统动态架构 (如LAMP/MEAN)
+			
+	
+	
+			
+					渲染时机
+					构建时 (Build Time)：部署前生成静态HTML
+					运行时 (Request Time)：每次请求都由服务器动态生成HTML
+			
+			
+					托管方式
+					全球CDN：无需应用服务器，边缘分发
+					中心化服务器：依赖Web服务器和数据库服务器
+			
+			
+					性能
+					极致：毫秒级首字节时间 (TTFB)
+					较慢：存在服务器处理和数据库查询延迟
+			
+			
+					安全性
+					极高：攻击面大幅缩小，无直接暴露的数据库
+					较低：服务器、数据库、插件均是潜在攻击点
+			
+			
+					扩展性
+					自动且廉价：CDN和无服务器函数按需伸缩
+					复杂且昂贵：需手动配置负载均衡和服务器集群
+			
+	
 
 第二部分：Jamstack 的实践落地——构建可组合的企业级应用
 落地一个 Jamstack 项目，本质上是选择并组合一系列“最佳单点工具”(Best-of-Breed Tools) 的过程。一个典型的、功能完备的 Jamstack 应用栈如下：

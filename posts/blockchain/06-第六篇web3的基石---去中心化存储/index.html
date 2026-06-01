@@ -15,45 +15,45 @@
 答案很简单：区块链是世界上最昂贵、最低效的“硬盘”。
 我们需要从设计哲学上理解区块链与去中心化存储的根本区别：
 
-  
-      
-          特征
-          区块链 (如以太坊)
-          去中心化存储 (如Filecoin, Arweave)
-      
-  
-  
-      
-          核心功能
-          状态验证 (State Verification)
-          数据持久化 (Data Persistence)
-      
-      
-          设计隐喻
-          全球共享的“中央处理器” (CPU)
-          全球共享的“硬盘驱动器” (HDD)
-      
-      
-          优化目标
-          计算的正确性与安全性
-          存储的可用性与可检索性
-      
-      
-          存储成本
-          极其昂贵。在以太坊上存储1MB数据可能花费数万美元。
-          极其便宜。成本远低于中心化云服务。
-      
-      
-          数据类型
-          小数据。主要存储账户余额、合约状态等关键的、需要全局共识的“状态”数据。
-          大数据。设计用来存储图片、视频、网站前端、数据库等大型文件。
-      
-      
-          工作原理
-          全网冗余。每个全节点都必须下载并验证每一笔交易，存储完整的状态历史。
-          分片冗余。一份数据会被分割成多个加密的片段，分散存储在网络中的多个节点上。
-      
-  
+	
+			
+					特征
+					区块链 (如以太坊)
+					去中心化存储 (如Filecoin, Arweave)
+			
+	
+	
+			
+					核心功能
+					状态验证 (State Verification)
+					数据持久化 (Data Persistence)
+			
+			
+					设计隐喻
+					全球共享的“中央处理器” (CPU)
+					全球共享的“硬盘驱动器” (HDD)
+			
+			
+					优化目标
+					计算的正确性与安全性
+					存储的可用性与可检索性
+			
+			
+					存储成本
+					极其昂贵。在以太坊上存储1MB数据可能花费数万美元。
+					极其便宜。成本远低于中心化云服务。
+			
+			
+					数据类型
+					小数据。主要存储账户余额、合约状态等关键的、需要全局共识的“状态”数据。
+					大数据。设计用来存储图片、视频、网站前端、数据库等大型文件。
+			
+			
+					工作原理
+					全网冗余。每个全节点都必须下载并验证每一笔交易，存储完整的状态历史。
+					分片冗余。一份数据会被分割成多个加密的片段，分散存储在网络中的多个节点上。
+			
+	
 
 简单来说，区块链是“大脑”，它的工作是进行昂贵的、需要全球共识的计算和状态转换。而去中心化存储是“图书馆”，它的工作是用廉价、高效的方式，安全地保管海量的数据。
 两者是互补关系，而非竞争关系。一个完整的Web3应用，其“大脑”（智能合约）运行在区块链上，而其“身体”（前端界面、图片、元数据）则需要存放在去中心化存储网络上。
@@ -70,7 +70,7 @@
 检索费用 (Retrieval Deals)：当李四想取回他的照片时，他可以向网络中的“检索矿工”（也可能是张三）支付一笔费用，来快速地获取他的数据。
 
 
-区块奖励 (Block Rewards)：这是最大的激励来源。Filecoin网络会像比特币一样，不断地产生新的区块。为了赢得下一个区块的打包权（以及其中包含的原生代币奖励），矿工们需要向网络证明，他们确实存储了大量的、有用的数据。他们存储的数据越多，赢得区块奖励的概率就越大。"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/blockchain/06-%E7%AC%AC%E5%85%AD%E7%AF%87web3%E7%9A%84%E5%9F%BA%E7%9F%B3---%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E5%AD%98%E5%82%A8/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.527fbef9873650c2ff31f77137f2b7859b6b60b2d5a5a7fbe578c5d69afe423f.css integrity="sha256-Un+++Yc2UML/MfdxN/K3hZtrYLLVpaf75XjF1pr+Qj8=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/blockchain/06-%E7%AC%AC%E5%85%AD%E7%AF%87web3%E7%9A%84%E5%9F%BA%E7%9F%B3---%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E5%AD%98%E5%82%A8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/blockchain/06-%E7%AC%AC%E5%85%AD%E7%AF%87web3%E7%9A%84%E5%9F%BA%E7%9F%B3---%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E5%AD%98%E5%82%A8/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第六篇：Web3的基石 - 去中心化存储 引言：城市里被遗忘的“档案馆” 在过去的几篇文章中，我们为Web3这座新兴城市规划了宏伟的蓝图。我们建造了坚固的金融中心（DeFi），设计了先进的市政厅（DAO），并为每一位市民颁发了自主可控的身份证（DID）。这座城市的“大脑”——以太坊虚拟机（EVM）——在智能合约的驱动下，高效地处理着各种复杂的逻辑运算。
+区块奖励 (Block Rewards)：这是最大的激励来源。Filecoin网络会像比特币一样，不断地产生新的区块。为了赢得下一个区块的打包权（以及其中包含的原生代币奖励），矿工们需要向网络证明，他们确实存储了大量的、有用的数据。他们存储的数据越多，赢得区块奖励的概率就越大。"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/blockchain/06-%E7%AC%AC%E5%85%AD%E7%AF%87web3%E7%9A%84%E5%9F%BA%E7%9F%B3---%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E5%AD%98%E5%82%A8/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.e2150044138b2ceb38e301a2ea2c0dc6f2b81c4a6c43e7af4f2e9bdbb1c025cb.css integrity="sha256-4hUARBOLLOs44wGi6iwNxvK4HEpsQ+evTy6b27HAJcs=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/blockchain/06-%E7%AC%AC%E5%85%AD%E7%AF%87web3%E7%9A%84%E5%9F%BA%E7%9F%B3---%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E5%AD%98%E5%82%A8/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:url" content="https://bsong2015.github.io/blog/posts/blockchain/06-%E7%AC%AC%E5%85%AD%E7%AF%87web3%E7%9A%84%E5%9F%BA%E7%9F%B3---%E5%8E%BB%E4%B8%AD%E5%BF%83%E5%8C%96%E5%AD%98%E5%82%A8/"><meta property="og:site_name" content="万年水的博客"><meta property="og:title" content="万年水的博客"><meta property="og:description" content="第六篇：Web3的基石 - 去中心化存储 引言：城市里被遗忘的“档案馆” 在过去的几篇文章中，我们为Web3这座新兴城市规划了宏伟的蓝图。我们建造了坚固的金融中心（DeFi），设计了先进的市政厅（DAO），并为每一位市民颁发了自主可控的身份证（DID）。这座城市的“大脑”——以太坊虚拟机（EVM）——在智能合约的驱动下，高效地处理着各种复杂的逻辑运算。
 但我们似乎忽略了一个根本性的问题：这座城市产生的所有宝贵数据——市民的身份凭证、DAO的会议纪要、NFT的艺术品原作、dApp的前端界面——应该存放在哪里？
 如果我们将这些数据，存放在亚马逊的AWS或谷歌云这样的中心化服务器上，会发生什么？
 单点故障：如果服务器宕机，整个Web3应用可能瞬间瘫痪。 审查与删除：平台可以根据自己的政策或外部压力，随时删除或修改你的数据。 背离初衷：一个前端运行在中心化服务器上、后端逻辑运行在区块链上的“dApp”，其去中心化的承诺就只完成了一半。它就像一个大脑连接着全球神经网络，身体却被锁在一个随时可能被拔掉电源的盒子里。 因此，一个真正完整的、有韧性的Web3城市，不仅需要一个去中心化的“大脑”（计算层），还需要一个去中心化的“档案馆”和“图书馆”——这就是去中心化存储 (Decentralized Storage)。
@@ -102,45 +102,45 @@
 答案很简单：区块链是世界上最昂贵、最低效的“硬盘”。
 我们需要从设计哲学上理解区块链与去中心化存储的根本区别：
 
-  
-      
-          特征
-          区块链 (如以太坊)
-          去中心化存储 (如Filecoin, Arweave)
-      
-  
-  
-      
-          核心功能
-          状态验证 (State Verification)
-          数据持久化 (Data Persistence)
-      
-      
-          设计隐喻
-          全球共享的“中央处理器” (CPU)
-          全球共享的“硬盘驱动器” (HDD)
-      
-      
-          优化目标
-          计算的正确性与安全性
-          存储的可用性与可检索性
-      
-      
-          存储成本
-          极其昂贵。在以太坊上存储1MB数据可能花费数万美元。
-          极其便宜。成本远低于中心化云服务。
-      
-      
-          数据类型
-          小数据。主要存储账户余额、合约状态等关键的、需要全局共识的“状态”数据。
-          大数据。设计用来存储图片、视频、网站前端、数据库等大型文件。
-      
-      
-          工作原理
-          全网冗余。每个全节点都必须下载并验证每一笔交易，存储完整的状态历史。
-          分片冗余。一份数据会被分割成多个加密的片段，分散存储在网络中的多个节点上。
-      
-  
+	
+			
+					特征
+					区块链 (如以太坊)
+					去中心化存储 (如Filecoin, Arweave)
+			
+	
+	
+			
+					核心功能
+					状态验证 (State Verification)
+					数据持久化 (Data Persistence)
+			
+			
+					设计隐喻
+					全球共享的“中央处理器” (CPU)
+					全球共享的“硬盘驱动器” (HDD)
+			
+			
+					优化目标
+					计算的正确性与安全性
+					存储的可用性与可检索性
+			
+			
+					存储成本
+					极其昂贵。在以太坊上存储1MB数据可能花费数万美元。
+					极其便宜。成本远低于中心化云服务。
+			
+			
+					数据类型
+					小数据。主要存储账户余额、合约状态等关键的、需要全局共识的“状态”数据。
+					大数据。设计用来存储图片、视频、网站前端、数据库等大型文件。
+			
+			
+					工作原理
+					全网冗余。每个全节点都必须下载并验证每一笔交易，存储完整的状态历史。
+					分片冗余。一份数据会被分割成多个加密的片段，分散存储在网络中的多个节点上。
+			
+	
 
 简单来说，区块链是“大脑”，它的工作是进行昂贵的、需要全球共识的计算和状态转换。而去中心化存储是“图书馆”，它的工作是用廉价、高效的方式，安全地保管海量的数据。
 两者是互补关系，而非竞争关系。一个完整的Web3应用，其“大脑”（智能合约）运行在区块链上，而其“身体”（前端界面、图片、元数据）则需要存放在去中心化存储网络上。

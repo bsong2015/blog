@@ -6,38 +6,38 @@
 数据隔离是多租户架构的生命线。常见的隔离模型有三种，但它们的选择并非单纯的技术选型，而是商业、成本和风险的综合考量，形成了一个微妙的“不可能三角”。
 [设计决策点] 隔离模型的选择是在隔离性、成本和敏捷性之间的权衡。
 
-  
-      
-          隔离模型
-          隔离性 (安全性/故障)
-          成本 (资源/运维)
-          敏捷性 (开发效率/部署速度)
-          典型场景
-      
-  
-  
-      
-          独立数据库 (Silo)
-          极高
-          极高
-          低
-          金融、政府等合规性要求极高的客户；超大型企业私有化部署。
-      
-      
-          独立Schema/表
-          高
-          中
-          中
-          主流SaaS产品的通用选择，在隔离与成本间取得良好平衡。
-      
-      
-          共享表 (TenantID)
-          中
-          低
-          高
-          初创公司、内部平台、对成本极度敏感或租户规模较小的场景。
-      
-  
+	
+			
+					隔离模型
+					隔离性 (安全性/故障)
+					成本 (资源/运维)
+					敏捷性 (开发效率/部署速度)
+					典型场景
+			
+	
+	
+			
+					独立数据库 (Silo)
+					极高
+					极高
+					低
+					金融、政府等合规性要求极高的客户；超大型企业私有化部署。
+			
+			
+					独立Schema/表
+					高
+					中
+					中
+					主流SaaS产品的通用选择，在隔离与成本间取得良好平衡。
+			
+			
+					共享表 (TenantID)
+					中
+					低
+					高
+					初创公司、内部平台、对成本极度敏感或租户规模较小的场景。
+			
+	
 
 
 真正的挑战在于数据访问层的抽象。无论选择哪种模型，应用层代码都应该对底层实现无感知。通过在应用框架中强制注入TenantContext，并在ORM/Repository层实现透明的租户ID过滤，可以确保任何业务逻辑代码都无法绕过租户隔离。这是防止灾难性数据泄露的最后一道防线。
@@ -67,7 +67,7 @@
 
 
 2. API：从“优先设计”到“平台即产品”的演进
-在IDaaS领域，API不仅是集成手段，它本身就是核心产品。平台的价值直接体现在其API的质量、稳定性和可扩展性上。"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.527fbef9873650c2ff31f77137f2b7859b6b60b2d5a5a7fbe578c5d69afe423f.css integrity="sha256-Un+++Yc2UML/MfdxN/K3hZtrYLLVpaf75XjF1pr+Qj8=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script type=module>
+在IDaaS领域，API不仅是集成手段，它本身就是核心产品。平台的价值直接体现在其API的质量、稳定性和可扩展性上。"><meta name=author content="map[email: name:万年水]"><link rel=canonical href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/><link crossorigin=anonymous href=/blog/assets/css/stylesheet.e2150044138b2ceb38e301a2ea2c0dc6f2b81c4a6c43e7af4f2e9bdbb1c025cb.css integrity="sha256-4hUARBOLLOs44wGi6iwNxvK4HEpsQ+evTy6b27HAJcs=" rel="preload stylesheet" as=style><link rel=icon href=https://bsong2015.github.io/blog/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://bsong2015.github.io/blog/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://bsong2015.github.io/blog/favicon-32x32.png><link rel=apple-touch-icon href=https://bsong2015.github.io/blog/apple-touch-icon.png><link rel=mask-icon href=https://bsong2015.github.io/blog/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=zh href=https://bsong2015.github.io/blog/posts/iam/%E7%AC%AC20%E7%AF%87%E6%9E%B6%E6%9E%84%E7%AF%87idaas%E6%9E%B6%E6%9E%84%E7%9A%84%E8%AF%95%E9%87%91%E7%9F%B3%E9%A9%BE%E9%A9%AD%E5%A4%9A%E7%A7%9F%E6%88%B7api%E4%B8%8E%E9%AB%98%E5%8F%AF%E7%94%A8%E7%9A%84%E4%B8%89%E9%87%8D%E6%8C%91%E6%88%98/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><script type=module>
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
     
     
@@ -106,38 +106,38 @@
 数据隔离是多租户架构的生命线。常见的隔离模型有三种，但它们的选择并非单纯的技术选型，而是商业、成本和风险的综合考量，形成了一个微妙的“不可能三角”。
 [设计决策点] 隔离模型的选择是在隔离性、成本和敏捷性之间的权衡。
 
-  
-      
-          隔离模型
-          隔离性 (安全性/故障)
-          成本 (资源/运维)
-          敏捷性 (开发效率/部署速度)
-          典型场景
-      
-  
-  
-      
-          独立数据库 (Silo)
-          极高
-          极高
-          低
-          金融、政府等合规性要求极高的客户；超大型企业私有化部署。
-      
-      
-          独立Schema/表
-          高
-          中
-          中
-          主流SaaS产品的通用选择，在隔离与成本间取得良好平衡。
-      
-      
-          共享表 (TenantID)
-          中
-          低
-          高
-          初创公司、内部平台、对成本极度敏感或租户规模较小的场景。
-      
-  
+	
+			
+					隔离模型
+					隔离性 (安全性/故障)
+					成本 (资源/运维)
+					敏捷性 (开发效率/部署速度)
+					典型场景
+			
+	
+	
+			
+					独立数据库 (Silo)
+					极高
+					极高
+					低
+					金融、政府等合规性要求极高的客户；超大型企业私有化部署。
+			
+			
+					独立Schema/表
+					高
+					中
+					中
+					主流SaaS产品的通用选择，在隔离与成本间取得良好平衡。
+			
+			
+					共享表 (TenantID)
+					中
+					低
+					高
+					初创公司、内部平台、对成本极度敏感或租户规模较小的场景。
+			
+	
 
 
 真正的挑战在于数据访问层的抽象。无论选择哪种模型，应用层代码都应该对底层实现无感知。通过在应用框架中强制注入TenantContext，并在ORM/Repository层实现透明的租户ID过滤，可以确保任何业务逻辑代码都无法绕过租户隔离。这是防止灾难性数据泄露的最后一道防线。
