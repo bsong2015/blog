@@ -21,8 +21,8 @@ weight = 1                      # 权重，用于多语言排序
   slug = ":filename"
 
 [security]
-  fileGetDir = "content/**"     # 显式允许中文路径
-  allowContent = ['text/html']  # 允许 HTML 内容文件
+  fileGetDir = "content/**"              # 显式允许中文路径
+  allowContent = ['text/html', 'text/markdown']  # 允许 HTML 和 Markdown 内容文件
 
 # 前沿技术 (一级菜单)
 [[menu.main]]
