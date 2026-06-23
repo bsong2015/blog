@@ -1,6 +1,58 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>人工智能 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/</link><description>Recent content in 人工智能 on 万年水的博客</description><generator>Hugo -- 0.162.1</generator><language>zh-CN</language><lastBuildDate>Wed, 31 Dec 2025 20:04:00 +0800</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/37-%E4%BB%8E%E5%8E%9F%E5%9E%8B%E5%88%B0%E7%94%9F%E4%BA%A7/</link><pubDate>Wed, 31 Dec 2025 20:04:00 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/37-%E4%BB%8E%E5%8E%9F%E5%9E%8B%E5%88%B0%E7%94%9F%E4%BA%A7/</guid><description>&lt;div class="embed-html-wrapper"&gt;
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>人工智能 on 万年水的博客</title><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/</link><description>Recent content in 人工智能 on 万年水的博客</description><generator>Hugo -- 0.163.3</generator><language>zh-CN</language><lastBuildDate>Tue, 23 Jun 2026 12:25:33 +0800</lastBuildDate><atom:link href="https://bsong2015.github.io/blog/posts/artificial-intelligence/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/38-ai%E5%BC%82%E5%8C%96%E7%9A%84%E5%85%AD%E4%B8%AA%E6%82%96%E8%AE%BA-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8F%90%E6%95%88%E8%8E%B7%E7%9B%8A%E7%9A%84%E4%BA%BA%E5%8F%8D%E8%80%8C%E6%9C%80%E5%8D%B1%E9%99%A9/</link><pubDate>Tue, 23 Jun 2026 12:25:33 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/38-ai%E5%BC%82%E5%8C%96%E7%9A%84%E5%85%AD%E4%B8%AA%E6%82%96%E8%AE%BA-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%8F%90%E6%95%88%E8%8E%B7%E7%9B%8A%E7%9A%84%E4%BA%BA%E5%8F%8D%E8%80%8C%E6%9C%80%E5%8D%B1%E9%99%A9/</guid><description>&lt;h1 id="ai异化的六个悖论为什么提效获益的人反而最危险"&gt;AI异化的六个悖论：为什么提效获益的人反而最危险&lt;/h1&gt;
+&lt;hr&gt;
+&lt;h2 id="引言两个真实的感受"&gt;引言：两个真实的感受&lt;/h2&gt;
+&lt;h3 id="一个荒谬的职业故事引用案例"&gt;一个荒谬的职业故事（引用案例）&lt;/h3&gt;
+&lt;p&gt;有人在分享中讲了这么一个故事。&lt;/p&gt;
+&lt;p&gt;一年多AI提效实践，表面看非常成功。从2024年底开始，基本没手写过代码，但产出和rating一直整个org最高之一。VP老板评价是&amp;quot;deliver in superhuman pace&amp;quot;。他和CEO/CPO/CTO每两周有定期meeting，每次都能稳定交付扎实的成果。&lt;/p&gt;
+&lt;p&gt;然后升职失败了。第二次，又失败了。&lt;/p&gt;
+&lt;p&gt;复盘了很多原因，直到最近突然反应过来一个问题：&lt;strong&gt;老板眼里他到底是他的手还是他的脑？&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;CXO有个想法，说&amp;quot;你去试一下这个&amp;quot;，他用AI哐哐一天干完别人一周的活，两周后搞了个超牛逼的demo。CXO看了说&amp;quot;卧槽牛逼，你再试一下这个&amp;quot;。新想法和旧想法有时候有关系，有时候没关系。最后造成的问题：每两周deliver确实多，但方向过一两个月就变一次，升职时讲不清楚过去一年做成了什么。&lt;/p&gt;
+&lt;p&gt;讽刺的地方在于：&lt;strong&gt;如果他干活没这么快，就不会被放到&amp;quot;手&amp;quot;的被动位置。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;太好用，摩擦太低，CXO得出了和他用AI一样的结论：&lt;strong&gt;打击比探测更便宜&lt;/strong&gt;。有什么东西能不能做出来，直接让他手搓一个试试，反正比开会想又快又准。失败了没关系，反正他手快。这种快速迭代还激发老板们微操的欲望，项目的破碎程度、失败率和周转率反而比别人高。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;AI用得好，客观上让他更多承担执行类工作，反而更容易被AI替代。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;这个陷阱很讽刺——&lt;strong&gt;只有AI真的用得好的人才会掉进去&lt;/strong&gt;。提效不扎实，老板感觉不到这么好用，反而没这问题。&lt;/p&gt;
+&lt;p&gt;这个故事让我想了很久。&lt;/p&gt;
+&lt;h3 id="我自己的感受预期被拉高反馈加快没有时间思考"&gt;我自己的感受：预期被拉高，反馈加快，没有时间思考&lt;/h3&gt;
+&lt;p&gt;读完这个故事，我产生了强烈共鸣。不是因为升职也失败了，而是因为&lt;strong&gt;另一个维度的困境&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;用AI提效后，我的真实感受是：&lt;strong&gt;更忙了，更累了，没有时间思考了。&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;预期被拉高，这事儿最明显。以前一天的工作量，现在被预期一天做五天的活。大家理所当然地认为：有AI了，效率应该翻几倍。&lt;/p&gt;
+&lt;p&gt;早上提的需求，下午就被期待看到效果。以前需要一周迭代的需求，现在被期待两三天就出。&lt;/p&gt;
+&lt;p&gt;这不是老板刻意提高要求，而是&lt;strong&gt;整个组织的预期水位被AI拉高了&lt;/strong&gt;。水位线上升，所有人都被推到更高位置，但并没有更安全，反而更容易被淹没。&lt;/p&gt;
+&lt;p&gt;反馈加快，闭环加速，这事儿更隐蔽。以前做完一个任务，有几天缓冲，可以想想&amp;quot;这方向对不对&amp;quot;、&amp;ldquo;为什么做这个&amp;rdquo;。&lt;/p&gt;
+&lt;p&gt;现在刚做完，下一个任务就来了。反馈太快，闭环太快，&lt;strong&gt;反思的时间窗口消失了&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;早上提想法，中午出原型，下午看反馈，晚上迭代新版本。一天之内，几个回合。看起来高效，实则&lt;strong&gt;来不及想&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;更忙更累，而不是更轻松。&lt;/p&gt;
+&lt;p&gt;我以为用AI提效会更轻松——同样的工作，更快完成，应该有更多空闲时间。&lt;/p&gt;
+&lt;p&gt;现实是：工作没减少，反而增加。效率高了，&lt;strong&gt;能做的更多，被派的活也更多了&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;这不是简单的&amp;quot;工作量增加&amp;quot;，是&lt;strong&gt;反馈节奏加快&lt;/strong&gt;。以前一周的节奏，现在变成一天。以前一个月的项目周期，现在一周。&lt;/p&gt;
+&lt;p&gt;节奏加快意味着强度加大。强度加大意味着疲惫加深。&lt;/p&gt;
+&lt;p&gt;没有时间思考，这事儿最可怕。&lt;/p&gt;
+&lt;p&gt;思考需要什么？需要&lt;strong&gt;空隙&lt;/strong&gt;——任务之间的空隙，执行之后的空隙，反馈之前的空隙。&lt;/p&gt;
+&lt;p&gt;但现在没有空隙。任务密集，反馈即时，闭环加速。&lt;strong&gt;没有空隙，就没有思考的空间&lt;/strong&gt;。&lt;/p&gt;
+&lt;p&gt;我发现自己越来越像一个快速响应的执行器：接收需求 → AI执行 → 快速反馈 → 接收新需求。循环往复，没有停顿，没有反思。&lt;/p&gt;
+&lt;p&gt;这不是我想要的职业状态。&lt;/p&gt;
+&lt;p&gt;我用AI是为了提效，是为了有更多时间思考更有价值的事。但结果是：提效后，反而没时间思考了。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;讽刺的闭环&lt;/strong&gt;：&lt;/p&gt;
+&lt;p&gt;我用AI想获得思考空间，但AI的使用反而挤压了思考空间。预期被拉高、反馈加快、没有空隙、更像执行器——这些都在同步发生，而不只是先后关系。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;这就是文章要分析的讽刺悖论：提效获益，反而更危险。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id="两个故事的共同揭示"&gt;两个故事的共同揭示&lt;/h3&gt;
+&lt;p&gt;第一个故事（引用的）揭示的是&lt;strong&gt;角色锁定&lt;/strong&gt;——被当成&amp;quot;手&amp;quot;，职业发展受阻。&lt;/p&gt;
+&lt;p&gt;第二个故事（我的感受）揭示的是&lt;strong&gt;节奏加速&lt;/strong&gt;——预期被拉高，反馈加快，没有时间思考。&lt;/p&gt;
+&lt;p&gt;两个困境看似不同，实则指向同一个机制。&lt;/p&gt;
+&lt;p&gt;下面就系统分析一下这个现象背后的悖论。&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id="第一个悖论获益越大陷阱越深"&gt;第一个悖论：获益越大，陷阱越深&lt;/h2&gt;
+&lt;p&gt;这个悖论最直接，最核心。&lt;/p&gt;
+&lt;p&gt;传统逻辑：提效获益，获益越多越好。效率高的人应该得到更多机会、更快晋升、更高回报。&lt;/p&gt;
+&lt;p&gt;AI时代的逻辑完全不同：&lt;/p&gt;
+&lt;p&gt;用AI提效 → 老板觉得好用 → 被当成&amp;quot;手&amp;quot; → 接到零散脏活 → 职业发展受阻 → 这个角色最容易被AI替代&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;讽刺的地方&lt;/strong&gt;：提效获益是真的，但获益的代价是被锁定在更容易被替代的角色上。&lt;/p&gt;
+&lt;p&gt;这不是简单的&amp;quot;短期收益、长期损失&amp;quot;的时间错位问题。&lt;strong&gt;获益本身就在塑造损失的条件&lt;/strong&gt;。获益的过程，就是被锁定角色加深的过程。获益越多，角色锁定越深，替代风险越大。&lt;/p&gt;
+&lt;p&gt;获益和损失是&lt;strong&gt;同步发生&lt;/strong&gt;的不同维度的事实，不存在先后关系。&lt;/p&gt;
+&lt;p&gt;你在获益的维度（效率、交付量）获益的同时，在另一个维度（角色定位、职业发展）正在损失。但你只看到了获益，因为获益是显性的、量化的、可见的。损失是隐性的、缓慢的、延迟显现的。&lt;/p&gt;
+&lt;p&gt;具体怎么发生的？我自己感受最明显的是预期被拉高——老板发现你效率高，就给你更高预期。这不是惩罚，是&amp;quot;物尽其用&amp;quot;。对你来说，活更多、更累、更没时间思考。但短期看，你确实做得多、交付好、rating高。&lt;/p&gt;</description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/37-%E4%BB%8E%E5%8E%9F%E5%9E%8B%E5%88%B0%E7%94%9F%E4%BA%A7/</link><pubDate>Wed, 31 Dec 2025 20:04:00 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/37-%E4%BB%8E%E5%8E%9F%E5%9E%8B%E5%88%B0%E7%94%9F%E4%BA%A7/</guid><description>&lt;div class="embed-html-wrapper"&gt;
 &lt;iframe
-id="embed-1780290494191541005"
+id="embed-1782190565270013350"
 src="https://bsong2015.github.io/blog/posts/artificial-intelligence/37_Prototype_to_Production.html"
 width="100%"
 height="800px"
@@ -30,7 +82,7 @@ height: calc(800px * 0.8);
 &lt;/style&gt;
 &lt;script&gt;
 (function() {
-var iframe = document.getElementById('embed-1780290494191541005');
+var iframe = document.getElementById('embed-1782190565270013350');
 if (iframe) {
 iframe.addEventListener('load', function() {
 try {
@@ -67,7 +119,7 @@ console.log('Cannot modify iframe content:', e);
 })();
 &lt;/script&gt;</description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/36-agent%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BC%B0/</link><pubDate>Wed, 31 Dec 2025 20:03:00 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/36-agent%E8%B4%A8%E9%87%8F%E8%AF%84%E4%BC%B0/</guid><description>&lt;div class="embed-html-wrapper"&gt;
 &lt;iframe
-id="embed-1780290494190480870"
+id="embed-1782190565268530967"
 src="https://bsong2015.github.io/blog/posts/artificial-intelligence/36_Agent_Quality.html"
 width="100%"
 height="800px"
@@ -97,7 +149,7 @@ height: calc(800px * 0.8);
 &lt;/style&gt;
 &lt;script&gt;
 (function() {
-var iframe = document.getElementById('embed-1780290494190480870');
+var iframe = document.getElementById('embed-1782190565268530967');
 if (iframe) {
 iframe.addEventListener('load', function() {
 try {
@@ -134,7 +186,7 @@ console.log('Cannot modify iframe content:', e);
 })();
 &lt;/script&gt;</description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/35-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E4%BC%9A%E8%AF%9D%E4%B8%8E%E8%AE%B0%E5%BF%86/</link><pubDate>Wed, 31 Dec 2025 20:02:00 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/35-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B7%A5%E7%A8%8B%E4%BC%9A%E8%AF%9D%E4%B8%8E%E8%AE%B0%E5%BF%86/</guid><description>&lt;div class="embed-html-wrapper"&gt;
 &lt;iframe
-id="embed-1780290494188417073"
+id="embed-1782190565266779977"
 src="https://bsong2015.github.io/blog/posts/artificial-intelligence/35_Context_Engineering_Sessions_Memory.html"
 width="100%"
 height="800px"
@@ -164,7 +216,7 @@ height: calc(800px * 0.8);
 &lt;/style&gt;
 &lt;script&gt;
 (function() {
-var iframe = document.getElementById('embed-1780290494188417073');
+var iframe = document.getElementById('embed-1782190565266779977');
 if (iframe) {
 iframe.addEventListener('load', function() {
 try {
@@ -201,7 +253,7 @@ console.log('Cannot modify iframe content:', e);
 })();
 &lt;/script&gt;</description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/34-agent%E5%B7%A5%E5%85%B7%E4%B8%8Emcp%E4%BA%92%E6%93%8D%E4%BD%9C%E6%80%A7/</link><pubDate>Wed, 31 Dec 2025 20:01:00 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/34-agent%E5%B7%A5%E5%85%B7%E4%B8%8Emcp%E4%BA%92%E6%93%8D%E4%BD%9C%E6%80%A7/</guid><description>&lt;div class="embed-html-wrapper"&gt;
 &lt;iframe
-id="embed-1780290494185290247"
+id="embed-1782190565265406735"
 src="https://bsong2015.github.io/blog/posts/artificial-intelligence/34_Agent_Tools_and_Interoperability_with_MCP.html"
 width="100%"
 height="800px"
@@ -231,7 +283,7 @@ height: calc(800px * 0.8);
 &lt;/style&gt;
 &lt;script&gt;
 (function() {
-var iframe = document.getElementById('embed-1780290494185290247');
+var iframe = document.getElementById('embed-1782190565265406735');
 if (iframe) {
 iframe.addEventListener('load', function() {
 try {
@@ -268,7 +320,7 @@ console.log('Cannot modify iframe content:', e);
 })();
 &lt;/script&gt;</description></item><item><title/><link>https://bsong2015.github.io/blog/posts/artificial-intelligence/33-agent%E4%BB%8B%E7%BB%8D/</link><pubDate>Wed, 31 Dec 2025 20:00:00 +0800</pubDate><guid>https://bsong2015.github.io/blog/posts/artificial-intelligence/33-agent%E4%BB%8B%E7%BB%8D/</guid><description>&lt;div class="embed-html-wrapper"&gt;
 &lt;iframe
-id="embed-1780290494182141218"
+id="embed-1782190565262362662"
 src="https://bsong2015.github.io/blog/posts/artificial-intelligence/33_Introduction_to_Agents.html"
 width="100%"
 height="800px"
@@ -298,7 +350,7 @@ height: calc(800px * 0.8);
 &lt;/style&gt;
 &lt;script&gt;
 (function() {
-var iframe = document.getElementById('embed-1780290494182141218');
+var iframe = document.getElementById('embed-1782190565262362662');
 if (iframe) {
 iframe.addEventListener('load', function() {
 try {
